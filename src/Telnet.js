@@ -9,16 +9,18 @@ const Telnet = (() => {
 
   const parse = (text) => {
     const cc = ControlCodes;
-    const matches = text.match(/<\/?(\w+)\/?>/g);
     let parsedText = text.replace(/\r?\n/g, cc['newline']);
-    matches.map((code) => {
-      let replacement;
-      if (code[1] === '/') replacement = cc['reset']; // e.g. </code>
-      else { // e.g. <code> and <code/>
-        replacement = cc[code.replace(/[<\/>]/g, '')];
-      }
-      parsedText = parsedText.replace(code, replacement);
-    });
+    const matches = text.match(/<\/?(\w+)\/?>/g);
+    if (matches instanceof Array) {
+      matches.map((code) => {
+        let replacement;
+        if (code[1] === '/') replacement = cc['reset']; // e.g. </code>
+        else { // e.g. <code> and <code/>
+          replacement = cc[code.replace(/[<\/>]/g, '')];
+        }
+        parsedText = parsedText.replace(code, replacement);
+      });
+    }
     return parsedText;
   };
 

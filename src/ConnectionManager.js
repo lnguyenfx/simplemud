@@ -1,5 +1,7 @@
 'use strict';
 
+const Connection = require('./Connection');
+
 const ConnectionManager = (() => {
 
   const cm = {};
@@ -9,24 +11,30 @@ const ConnectionManager = (() => {
       return connections[index];
   };
 
-  cm.newConnection = (socket, protocols) => {
+  cm.newConnection = (socket, protocol) => {
     socket.on('close', () => cm.removeConnection(socket));
-    protocols.map(p => socket.on('data', data => p.translate(data)));
-    connections.push(socket);
+    connections.push(new Connection(socket, protocol));
   };
 
   cm.closeConnection = (socket) => {
-    socket.end();
+    const conn = cm.findConnection(socket);
+    conn.socket.end();
   };
 
   cm.removeConnection = (socket) => {
-    const index = connections.indexOf(socket)
+    const conn = cm.findConnection(socket);
+    const index = connections.indexOf(conn)
     if (index !== -1) connections.splice(index, 1);
   };
 
   cm.totalConnections = () => {
     return connections.length;
   };
+
+  cm.findConnection = (socket) => {
+    const conn = connections.filter(conn => conn.socket === socket);
+    return conn.length ? conn[0] : 0;
+  }
 
   return cm;
 
