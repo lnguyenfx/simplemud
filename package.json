@@ -2,9 +2,10 @@
   "name": "simplemud",
   "version": "0.0.1",
   "description": "SimpleMUD from MUD Game Programming book ported to NodeJS.",
-  "main": "app.js",
+  "main": "./src/server.js",
   "scripts": {
-    "test": "mocha ./tests/index.js"
+    "test": "./node_modules/.bin/mocha --reporter spec",
+    "start": "node ./src/server.js"
   },
   "repository": {
     "type": "git",
@@ -12,13 +13,17 @@
   },
   "keywords": [
     "simplemudjs",
-    "simplemude",
-    "node"
+    "simplemud"
   ],
   "author": "Long Nguyen",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/lnguyenfx/simplemud/issues"
   },
-  "homepage": "https://github.com/lnguyenfx/simplemud#readme"
+  "homepage": "https://github.com/lnguyenfx/simplemud#readme",
+  "dependencies": {
+    "chai": "^4.0.1",
+    "mocha": "^3.4.2",
+    "sinon": "^2.3.2"
+  }
 }
