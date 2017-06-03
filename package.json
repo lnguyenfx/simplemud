@@ -1,0 +1,24 @@
+{
+  "name": "simplemud",
+  "version": "0.0.1",
+  "description": "SimpleMUD from MUD Game Programming book ported to NodeJS.",
+  "main": "app.js",
+  "scripts": {
+    "test": "mocha ./tests/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/lnguyenfx/simplemud.git"
+  },
+  "keywords": [
+    "simplemudjs",
+    "simplemude",
+    "node"
+  ],
+  "author": "Long Nguyen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lnguyenfx/simplemud/issues"
+  },
+  "homepage": "https://github.com/lnguyenfx/simplemud#readme"
+}
