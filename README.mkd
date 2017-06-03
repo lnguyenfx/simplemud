@@ -11,4 +11,4 @@ SimpleMUD from MUD Game Programming book ported to NodeJS.
 ## To Run Client
     telnet localhost 3000
 
-## Available commands
+## Available Commands

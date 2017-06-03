@@ -18,7 +18,6 @@ describe("ConnectionManager", () => {
   });
 
   it("should properly translate telnet protocol", () => {
-    const cc = telnet.cCode;
 
     const stub = sinon.stub(socket, 'write');
     stub.callsFake(function (data, encoding, cb) {
@@ -30,7 +29,7 @@ describe("ConnectionManager", () => {
 
     const spy = sinon.spy(telnet, 'translate');
 
-    socket.write(cc('green') + "System all green!" + cc('reset'));
+    socket.write("<green>System all green!</green>");
 
     expect(spy.calledOnce).to.be.true;
     expect(spy.returnValues[0]).to.equal("\x1B[32mSystem all green!\x1B[0m");

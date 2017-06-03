@@ -1,5 +1,33 @@
 'use strict';
 
+const Telnet = (() => {
+  const t = {};
+
+  t.translate = (data) => {
+    return parse(data.toString());
+  }
+
+  const parse = (text) => {
+    const cc = ControlCodes;
+    const matches = text.match(/<\/?(\w+)\/?>/g);
+    let parsedText = text.replace(/\r?\n/g, cc['newline']);
+    matches.map((code) => {
+      let replacement;
+      if (code[1] === '/') replacement = cc['reset']; // e.g. </code>
+      else { // e.g. <code> and <code/>
+        replacement = cc[code.replace(/[<\/>]/g, '')];
+      }
+      parsedText = parsedText.replace(code, replacement);
+    });
+    return parsedText;
+  };
+
+  return t;
+
+})();
+
+module.exports = Telnet;
+
 const ControlCodes = {
   reset: "\x1B[0m",
   bold: "\x1B[1m",
@@ -31,20 +59,3 @@ const ControlCodes = {
 
   newline: "\r\n\x1B[0m"
 };
-
-const Telnet = (() => {
-  const t = {};
-
-  t.cCode = (code) => {
-    return ControlCodes[code];
-  };
-
-  t.translate = (data) => {
-    return data.toString();
-  }
-
-  return t;
-
-})();
-
-module.exports = Telnet;
