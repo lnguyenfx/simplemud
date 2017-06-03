@@ -1,0 +1,14 @@
+# SimpleMUD
+
+SimpleMUD from MUD Game Programming book ported to NodeJS.
+
+## To Run Server
+    git clone https://github.com/lnguyenfx/simplemud.git
+    cd simplemud
+    npm install
+    npm start
+
+## To Run Client
+    telnet localhost 3000
+
+## Available commands
