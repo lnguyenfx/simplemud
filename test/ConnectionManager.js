@@ -5,11 +5,29 @@ const path = require('path');
 
 const cm = require(path.join(__dirname, '..', 'src', 'ConnectionManager'));
 const telnet = require(path.join(__dirname, '..', 'src', 'Telnet'));
+const Logon = require(path.join(__dirname, '..', 'src', 'Logon'));
 
 describe("ConnectionManager", () => {
 
   const socket = new net.Socket({});
-  cm.newConnection(socket, telnet);
+
+  before(() => {
+    sinon.stub(socket, 'write').callsFake(() => {});
+  });
+
+  after(() => {
+    socket.write.restore();
+  });
+
+  it("should add new socket to connections list", () => {
+    cm.newConnection(socket, telnet);
+    expect(cm.totalConnections()).to.equal(1);
+    expect(cm.getConnection(0)).to.equal(cm.findConnection(socket));
+  });
+
+  it("should add default Logon handler to new connection", () => {
+    expect(cm.getConnection(0)._handler()).to.be.an.instanceOf(Logon);
+  });
 
   it("should add new socket to connections list", () => {
     expect(cm.totalConnections()).to.equal(1);

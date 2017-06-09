@@ -71,4 +71,20 @@ describe("Connection", () => {
     expect(conn.handlers.length).to.be.equal(0);
   });
 
+  it("should properly handle disconnect", () => {
+    const stub = sinon.stub(conn.socket, 'end');
+    stub.callsFake(function (data, encoding) {
+        this.emit('close');
+    });
+    const spy = sinon.spy(conn, 'clearHandlers');
+
+    conn.closeConnection();
+
+    expect(stub.calledOnce).to.be.true;
+    expect(spy.calledOnce).to.be.true;
+
+    conn.clearHandlers.restore();
+    conn.socket.end.restore();
+  });
+
 });

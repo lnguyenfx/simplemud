@@ -30,6 +30,10 @@ class Connection {
     this.handlers = [];
   }
 
+  closeConnection() {
+    this.socket.end();
+  }
+
   _handler() {
     return this.handlers.length ? this.handlers[0] : 0;
   }

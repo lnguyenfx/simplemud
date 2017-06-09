@@ -1,6 +1,7 @@
 'use strict';
 
 const Connection = require('./Connection');
+const Logon = require('./Logon');
 
 const ConnectionManager = (() => {
 
@@ -11,9 +12,12 @@ const ConnectionManager = (() => {
       return connections[index];
   };
 
-  cm.newConnection = (socket, protocol) => {
+  cm.newConnection = (socket, protocol, handler) => {
+    const conn = new Connection(socket, protocol);
+    const defaultHandler = handler || new Logon(conn);
+    conn.addHandler(defaultHandler);
+    connections.push(conn);
     socket.on('close', () => cm.removeConnection(socket));
-    connections.push(new Connection(socket, protocol));
   };
 
   cm.closeConnection = (socket) => {

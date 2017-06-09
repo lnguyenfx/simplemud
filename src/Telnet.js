@@ -10,14 +10,17 @@ const Telnet = (() => {
   const parse = (text) => {
     const cc = ControlCodes;
     let parsedText = text.replace(/\r?\n/g, cc['newline']);
-    const matches = text.match(/<\/?(\w+)\/?>/g);
+    const matches = text.match(/<\/?(\w+)\/?>/g); // looking for <code>, </code>, and <code/>
     if (matches instanceof Array) {
       matches.map((code) => {
+        const strippedCode = code.replace(/[<\/>]/g, '');
         let replacement;
-        if (code[1] === '/') replacement = cc['reset']; // e.g. </code>
-        else { // e.g. <code> and <code/>
-          replacement = cc[code.replace(/[<\/>]/g, '')];
-        }
+        if (cc.hasOwnProperty(strippedCode)) { // if valid code
+          if (code[1] === '/') replacement = cc['reset']; // e.g. </code>
+          else { // e.g. <code> and <code/>
+            replacement = cc[code.replace(/[<\/>]/g, '')];
+          }
+        } else replacement = code;
         parsedText = parsedText.replace(code, replacement);
       });
     }
