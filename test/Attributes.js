@@ -28,7 +28,7 @@ describe("Attributes",() => {
     const attr = ['REGULAR', 'GOD', 'ADMIN'];
 
     expect(PlayerRank.enums.map(e => e.key)).to.have.same.members(attr);
-    expect(PlayerRank.ADMIN).to.equal(PlayerRank.get(2));
+    expect(PlayerRank.ADMIN).to.equal(PlayerRank.get("ADMIN"));
     expect(PlayerRank.REGULAR.toString()).to.equal('REGULAR');
   });
 
@@ -44,7 +44,7 @@ describe("Attributes",() => {
     const attr = ['NORTH', 'EAST', 'SOUTH','WEST'];
 
     expect(Direction.enums.map(e => e.key)).to.have.same.members(attr);
-    expect(Direction.WEST).to.equal(Direction.get(3));
+    expect(Direction.WEST).to.equal(Direction.get("WEST"));
     expect(Direction.NORTH.toString()).to.equal('NORTH');
   });
 
