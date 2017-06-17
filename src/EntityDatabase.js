@@ -45,7 +45,7 @@ class EntityDatabase {
   }
 
   // --------------------------------------------------------------------
-  //  private helper to search db by entity name
+  //  private helper to search db by entity's full name or partial name
   // --------------------------------------------------------------------
   _findByName(name, matchFuncName) {
     let result = false;

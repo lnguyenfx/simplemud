@@ -23,6 +23,7 @@
   "homepage": "https://github.com/lnguyenfx/simplemud#readme",
   "dependencies": {
     "chai": "^4.0.1",
+    "enum": "^2.4.0",
     "mocha": "^3.4.2",
     "sinon": "^2.3.2"
   }
