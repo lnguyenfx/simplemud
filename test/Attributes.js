@@ -1,7 +1,8 @@
 const { expect } = require('chai');
 const path = require('path');
 
-const { Attribute } = require(path.join(__dirname, '..', 'src', 'Attributes'));
+const { Attribute, ItemType, PlayerRank, RoomType, Direction }
+  = require(path.join(__dirname, '..', 'src', 'Attributes'));
 
 describe("Attributes",() => {
 
@@ -11,9 +12,40 @@ describe("Attributes",() => {
                   'STRIKEDAMAGE', 'DAMAGEABSORB', 'HPREGEN'];
 
     expect(Attribute.enums.map(e => e.key)).to.have.same.members(attr);
-    expect(Attribute.enums.length).to.equal(attr.length);
     expect(Attribute.get('STRENGTH')).to.equal(Attribute.STRENGTH);
     expect(Attribute.HPREGEN.toString()).to.equal('HPREGEN');
+  });
+
+  it("should properly declare ItemType enum", () => {
+    const attr = ['WEAPON', 'ARMOR', 'HEALING'];
+
+    expect(ItemType.enums.map(e => e.key)).to.have.same.members(attr);
+    expect(ItemType.ARMOR).to.equal(ItemType.get(1));
+    expect(ItemType.HEALING.toString()).to.equal('HEALING');
+  });
+
+  it("should properly declare PlayerRank enum", () => {
+    const attr = ['REGULAR', 'GOD', 'ADMIN'];
+
+    expect(PlayerRank.enums.map(e => e.key)).to.have.same.members(attr);
+    expect(PlayerRank.ADMIN).to.equal(PlayerRank.get(2));
+    expect(PlayerRank.REGULAR.toString()).to.equal('REGULAR');
+  });
+
+  it("should properly declare RoomType enum", () => {
+    const attr = ['PLAINROOM', 'TRAININGROOM', 'STORE'];
+
+    expect(RoomType.enums.map(e => e.key)).to.have.same.members(attr);
+    expect(RoomType.STORE).to.equal(RoomType.get(2));
+    expect(RoomType.TRAININGROOM.toString()).to.equal('TRAININGROOM');
+  });
+
+  it("should properly declare Direction enum", () => {
+    const attr = ['NORTH', 'EAST', 'SOUTH','WEST'];
+
+    expect(Direction.enums.map(e => e.key)).to.have.same.members(attr);
+    expect(Direction.WEST).to.equal(Direction.get(3));
+    expect(Direction.NORTH.toString()).to.equal('NORTH');
   });
 
 });
