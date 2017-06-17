@@ -11,18 +11,12 @@ describe("ConnectionManager", () => {
 
   const socket = new net.Socket({});
 
-  before(() => {
-    sinon.stub(socket, 'write').callsFake(() => {});
-  });
-
-  after(() => {
-    socket.write.restore();
-  });
-
   it("should add new socket to connections list", () => {
+    sinon.stub(socket, 'write').callsFake(() => {});
     cm.newConnection(socket, telnet);
     expect(cm.totalConnections()).to.equal(1);
     expect(cm.getConnection(0)).to.equal(cm.findConnection(socket));
+    socket.write.restore();
   });
 
   it("should add default Logon handler to new connection", () => {
