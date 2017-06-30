@@ -22,7 +22,8 @@
   },
   "homepage": "https://github.com/lnguyenfx/simplemud#readme",
   "dependencies": {
-    "enum": "^2.4.0"
+    "enum": "^2.4.0",
+    "line-by-line": "^0.1.5"
   },
   "devDependencies": {
     "chai": "^4.0.1",

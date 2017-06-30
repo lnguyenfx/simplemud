@@ -32,7 +32,7 @@ class Entity {
     while(pos !== -1) {
         // match found at beginning, or match found at beginning of a word,
         // therefore, return true.
-        if( pos == 0 || this.name[pos-1] == ' ' )
+        if( pos === 0 || this.name[pos-1] === ' ' )
             return true;
 
         // perform another search, starting at where the last one left off
