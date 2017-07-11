@@ -12,6 +12,12 @@ describe("ItemDatabase",() => {
     expect(db.size()).to.equal(35);
   });
 
+  it("should find item based on id", () => {
+    const item = db.findById(3);
+    expect(item.name).to.equal("Leather Armor");
+    expect(item.type).to.equal(ItemType.ARMOR);
+  });
+
   it("should find full-match of item's name", () => {
     const item = db.findByNameFull("Rapier");
     expect(item.name).to.equal("Rapier");

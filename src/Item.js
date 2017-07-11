@@ -24,8 +24,8 @@ class Item extends Entity {
     this.speed = parseInt(dataObject["SPEED"]);
     this.price = parseInt(dataObject["PRICE"]);
     this.speed = parseInt(dataObject["SPEED"]);
-    Attribute.enums.map(el => {
-      this.attributes[el.value] = parseInt(dataObject[el.key]);
+    Attribute.enums.map(attr => {
+      this.attributes[attr] = parseInt(dataObject[attr.key]);
     });
   }
 

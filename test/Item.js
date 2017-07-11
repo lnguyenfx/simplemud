@@ -40,13 +40,13 @@ describe("Item",() => {
     expect(testItem.speed).to.equal(2);
     expect(testItem.price).to.equal(10);
 
-    const attr = ['STRENGTH', 'HEALTH', 'AGILITY',
-                  'MAXHITPOINTS', 'ACCURACY', 'DODGING',
-                  'STRIKEDAMAGE', 'DAMAGEABSORB', 'HPREGEN'];
+    const attrArray = ['STRENGTH', 'HEALTH', 'AGILITY',
+                       'MAXHITPOINTS', 'ACCURACY', 'DODGING',
+                       'STRIKEDAMAGE', 'DAMAGEABSORB', 'HPREGEN'];
 
-    for (let i = 0; i < attr.length; i++) {
-      const attrVal = Attribute.get(attr[i]).value;
-      expect(testItem.attributes[attrVal]).to.equal((i + 1) * 10);
+    for (let i = 0; i < attrArray.length; i++) {
+      const attr = Attribute.get(attrArray[i]);
+      expect(testItem.attributes[attr]).to.equal((i + 1) * 10);
     }
 
   });
