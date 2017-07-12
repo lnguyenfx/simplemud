@@ -207,6 +207,26 @@ class Player extends Entity {
     this.recalculateStats();
   }
 
+  // ------------------------------------------
+  //  This gets the index of an item within
+  //  the players inventory given a name.
+  // ------------------------------------------
+  getItemIndex(name) {
+    const find = (matchFuncName) => {
+      let index = -1;
+      for (let i = 0; i < this.inventory.length; i++) {
+        const item = this.inventory[i];
+        if (item[matchFuncName].bind(item, name)()) {
+          index = i;
+          break;
+        }
+      }
+      return index;
+    };
+    let result = find("matchFull");
+    if (result === -1) result = find("matchPartial");
+    return result;
+  }
 }
 
 module.exports = Player;

@@ -165,4 +165,24 @@ describe("Player",() => {
     expect(player.armor).to.equal(-1);
   });
 
+  it("should properly find item indexes", () => {
+    const itemsList = ["Knife", "Chainmail Armor", "Healing Potion",
+                       "Magic Sword of Killing",
+                       "Magic Potion of Strength"
+                      ];
+    const items = itemsList.map(itemName => db.findByNameFull(itemName));
+    const player = new Player();
+    items.forEach((item) => player.pickUpItem(item));
+    const swordIndex = player.getItemIndex("Magic Sword");
+    expect(player.inventory[swordIndex].name).to.equal("Magic Sword of Killing");
+    const armorIndex = player.getItemIndex("Chainmail Armor");
+    expect(player.inventory[armorIndex].name).to.equal("Chainmail Armor");
+    const potionIndex = player.getItemIndex("Potion");
+    expect(player.inventory[potionIndex].name).to.equal("Healing Potion");
+    const magicPotionIndex = player.getItemIndex("Magic Potion");
+    expect(player.inventory[magicPotionIndex].name).to.equal("Magic Potion of Strength");
+    const invalidIndex = player.getItemIndex("INVALID");
+    expect(invalidIndex).to.equal(-1);
+  });
+
 });
