@@ -1,5 +1,7 @@
 'use strict';
 
+var buffer = '';
+
 class Connection {
 
   constructor(socket, protocol) {
@@ -44,7 +46,12 @@ class Connection {
   }
 
   _receivedData(data) {
-    this._handler().handle(data);
+    buffer += data.toString();
+    if (buffer.match(/\n/)) {
+      this._handler().handle(buffer);
+      buffer = '';
+    }
+
   }
 
   _connectionClosed() {
