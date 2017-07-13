@@ -227,6 +227,110 @@ class Player extends Entity {
     if (result === -1) result = find("matchPartial");
     return result;
   }
+
+  // ------------------------------------------------------------------------
+  //  This sends a string to the players connection.
+  // ------------------------------------------------------------------------
+  sendString(str) {
+    if (this.connection === 0) {
+      console.error("Trying to send string to player " +
+                    this.name + " but player is not connected.");
+      return;
+    }
+
+    // send the string, newline included.
+    this.connection.sendMessage(str + '\n');
+
+    if (this.active) this.printStatbar();
+  }
+
+  // ------------------------------------------------------------------------
+  //  This prints up the players "statbar", ie: his hitpoints.
+  // ------------------------------------------------------------------------
+  printStatbar() {
+
+    const ratio = 100 * this.hitPoints / this.GetAttr(Attribute.MAXHITPOINTS);
+
+    // color code your hitpoints so that they are red if low,
+    // yellow if medium, and green if high.
+    let color;
+    if (ratio < 33) color = "red";
+    else if (ratio < 67) color = "yellow";
+    else color = "green";
+
+    const statbar =
+      require('util').format(
+        "<%s><%s>[<%s>%i</%s><%s><%s>/%i]</%s></%s>",
+        "white", "bold", color, this.hitPoints,
+        color, "white", "bold", this.GetAttr(Attribute.MAXHITPOINTS),
+        "bold", "white"
+      );
+
+    this.connection.sendMessage(statbar + '\n');
+  }
+
+  save() {
+    const attr = this.baseAttributes;
+    const obj = {
+      "ID": this.id,
+      "NAME": this.name,
+      "PASS": this.password,
+      "RANK": this.rank.toString(),
+      "STATPOINTS": this.statPoints,
+      "EXPERIENCE": this.experience,
+      "LEVEL": this.level,
+      "ROOM": this.room,
+      "MONEY": this.money,
+      "HITPOINTS": this.hitPoints,
+      "NEXTATTACKTIME": this.nextAttackTime,
+      "STRENGTH": attr[Attribute.STRENGTH],
+      "HEALTH": attr[Attribute.HEALTH],
+      "AGILITY": attr[Attribute.AGILITY],
+      "MAXHITPOINTS": attr[Attribute.MAXHITPOINTS],
+      "ACCURACY": attr[Attribute.ACCURACY],
+      "DODGING": attr[Attribute.DODGING],
+      "STRIKEDAMAGE": attr[Attribute.STRIKEDAMAGE],
+      "DAMAGEABSORB": attr[Attribute.DAMAGEABSORB],
+      "HPREGEN": attr[Attribute.HPREGEN],
+      "INVENTORY": this.inventory.map(item => item.id).join(' '),
+      "WEAPON": this.weapon,
+      "ARMOR": this.armor
+    }
+    const file = require('path').join(__dirname, '..', 'data', 'players', this.name + '.json');
+    const jsonfile = require('jsonfile');
+    jsonfile.writeFileSync(file, obj, {spaces: 2});
+  }
+
+  load(dataObject, itemDb) {
+    const parse = (key) => parseInt(dataObject[key]);
+    this.id = parse("ID");
+    this.name = dataObject["NAME"];
+    this.password = dataObject["PASS"];
+    this.rank = PlayerRank.get(dataObject["RANK"]);
+    this.statPoints = parse("STATPOINTS");
+    this.experience = parse("EXPERIENCE");
+    this.level = parse("LEVEL");
+    this.room = parse("ROOM");
+    this.money = parse("MONEY");
+    this.hitPoints = parse("HITPOINTS");
+    this.nextAttackTime = parse("NEXTATTACKTIME");
+    Attribute.enums.forEach(attr => {
+      this.baseAttributes[attr] = parse(attr.key);
+    });
+    this.items = 0;
+    this.inventory = [];
+    dataObject["INVENTORY"].split(' ').forEach(id => {
+      id = parseInt(id);
+      if (!id) return;
+      this.inventory.push(itemDb.findById(id));
+      this.items++;
+    });
+    this.weapon = parse("WEAPON");
+    this.armor = parse("ARMOR");
+
+    this.recalculateStats();
+  }
+
 }
 
 module.exports = Player;

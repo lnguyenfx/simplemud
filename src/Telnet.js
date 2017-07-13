@@ -7,6 +7,8 @@ const Telnet = (() => {
     return parse(data.toString());
   }
 
+  t.cc = (code) => ControlCodes[code];
+
   const parse = (text) => {
     const cc = ControlCodes;
     let parsedText = text.replace(/\r?\n/g, cc['newline']);

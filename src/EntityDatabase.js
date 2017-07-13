@@ -46,11 +46,13 @@ class EntityDatabase {
 
   // --------------------------------------------------------------------
   //  private helper to search db by entity's full name or partial name
+  //   takes an optional filter function
   // --------------------------------------------------------------------
-  _findByName(name, matchFuncName) {
+  _findByName(name, matchFuncName, filterFn = null) {
     let result = false;
     for (let entity of this.map.values()) {
-      if (entity[matchFuncName].bind(entity, name)()) {
+      if (entity[matchFuncName].bind(entity, name)() &&
+          (filterFn === null || filterFn(entity))) {
         result = entity;
         break;
       }

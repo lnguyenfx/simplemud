@@ -25,4 +25,11 @@ describe("Telnet", () => {
     expect(parsedText).to.equal(expectedText);
   });
 
+  it('should properly return control codes', () => {
+    expect(telnet.cc('newline')).to.equal("\r\n\x1B[0m");
+    expect(telnet.cc('red')).to.equal("\x1B[31m");
+    expect(telnet.cc('green')).to.equal("\x1B[32m");
+    expect(telnet.cc('blue')).to.equal("\x1B[34m");
+  });
+
 });
