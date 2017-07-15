@@ -1,5 +1,6 @@
 'use strict';
 
+const { playerDb } = require('./Databases');
 const ConnectionHandler = require('./ConnectionHandler');
 
 // Acceptable states
@@ -35,10 +36,38 @@ class Logon extends ConnectionHandler {
     }
 
     if (this.state === NEWCONNECTION) {
-      this.connection.sendMessage(data); // echo back as test
+      if (data.toLowerCase() === 'new') {
+        this.state = NEWUSER;
+        const msg = "<yellow>Please enter your desired name: </yellow>"
+        this.connection.sendMessage(msg);
+      } else { // existing user
+        const player = playerDb.findByNameFull(data);
+        let msg;
+        if (!player) {
+          this.numErrors++;
+          msg = "<red><bold>Sorry, the user '<white>" +
+                data + "</white>' does not exist" +
+                "<newline/>Please enter your name, or " +
+                "\"new\" if you are new: </bold></red>";
+        } else {
+          this.state = ENTERPASS;
+          this.name = data;
+          this.password = player.password;
+          msg = "<green><bold>Welcome, " +
+                "<white>" + data + "</white><newline/>" +
+                "Please enter your password: </bold></green>";
+        }
+        this.connection.sendMessage(msg);
+      }
+      return;
     }
-  }
 
+    if (this.state === NEWUSER) {
+      return;
+    }
+
+
+  }
 
   _handleMaxErrors() {
     this.connection.sendMessage("Too many incorrect reponses, closing connection...");

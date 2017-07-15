@@ -2,30 +2,28 @@ const { expect } = require('chai');
 const path = require('path');
 
 const { ItemType } = require(path.join(__dirname, '..', 'src', 'Attributes'));
-const ItemDatabase = require(path.join(__dirname, '..', 'src', 'ItemDatabase'));
+const { itemDb } = require(path.join(__dirname, '..', 'src', 'Databases'));
 
 describe("ItemDatabase",() => {
-  const db = new ItemDatabase();
-  db.load();
 
   it("should properly loads all items from file", () => {
-    expect(db.size()).to.equal(35);
+    expect(itemDb.size()).to.equal(35);
   });
 
   it("should find item based on id", () => {
-    const item = db.findById(3);
+    const item = itemDb.findById(3);
     expect(item.name).to.equal("Leather Armor");
     expect(item.type).to.equal(ItemType.ARMOR);
   });
 
   it("should find full-match of item's name", () => {
-    const item = db.findByNameFull("Rapier");
+    const item = itemDb.findByNameFull("Rapier");
     expect(item.name).to.equal("Rapier");
     expect(item.type).to.equal(ItemType.WEAPON);
   });
 
   it("should find partial-match of item's name", () => {
-    const item = db.findByNamePartial("Sword");
+    const item = itemDb.findByNamePartial("Sword");
     expect(item.name).to.equal("Short Sword");
     expect(item.type).to.equal(ItemType.WEAPON);
   });

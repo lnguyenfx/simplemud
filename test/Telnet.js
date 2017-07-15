@@ -4,32 +4,36 @@ const sinon = require('sinon');
 const path = require('path');
 
 const telnet = require(path.join(__dirname, '..', 'src', 'Telnet'));
+const cc = telnet.cc;
 
 describe("Telnet", () => {
-  it('should correctly translate for single line', () => {
+  it('should correctly translates for single line', () => {
     const text = "This is <bold><cyan>cyan</cyan></bold>.<newline/>";
     const parsedText = telnet.translate(text);
-    expect(parsedText).to.equal("This is \x1B[1m\x1B[36mcyan\x1B[0m\x1B[0m.\r\n\x1B[0m");
-  });
-
-  it('should correctly translate for multiple lines', () => {
-    const text = "This is <yellow>yellow</yellow>.\n" +
-                 "This is <bold><blue>blue and bold</blue></bold>.\n" +
-                 "This is <green>green</green>.\n" +
-                 "This is <invalid code> and </should> not <be/> translated.\n";
-    const parsedText = telnet.translate(text);
-    const expectedText = "This is \x1B[33myellow\x1B[0m.\r\n\x1B[0m" +
-                         "This is \x1B[1m\x1B[34mblue and bold\x1B[0m\x1B[0m.\r\n\x1B[0m" +
-                         "This is \x1B[32mgreen\x1B[0m.\r\n\x1B[0m" +
-                         "This is <invalid code> and </should> not <be/> translated.\r\n\x1B[0m";
+    const expectedText = "This is " + cc('bold') + cc('cyan') + "cyan" +
+                         cc('reset') + cc('bold') + cc('reset') +
+                         '.' + cc('newline');
     expect(parsedText).to.equal(expectedText);
   });
 
-  it('should properly return control codes', () => {
-    expect(telnet.cc('newline')).to.equal("\r\n\x1B[0m");
-    expect(telnet.cc('red')).to.equal("\x1B[31m");
-    expect(telnet.cc('green')).to.equal("\x1B[32m");
-    expect(telnet.cc('blue')).to.equal("\x1B[34m");
+  it('should correctly translates for multiple lines', () => {
+    const text = "This is <yellow>yellow</yellow>.\n" +
+                 "This is <bold><blue>blue and bold</blue></bold>.\r\n"  +
+                 "This is <green>green</green>.\n" +
+                 "This is <invalid code> and </should> not <be/> translated.\n";
+
+    const parsedText = telnet.translate(text);
+    const expectedText = "This is " + cc('yellow') + "yellow" + cc('reset') +
+                         "." + cc('newline') +
+                         "This is " + cc('bold') + cc('blue') +
+                         "blue and bold" + cc('reset') + cc('bold') +
+                         cc('reset') + '.' + cc('newline') +
+                         "This is " + cc('green') + "green" + cc('reset')
+                         + '.' + cc('newline') +
+                         "This is <invalid code> and </should> " +
+                         "not <be/> translated." + cc('newline');
+
+    expect(parsedText).to.equal(expectedText);
   });
 
 });

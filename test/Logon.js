@@ -9,29 +9,37 @@ const Logon = require(path.join(__dirname, '..', 'src', 'Logon'));
 
 describe("Logon", () => {
   const conn = new Connection(new net.Socket(), telnet);
-  const loginHandler = new Logon(conn);
+  const cc = telnet.cc;
+  let loginHandler, stubSendMsg;
 
-  it("should properly display welcome on enter", () => {
+  beforeEach(() => {
+    loginHandler = new Logon(conn);
     const stub = sinon.stub(conn, 'sendMessage');
     stub.callsFake(msg => {
       var args = stub.args;
-      // this will echo whatever they wrote
       if (args.length > 0)
         return telnet.translate(stub.args[stub.callCount - 1][0])
     });
-    const expectedMsg = "\x1B[1m\x1B[31mWeclome to SimpleMUD\x1B[0m\x1B[0m\r\n\x1B[0m" +
+    stubSendMsg = stub;
+  });
+
+  afterEach(() => {
+    conn.sendMessage.restore();
+  })
+
+  it("should properly display welcome on enter", () => {
+    const expectedMsg = cc('bold') + cc('red') + "Weclome to SimpleMUD" +
+                        cc('reset') + cc('bold') + cc('reset') + cc('newline') +
                         "Please enter your name, or \"new\" if you are new: ";
     loginHandler.enter();
 
-    expect(stub.calledOnce).to.be.true;
-    expect(stub.returnValues[0]).to.equal(expectedMsg);
-
-    conn.sendMessage.restore();
+    expect(stubSendMsg.calledOnce).to.be.true;
+    expect(stubSendMsg.returnValues[0]).to.equal(expectedMsg);
   });
 
-  it("should properly disconnect if max invalid response reached", () => {
+  it("should properly disconnects if max invalid response reached", () => {
     const stubCloseConn = sinon.stub(conn, 'closeConnection').callsFake();
-    const stubSendMsg = sinon.stub(conn, 'sendMessage').callsFake();
+
     loginHandler.numErrors = 5;
     loginHandler.handle();
 
@@ -40,6 +48,40 @@ describe("Logon", () => {
 
     loginHandler.numErrors = 0;
     conn.closeConnection.restore();
-    conn.sendMessage.restore();
   });
+
+  it("should properly handles new connection -- 'new'", () => {
+    loginHandler.handle('new');
+    const expectedMsg = cc('yellow') +
+      "Please enter your desired name: " + cc('reset');
+    expect(stubSendMsg.calledOnce).to.be.true;
+    expect(stubSendMsg.returnValues[0]).to.equal(expectedMsg);
+    expect(loginHandler.state).to.equal("NEWUSER");
+  });
+
+  it("should properly handles new connection -- 'non-existing user'", () => {
+    loginHandler.handle('INVALID');
+    let expectedMsg = cc('red') + cc('bold') +
+      "Sorry, the user '" + cc('white') +
+      "INVALID" + cc('reset') + cc('bold') + cc('red') +
+      "' does not exist" + cc('newline') +
+      "Please enter your name, or \"new\" if you are new: " +
+      cc('reset') + cc('red') + cc('reset');
+    expect(stubSendMsg.calledOnce).to.be.true;
+    expect(stubSendMsg.returnValues[0]).to.equal(expectedMsg);
+    expect(loginHandler.state).to.equal("NEWCONNECTION");
+  });
+
+  it("should properly handles new connection -- 'existing user'", () => {
+    loginHandler.handle('test');
+    let expectedMsg = cc('green') + cc('bold') +
+      "Welcome, " + cc('white') + "test" + cc('reset') +
+      cc('bold') + cc('green') + cc('newline') +
+      "Please enter your password: " +
+      cc('reset') + cc('green') + cc('reset');
+    expect(stubSendMsg.calledOnce).to.be.true;
+    expect(stubSendMsg.returnValues[0]).to.equal(expectedMsg);
+    expect(loginHandler.state).to.equal("ENTERPASS");
+  });
+
 });

@@ -48,7 +48,7 @@ class Connection {
   _receivedData(data) {
     buffer += data.toString();
     if (buffer.match(/\n/)) {
-      this._handler().handle(buffer);
+      this._handler().handle(buffer.replace(/[\r\n]*$/,''));
       buffer = '';
     }
 

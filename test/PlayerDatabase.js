@@ -5,16 +5,10 @@ const fs = require('fs');
 const path = require('path');
 
 const { Attribute, PlayerRank } = require(path.join(__dirname, '..', 'src', 'Attributes'));
-const ItemDatabase = require(path.join(__dirname, '..', 'src', 'ItemDatabase'));
-const PlayerDatabase = require(path.join(__dirname, '..', 'src', 'PlayerDatabase'));
+const { itemDb, playerDb } = require(path.join(__dirname, '..', 'src', 'Databases'));
 const Player = require(path.join(__dirname, '..', 'src', 'Player'));
 
 describe("PlayerDatabase",() => {
-  const itemDb = new ItemDatabase();
-  itemDb.load();
-
-  const playerDb = new PlayerDatabase();
-  playerDb.load(itemDb);
 
   it("should properly loads all items from file", () => {
     const folder = path.join(__dirname, '..', 'data', 'players');

@@ -199,7 +199,7 @@ describe("Player",() => {
     const message = "This is a test message.";
     player.active = false;
     player.sendString(message);
-    expect(stub.getCall(0).args[0]).to.equal(message + '\r\n\x1B[0m');
+    expect(stub.getCall(0).args[0]).to.equal(message + '\r\n');
     expect(spy.calledOnce).to.be.false;
 
     player.active = true;
@@ -213,32 +213,35 @@ describe("Player",() => {
   it("should properly prints the status bar", () => {
     const conn = new Connection(new require('net').Socket(), telnet);
     const stub = sinon.stub(conn.socket, 'write').callsFake();
-
+    const cc = telnet.cc;
     const player = new Player();
     player.connection = conn;
 
     const format =
-      "\x1B[37m\x1B[1m[%s%i\x1B[0m\x1B[37m\x1B[1m/%i]\x1B[0m\x1B[0m\r\n\x1B[0m";
+      cc('white') + cc('bold') +
+      "[%s%i" + cc('reset') + cc('bold') +
+      cc('white') + "/%i]" + cc('reset') +
+      cc('white') + cc('reset') + cc('newline');
     const sprintf = require('util').format.bind(player, format);
 
     // Red Health
     player.setHitPoints(3);
     player.printStatbar();
-    let expected = sprintf(telnet.cc('red'), player.hitPoints,
+    let expected = sprintf(cc('red'), player.hitPoints,
                            player.GetAttr(Attribute.MAXHITPOINTS))
     expect(stub.getCall(0).args[0]).to.equal(expected);
 
     // Yellow Health
     player.setHitPoints(5);
     player.printStatbar();
-    expected = sprintf(telnet.cc('yellow'), player.hitPoints,
+    expected = sprintf(cc('yellow'), player.hitPoints,
                            player.GetAttr(Attribute.MAXHITPOINTS))
     expect(stub.getCall(1).args[0]).to.equal(expected);
 
     // Green Health
     player.setHitPoints(8);
     player.printStatbar();
-    expected = sprintf(telnet.cc('green'), player.hitPoints,
+    expected = sprintf(cc('green'), player.hitPoints,
                            player.GetAttr(Attribute.MAXHITPOINTS))
     expect(stub.getCall(2).args[0]).to.equal(expected);
 

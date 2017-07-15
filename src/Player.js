@@ -258,13 +258,10 @@ class Player extends Entity {
     else if (ratio < 67) color = "yellow";
     else color = "green";
 
-    const statbar =
-      require('util').format(
-        "<%s><%s>[<%s>%i</%s><%s><%s>/%i]</%s></%s>",
-        "white", "bold", color, this.hitPoints,
-        color, "white", "bold", this.GetAttr(Attribute.MAXHITPOINTS),
-        "bold", "white"
-      );
+    const statbar = require('util').format(
+        "<white><bold>[<%s>%i</%s>/%i]</bold></white>",
+        color, this.hitPoints, color,
+        this.GetAttr(Attribute.MAXHITPOINTS));
 
     this.connection.sendMessage(statbar + '\n');
   }
