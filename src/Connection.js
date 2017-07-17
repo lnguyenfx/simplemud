@@ -17,8 +17,8 @@ class Connection {
     this._handler().enter();
   }
 
-  removeHander() {
-    this._handler().leave();
+  removeHandler() {
+    if (this._handler()) this._handler().leave();
     this.handlers.shift();
     if (this._handler()) this._handler().enter();
   }
@@ -32,7 +32,7 @@ class Connection {
     this.handlers = [];
   }
 
-  closeConnection() {
+  close() {
     this.socket.end();
   }
 
@@ -51,7 +51,6 @@ class Connection {
       this._handler().handle(buffer.replace(/[\r\n]*$/,''));
       buffer = '';
     }
-
   }
 
   _connectionClosed() {

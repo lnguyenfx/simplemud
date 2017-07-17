@@ -38,7 +38,7 @@ describe("Connection", () => {
     conn.addHandler(thirdHandler);
     const spySecond = sinon.spy(secondHandler, 'enter')
     const spyThird = sinon.spy(thirdHandler, 'leave');
-    conn.removeHander();
+    conn.removeHandler();
     expect(spySecond.calledOnce).to.be.true;
     expect(spyThird.calledOnce).to.be.true;
     expect(conn.handlers.length).to.be.equal(2);
@@ -78,7 +78,7 @@ describe("Connection", () => {
     });
     const spy = sinon.spy(conn, 'clearHandlers');
 
-    conn.closeConnection();
+    conn.close();
 
     expect(stub.calledOnce).to.be.true;
     expect(spy.calledOnce).to.be.true;

@@ -1,5 +1,6 @@
 const { expect } = require('chai');
 const sinon = require('sinon');
+const fs = require('fs');
 const path = require('path');
 const jsonfile = require('jsonfile');
 
@@ -250,6 +251,19 @@ describe("Player",() => {
   });
 
   it("should properly saves to and loads from JSON file", () => {
+
+    const testUser = 'UnitTestUser101';
+    const dataPath =
+      path.join(__dirname, '..', 'data', 'players',
+                testUser + '.json');
+    before(() => {
+      if (fs.existsSync(dataPath)) fs.unlinkSync(dataPath);
+    });
+
+    after(() => {
+      if (fs.existsSync(dataPath)) fs.unlinkSync(dataPath);
+    });
+
     const player = new Player();
     const weapon = db.findByNameFull("Short Sword");
     player.pickUpItem(weapon);
@@ -260,7 +274,7 @@ describe("Player",() => {
     const potion = db.findByNameFull("Healing Potion");
     player.pickUpItem(potion);
     player.id = 2;
-    player.name = "test";
+    player.name = testUser;
     player.password = "abc";
     player.rank = PlayerRank.REGULAR;
     player.statPoints = 10;
@@ -282,13 +296,12 @@ describe("Player",() => {
 
     player.save();
 
-    const file = path.join(__dirname, '..', 'data', 'players', player.name + '.json');
-    const dataObject = jsonfile.readFileSync(file);
+    const dataObject = jsonfile.readFileSync(dataPath);
     const dbPlayer = new Player();
     dbPlayer.load(dataObject, db);
 
     expect(dbPlayer.id).to.equal(2);
-    expect(dbPlayer.name).to.equal("test");
+    expect(dbPlayer.name).to.equal(testUser);
     expect(dbPlayer.password).to.equal("abc");
     expect(dbPlayer.rank).to.equal(PlayerRank.REGULAR);
     expect(dbPlayer.statPoints).to.equal(10);
