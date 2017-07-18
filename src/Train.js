@@ -5,10 +5,8 @@ const ConnectionHandler = require('./ConnectionHandler');
 const { PlayerRank } = require('./Attributes');
 const Player = require('./Player');
 
-const isRunning = false;
-
 // Game Handler class
-class Game extends ConnectionHandler {
+class Train extends ConnectionHandler {
 
   constructor(connection, player) {
     super(connection);
@@ -24,4 +22,4 @@ class Game extends ConnectionHandler {
 
 }
 
-module.exports = Game;
+module.exports = Train;

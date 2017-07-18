@@ -6,7 +6,7 @@ const jsonfile = require('jsonfile');
 const EntityDatabase = require('./EntityDatabase');
 const Player = require('./Player');
 
-const file = path.join(__dirname, '..', 'data', 'items.json');
+const dataPath = path.join(__dirname, '..', 'data', 'players');
 
 class PlayerDatabase extends EntityDatabase {
 
@@ -14,15 +14,23 @@ class PlayerDatabase extends EntityDatabase {
     super();
   }
 
-  // save method is not needed
-  // because we don't use 'players.txt' to keep
-  // tracks of all players, we are reading players
-  // directly from data/players/ directory
+  save() {
+    const file = path.join(dataPath, '_players.json');
+    const dataArray = [];
+    for (let key of this.map.keys()) {
+      const player = this.map.get(key);
+      dataArray.push(player.name);
+      player.id = key;
+      this.savePlayer(player);
+    }
+    jsonfile.writeFileSync(file, dataArray, {spaces: 2});
+    return true;
+  }
 
   load(itemDb) {
-    const folder = path.join(__dirname, '..', 'data', 'players');
-    fs.readdirSync(folder).forEach(file => {
-      const playerName = file.replace('.json', '');
+    const file = path.join(dataPath, '_players.json');
+    const dataArray = jsonfile.readFileSync(file);
+    dataArray.forEach(playerName => {
       this.loadPlayer(playerName, itemDb);
     });
     return true;
@@ -33,11 +41,21 @@ class PlayerDatabase extends EntityDatabase {
     if (this.hasNameFull(player.name)) return false;
 
     this.add(player);
-    this.savePlayer(player);
+    this.save();
+    return true;
+  }
+
+  removePlayer(player) {
+    if (!this.hasId(player.id)) return false;
+    const file = path.join(dataPath, player.name + '.json');
+    this.map.delete(player.id);
+    this.save();
+    if (fs.existsSync(file)) fs.unlinkSync(file);
+    return true;
   }
 
   loadPlayer(playerName, itemDb) {
-    const file = path.join(__dirname, '..', 'data', 'players', playerName + '.json');
+    const file = path.join(dataPath, playerName + '.json');
     const dataObject = jsonfile.readFileSync(file);
     const dbPlayer = new Player();
     dbPlayer.load(dataObject, itemDb);

@@ -18,12 +18,11 @@ const MAX_NUM_ERRORS = 5; // max invalid password entries before disconnect
 class Logon extends ConnectionHandler {
 
   constructor(connection) {
-    super();
-    this.connection = connection;
+    super(connection);
     this.state = NEWCONNECTION;
     this.numErrors = 0;// how many times an invalid answer has been entered
     this.name = null;
-    this.pass = null;
+    this.password = null;
   }
 
   enter() {

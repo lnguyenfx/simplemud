@@ -3,7 +3,9 @@
 // Base Handler class for all handlers to extend
 class ConnectionHandler {
 
-  constructor() {}
+  constructor(connection) {
+    this.connection = connection;
+  }
 
   handle(data) {}
 

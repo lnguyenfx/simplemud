@@ -19,11 +19,13 @@ describe("Logon", () => {
     path.join(__dirname, '..', 'data',
               'players', testUser + '.json');
   before(() => {
-    if (fs.existsSync(dataPath)) fs.unlinkSync(dataPath);
+    const player = playerDb.findByNameFull(testUser);
+    if (player) playerDb.removePlayer(player);
   });
 
   after(() => {
-    if (fs.existsSync(dataPath)) fs.unlinkSync(dataPath);
+    const player = playerDb.findByNameFull(testUser);
+    if (player) playerDb.removePlayer(player);
   });
 
   const cc = telnet.cc;

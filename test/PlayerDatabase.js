@@ -2,6 +2,7 @@ const { expect } = require('chai');
 const sinon = require('sinon');
 
 const fs = require('fs');
+const jsonfile = require('jsonfile');
 const path = require('path');
 
 const { Attribute, PlayerRank } = require(path.join(__dirname, '..', 'src', 'Attributes'));
@@ -10,22 +11,53 @@ const Player = require(path.join(__dirname, '..', 'src', 'Player'));
 
 describe("PlayerDatabase",() => {
 
+  const dataPath = path.join(__dirname, '..', 'data', 'players');
+
   it("should properly loads all items from file", () => {
-    const folder = path.join(__dirname, '..', 'data', 'players');
-    const expectedSize = fs.readdirSync(folder).reduce(sum => sum + 1, 0);
+    const dataArray = jsonfile.readFileSync(
+      path.join(dataPath, '_players.json'));
+    const expectedSize = dataArray.length;
     expect(playerDb.size()).to.equal(expectedSize);
     expect(playerDb.findByNameFull("admin").name).to.equal("admin");
     expect(playerDb.findByNameFull("test").name).to.equal("test");
     expect(playerDb.lastId()).to.equal(playerDb.size());
   });
 
+
   it("should not add existing players in database", () => {
-    const folder = path.join(__dirname, '..', 'data', 'players');
-    const expectedSize = fs.readdirSync(folder).reduce(sum => sum + 1, 0);
+    const dataArray = jsonfile.readFileSync(
+      path.join(dataPath, '_players.json'));
+    const expectedSize = dataArray.length;
     expect(playerDb.size()).to.equal(expectedSize);
     const player = playerDb.findByNameFull("test");
     playerDb.addPlayer(player);
     expect(playerDb.size()).to.equal(expectedSize);
+  });
+
+  it("should properly adds/removes player", () => {
+    const testUser = 'UnitTestUser103';
+    const testPass = "validPassword";
+    const file = path.join(dataPath, testUser + '.json');
+    const sizeBeforeAdd = playerDb.size();
+    const getDataArray = () => {
+      return jsonfile.readFileSync(
+        path.join(dataPath, '_players.json'));
+    };
+    const player = new Player();
+    player.name = testUser;
+    player.password = testPass;
+    expect(fs.existsSync(file)).to.be.false;
+    expect(getDataArray().indexOf(testUser)).to.equal(-1);
+
+    playerDb.addPlayer(player);
+    expect(fs.existsSync(file)).to.be.true;
+    expect(playerDb.size()).to.equal(sizeBeforeAdd + 1);
+    expect(getDataArray().indexOf(testUser)).to.not.equal(-1);
+
+    playerDb.removePlayer(player);
+    expect(fs.existsSync(file)).to.be.false;
+    expect(playerDb.size()).to.equal(sizeBeforeAdd);
+    expect(getDataArray().indexOf(testUser)).to.equal(-1);
   });
 
   it("should properly logs out players", () => {
