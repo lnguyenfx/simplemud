@@ -13,6 +13,8 @@ class ConnectionHandler {
 
   leave() {}
 
+  hungup() {}
+
 }
 
 module.exports = ConnectionHandler;

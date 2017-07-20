@@ -24,7 +24,11 @@ class Connection {
   }
 
   sendMessage(msg) {
-    this.socket.write(this.protocol.translate(msg));
+    try {
+      this.socket.write(this.protocol.translate(msg));
+    } catch(err) {
+      if (this._handler()) this._handler().hungup();
+    }
   }
 
   clearHandlers() {

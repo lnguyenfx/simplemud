@@ -17,10 +17,11 @@ class PlayerDatabase extends EntityDatabase {
   save() {
     const file = path.join(dataPath, '_players.json');
     const dataArray = [];
+    let index = 0;
     for (let key of this.map.keys()) {
       const player = this.map.get(key);
       dataArray.push(player.name);
-      player.id = key;
+      player.id = ++index;
       this.savePlayer(player);
     }
     jsonfile.writeFileSync(file, dataArray, {spaces: 2});
