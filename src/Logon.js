@@ -148,7 +148,7 @@ class Logon extends ConnectionHandler {
       this.connection.clearHandlers();
     }
 
-    player.isNewbie = isNewbie;
+    player.newbie = isNewbie;
 
     // record the user's new connection
     player.connection = this.connection;

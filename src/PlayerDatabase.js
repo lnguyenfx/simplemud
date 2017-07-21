@@ -69,6 +69,7 @@ class PlayerDatabase extends EntityDatabase {
 
   logout(playerId) {
     const player = this.findById(playerId);
+    if (!player) return false;
     player.connection = 0;
     player.loggedIn = false;
     player.active = false;

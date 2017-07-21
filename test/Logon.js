@@ -182,7 +182,7 @@ describe("Logon", () => {
       expect(conn._handler()).to.equal(loginHandler);
       loginHandler.name = testUser;
       loginHandler.goToGame(true);
-      expect(player.isNewbie).to.be.true;
+      expect(player.newbie).to.be.true;
       expect(player.connection).to.equal(conn);
       expect(conn._handler()).to.be.an.instanceof(Game);
       expect(stubConnClose.calledOnce).to.be.false;
@@ -200,7 +200,7 @@ describe("Logon", () => {
       loginHandler.goToGame(false);
       player.loggedIn = true;
       loginHandler.goToGame(false);
-      expect(player.isNewbie).to.be.false;
+      expect(player.newbie).to.be.false;
       expect(player.connection).to.equal(conn);
       expect(conn._handler()).to.be.an.instanceof(Game);
       expect(stubConnClose.calledOnce).to.be.true;
