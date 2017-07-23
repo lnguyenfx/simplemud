@@ -178,6 +178,7 @@ describe("Logon", () => {
       const stubConnClose =
         sinon.stub(conn, 'close').callsFake();
       const player = playerDb.findByNameFull(testUser);
+      player.loggedIn = false;
       conn.addHandler(loginHandler);
       expect(conn._handler()).to.equal(loginHandler);
       loginHandler.name = testUser;
@@ -197,7 +198,6 @@ describe("Logon", () => {
       conn.addHandler(loginHandler);
       expect(conn._handler()).to.equal(loginHandler);
       loginHandler.name = testUser;
-      loginHandler.goToGame(false);
       player.loggedIn = true;
       loginHandler.goToGame(false);
       expect(player.newbie).to.be.false;

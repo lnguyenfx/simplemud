@@ -51,7 +51,7 @@ const isSelfClosing = (code) => {
 
 const TelnetParser = {
   onopentag: function(tag, attribs){
-    parsedText += isValidCode(tag) ? cc[tag] : 'INVALID';
+    parsedText += cc[tag];
     if (isSelfClosing(tag)) return;
     const node = new Tree.Node(null, tag);
     if (depth === 0) {
@@ -91,7 +91,7 @@ const TelnetParser = {
 
 const sanitize = (text) => { // sanitize invalid codes
   let result = text.replace(/\r?\n/g, "<newline/>");
-  const matches = text.match(/<\/?([\w\s]+)\/?>/g); // looking for <code>, </code>, and <code/>
+  const matches = text.match(/<\/?([\w'\/\s]+)\/?>/g); // looking for <code>, </code>, and <code/>
   if (matches instanceof Array) {
     matches.forEach(code => {
       const strippedCode = code.replace(/[<\/>]/g, '');

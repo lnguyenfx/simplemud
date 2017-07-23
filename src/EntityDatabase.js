@@ -7,7 +7,9 @@ class EntityDatabase {
   }
 
   add(entity) {
-    this.map.set(this.findOpenId(), entity);
+    const id = this.findOpenId();
+    entity.id = id;
+    this.map.set(id, entity);
   }
 
   get(id) {
