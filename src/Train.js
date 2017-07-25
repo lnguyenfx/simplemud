@@ -33,13 +33,15 @@ class Train extends ConnectionHandler {
       this.connection.removeHandler();
       return;
     }
-    const n = parseInt(data[0]);
+    const n = parseInt(data);
     if (n >= 1 && n <= 3) {
       if (p.statPoints > 0) {
         p.statPoints--;
         p.addToBaseAttr(Attribute.get(n - 1), 1);
       }
     }
+
+    this.printStats(true);
   }
 
   printStats(clear) {

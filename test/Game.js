@@ -5,7 +5,7 @@ const sinon = require('sinon');
 const path = require('path');
 
 const Connection = require(path.join(__dirname, '..', 'src', 'Connection'));
-const { playerDb } = require(path.join(__dirname, '..', 'src', 'Databases'));
+const { itemDb, playerDb } = require(path.join(__dirname, '..', 'src', 'Databases'));
 const { Attribute, PlayerRank } = require(path.join(__dirname, '..', 'src', 'Attributes'));
 const telnet = require(path.join(__dirname, '..', 'src', 'Telnet'));
 const Player = require(path.join(__dirname, '..', 'src', 'Player'));
@@ -19,6 +19,7 @@ const tostring = (str, width = 0) => {
 
 describe("Game", () => {
   const conn = new Connection(new net.Socket(), telnet);
+  const cc = telnet.cc;
   let game, player, stubSocketSend;
   beforeEach(() => {
     player = new Player();
@@ -30,8 +31,30 @@ describe("Game", () => {
     conn.socket.write.restore();
   });
 
-  it("should properly return whether game is running", () => {
+  it("should properly returns whether game is running", () => {
     expect(Game.isRunning()).to.be.false;
+  });
+
+  it("should properly go to Train handler", () => {
+    const stubAddHandler =
+      sinon.stub(conn, "addHandler").callsFake();
+    player.name = "Test";
+    player.connection = conn;
+    player.loggedIn = true;
+    player.active = true;
+    playerDb.add(player);
+
+    const expectedText = cc('red') + cc('bold') +
+      player.name + " leaves to edit stats" + cc('reset')+
+      cc('red') + cc('reset') + cc('newline');
+
+    game.goToTrain();
+    expect(stubAddHandler.calledOnce).to.be.true;
+    expect(stubSocketSend.getCall(0).args[0]).to.
+      equal(expectedText);
+
+    playerDb.map.delete(player.id);
+    conn.addHandler.restore();
   });
 
   const testSendToPlayers = (sendCommand, filter) => {
@@ -83,7 +106,6 @@ describe("Game", () => {
   });
 
   it("should properly sends whispers", () => {
-    const cc = telnet.cc;
     const stub = stubSocketSend;
     const p = player;
     const recipient = new Player();
@@ -112,7 +134,6 @@ describe("Game", () => {
   });
 
   it ("should properly displays who list", () => {
-    const cc = telnet.cc;
     const originalPlayerMap = playerDb.map;
     playerDb.map = new Map();
     expect(playerDb.size()).to.equal(0);
@@ -175,7 +196,6 @@ describe("Game", () => {
   });
 
   it ("should properly displays help", () => {
-    const cc = telnet.cc;
     const help = cc('white') + cc('bold') +
         "--------------------------------- Command List ---------------------------------\r\n" +
         " /                          - Repeats your last command exactly.\r\n" +
@@ -226,7 +246,6 @@ describe("Game", () => {
   });
 
   it("should properly prints player's experience", () => {
-    const cc = telnet.cc;
     const p = game.player;
     p.level = 2;
     p.experience = 25;
@@ -241,7 +260,6 @@ describe("Game", () => {
   });
 
   it("should properly prints player's stats", () => {
-    const cc = telnet.cc;
     const p = game.player;
     const attr = p.GetAttr.bind(p);
     p.level = 2;
@@ -276,6 +294,47 @@ describe("Game", () => {
     cc('reset') + cc('white') + cc('reset');
     expect(telnet.translate(game.printStats())).to.
       equal(expectedText)
+  });
+
+  it("should properly prints player's inventory", () => {
+    const p = player;
+    const weapon = itemDb.findByNameFull("Short Sword");
+    const armor = itemDb.findByNameFull("Leather Armor");
+    const potion = itemDb.findByNameFull("Healing Potion");
+    p.pickUpItem(weapon);
+    p.pickUpItem(armor);
+    p.pickUpItem(potion);
+    p.money = 123;
+    expect(p.items).to.equal(3);
+
+    let expectedText = cc('white') + cc('bold') +
+      "-------------------------------- Your Inventory --------------------------------" +
+      cc('newline') + " Items:  " + weapon.name + ", " +
+      armor.name + ", " + potion.name + cc('newline') +
+      " Weapon: NONE!" + cc('newline') + " Armor: NONE!" +
+      cc('newline') + " Money:    $" + p.money + cc('newline') +
+      "--------------------------------------------------------------------------------" +
+      cc('reset') + cc('white') + cc('reset');
+
+    expect(telnet.translate(game.printInventory())).to.
+      equal(expectedText);
+
+    p.useWeapon(0);
+    p.useArmor(1);
+
+    expectedText = cc('white') + cc('bold') +
+    "-------------------------------- Your Inventory --------------------------------" +
+    cc('newline') + " Items:  " + weapon.name + ", " +
+    armor.name + ", " + potion.name + cc('newline') +
+    " Weapon: " + weapon.name + cc('newline') +
+    " Armor: " + armor.name + cc('newline') +
+    " Money:    $" + p.money + cc('newline') +
+    "--------------------------------------------------------------------------------" +
+    cc('reset') + cc('white') + cc('reset');
+
+    expect(telnet.translate(game.printInventory())).to.
+    equal(expectedText);
+
   });
 
 });

@@ -4,6 +4,7 @@ const { playerDb } = require('./Databases');
 const ConnectionHandler = require('./ConnectionHandler');
 const { Attribute, PlayerRank } = require('./Attributes');
 const Player = require('./Player');
+const Train = require('./Train');
 
 const tostring = (str, width = 0) => {
   str = str.toString();
@@ -42,7 +43,10 @@ class Game extends ConnectionHandler {
   }
 
   goToTrain() {
-
+    const conn = this.connection;
+    const p = this.player;
+    Game.logoutMessage(p.name + " leaves to edit stats");
+    conn.addHandler(new Train(conn, p));
   }
 
   static sendGlobal(msg) {
@@ -211,6 +215,41 @@ class Game extends ConnectionHandler {
     "--------------------------------------------------------------------------------" +
     "</bold></white>";
     return str;
+  }
+
+  printInventory() {
+    const p = this.player;
+
+    let itemList = "<white><bold>" +
+        "-------------------------------- Your Inventory --------------------------------\r\n" +
+        " Items:  ";
+
+    // Inventory
+    p.inventory.forEach((item) => {
+      itemList += item.name + ", ";
+    });
+
+    // chop off the extraneous comma, and add a newline.
+    itemList = itemList.slice(0, -2);
+    itemList += "\r\n";
+
+    // Weapon/Armor
+    itemList += " Weapon: ";
+    if (p.Weapon() === 0) itemList += "NONE!";
+    else itemList += p.Weapon().name;
+
+    itemList += "\r\n Armor: ";
+    if (p.Armor() === 0) itemList += "NONE!";
+    else itemList += p.Armor().name;
+
+    // Money
+    itemList += "\r\n Money:    $" + p.money;
+
+    itemList +=
+        "\r\n--------------------------------------------------------------------------------" +
+        "</bold></white>";
+
+    return itemList;
   }
 
 }
