@@ -216,7 +216,7 @@ class Player extends Entity {
       let index = -1;
       for (let i = 0; i < this.inventory.length; i++) {
         const item = this.inventory[i];
-        if (item[matchFuncName].bind(item, name)()) {
+        if (item && item[matchFuncName].bind(item, name)()) {
           index = i;
           break;
         }

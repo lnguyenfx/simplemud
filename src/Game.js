@@ -2,7 +2,7 @@
 
 const { playerDb } = require('./Databases');
 const ConnectionHandler = require('./ConnectionHandler');
-const { Attribute, PlayerRank } = require('./Attributes');
+const { Attribute, PlayerRank, ItemType } = require('./Attributes');
 const Player = require('./Player');
 const Train = require('./Train');
 
@@ -47,6 +47,55 @@ class Game extends ConnectionHandler {
     const p = this.player;
     Game.logoutMessage(p.name + " leaves to edit stats");
     conn.addHandler(new Train(conn, p));
+  }
+
+  useItem(name) {
+    const p = this.player;
+    const index = p.getItemIndex(name);
+
+    if (index === -1) {
+      p.sendString("<red><bold>Could not find that item!</bold></red>");
+      return false;
+    }
+
+    const item = p.inventory[index];
+
+    switch(item.type) {
+      case ItemType.WEAPON:
+        p.useWeapon(index);
+        return true;
+      case ItemType.ARMOR:
+        p.useArmor(index);
+        return true;
+      case ItemType.HEALING:
+        const min = item.min;
+        const max = item.max;
+        p.addBonuses(item);
+        p.addHitPoints(Math.floor(Math.random() * (max - min + 1)) + min);
+        p.dropItem(index);
+        return true;
+    }
+
+    return false;
+  }
+
+  removeItem(typeName) {
+    const p = this.player;
+
+    typeName = typeName.toLowerCase();
+
+    if (typeName === "weapon" && p.Weapon() !== 0) {
+      p.removeWeapon();
+      return true;
+    }
+
+    if (typeName === "armor" && p.Armor() !== 0) {
+      p.removeArmor();
+      return true;
+    }
+
+    p.sendString("<red><bold>Could not Remove item!</bold></red>");
+    return false;
   }
 
   static sendGlobal(msg) {

@@ -24,6 +24,7 @@ describe("Game", () => {
   beforeEach(() => {
     player = new Player();
     game = new Game(conn, player);
+    player.connection = conn;
     stubSocketSend = sinon.stub(conn.socket, 'write').callsFake();
   });
 
@@ -115,7 +116,7 @@ describe("Game", () => {
       cc('red') + cc('reset') + cc('newline');
     p.name = "Bob";
     recipient.name = "Sue";
-    p.connection = recipient.connection = conn;
+    recipient.connection = conn;
     game.whisper(testMsg, "Sue");
     expect(stub.getCall(0).args[0]).to.equal(expectedMsg);
     recipient.active = false;
@@ -335,6 +336,83 @@ describe("Game", () => {
     expect(telnet.translate(game.printInventory())).to.
     equal(expectedText);
 
+  });
+
+  it("should properly uses item from player's inventory", () => {
+    const spy = sinon.spy(game, 'useItem');
+    const p = player;
+    const weapon = itemDb.findByNameFull("Short Sword");
+    const armor = itemDb.findByNameFull("Leather Armor");
+    const potion = itemDb.findByNameFull("Healing Potion");
+
+    const expectedMsg = cc('red') + cc('bold') +
+      "Could not find that item!" + cc('reset') +
+      cc('red') + cc('reset') + cc('newline');
+
+    game.useItem('Invalid Item');
+    expect(spy.returnValues[0]).to.be.false;
+    expect(stubSocketSend.getCall(0).args[0]).to.equal(expectedMsg);
+
+    p.pickUpItem(weapon);
+    p.pickUpItem(armor);
+    p.pickUpItem(potion);
+
+    expect(p.weapon).to.equal(-1);
+    game.useItem(weapon.name);
+    expect(spy.returnValues[1]).to.be.true;
+    expect(p.weapon).to.equal(0);
+
+    expect(p.armor).to.equal(-1);
+    game.useItem(armor.name);
+    expect(spy.returnValues[2]).to.be.true;
+    expect(p.armor).to.equal(1);
+
+    p.hitPoints = 0;
+    expect(p.getItemIndex(potion.name)).to.equal(2);
+    game.useItem(potion.name);
+    expect(spy.returnValues[3]).to.be.true;
+    expect(p.hitPoints).to.be.within(potion.min, potion.max);
+    expect(p.getItemIndex(potion.name)).to.equal(-1);
+
+    game.useItem.restore();
+  });
+
+  it("should properly removes item from player", () => {
+    const spy = sinon.spy(game, 'removeItem');
+    const p = player;
+    const weapon = itemDb.findByNameFull("Short Sword");
+    const armor = itemDb.findByNameFull("Leather Armor");
+    const expectedMsg = cc('red') + cc('bold') +
+      "Could not Remove item!" + cc('reset') +
+      cc('red') + cc('reset') + cc('newline');
+
+    game.removeItem('invalid');
+    expect(spy.returnValues[0]).to.be.false;
+    expect(stubSocketSend.getCall(0).args[0]).to.equal(expectedMsg);
+
+    game.removeItem('weapon');
+    expect(spy.returnValues[1]).to.be.false;
+    expect(stubSocketSend.getCall(1).args[0]).to.equal(expectedMsg);
+
+    game.removeItem('armor');
+    expect(spy.returnValues[2]).to.be.false;
+    expect(stubSocketSend.getCall(2).args[0]).to.equal(expectedMsg);
+
+    p.pickUpItem(weapon);
+    game.useItem(weapon.name);
+    expect(p.Weapon()).to.equal(weapon);
+    game.removeItem('weapon');
+    expect(spy.returnValues[3]).to.be.true;
+    expect(p.Weapon()).to.equal(0);
+
+    p.pickUpItem(armor);
+    game.useItem(armor.name);
+    expect(p.Armor()).to.equal(armor);
+    game.removeItem('armor');
+    expect(spy.returnValues[4]).to.be.true;
+    expect(p.Armor()).to.equal(0);
+
+    game.removeItem.restore();
   });
 
 });
