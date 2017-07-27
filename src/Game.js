@@ -1,16 +1,13 @@
 'use strict';
 
+const Util = require('./Util');
 const { playerDb } = require('./Databases');
 const ConnectionHandler = require('./ConnectionHandler');
 const { Attribute, PlayerRank, ItemType } = require('./Attributes');
 const Player = require('./Player');
 const Train = require('./Train');
 
-const tostring = (str, width = 0) => {
-  str = str.toString();
-  if (str.length >= width) return str;
-  return str + Array(width - str.length + 1).join(' ');
-}
+const tostring = Util.tostring;
 
 const isRunning = false;
 
@@ -39,6 +36,12 @@ class Game extends ConnectionHandler {
   }
 
   handle(data) {
+    const p = this.player;
+
+    // check if the player wants to repeat a command
+    if (data === '/') data = this.lastcommand;
+    else this.lastcommand = data; // if not, record the command.
+
 
   }
 
@@ -71,7 +74,7 @@ class Game extends ConnectionHandler {
         const min = item.min;
         const max = item.max;
         p.addBonuses(item);
-        p.addHitPoints(Math.floor(Math.random() * (max - min + 1)) + min);
+        p.addHitPoints(Util.randomInt(min, max));
         p.dropItem(index);
         return true;
     }

@@ -4,6 +4,7 @@ const { expect } = require('chai');
 const sinon = require('sinon');
 const path = require('path');
 
+const Util = require(path.join(__dirname, '..', 'src', 'Util'));
 const Connection = require(path.join(__dirname, '..', 'src', 'Connection'));
 const { itemDb, playerDb } = require(path.join(__dirname, '..', 'src', 'Databases'));
 const { Attribute, PlayerRank } = require(path.join(__dirname, '..', 'src', 'Attributes'));
@@ -11,11 +12,7 @@ const telnet = require(path.join(__dirname, '..', 'src', 'Telnet'));
 const Player = require(path.join(__dirname, '..', 'src', 'Player'));
 const Game = require(path.join(__dirname, '..', 'src', 'Game'));
 
-const tostring = (str, width = 0) => {
-  str = str.toString();
-  if (str.length >= width) return str;
-  return str + Array(width - str.length + 1).join(' ');
-}
+const tostring = Util.tostring;
 
 describe("Game", () => {
   const conn = new Connection(new net.Socket(), telnet);

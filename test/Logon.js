@@ -21,6 +21,7 @@ describe("Logon", () => {
   before(() => {
     const player = playerDb.findByNameFull(testUser);
     if (player) playerDb.removePlayer(player);
+    player.connection = conn;
   });
 
   after(() => {
@@ -180,14 +181,15 @@ describe("Logon", () => {
       const player = playerDb.findByNameFull(testUser);
       player.loggedIn = false;
       conn.addHandler(loginHandler);
+      sinon.stub(conn, 'addHandler').callsFake();
       expect(conn._handler()).to.equal(loginHandler);
       loginHandler.name = testUser;
       loginHandler.goToGame(true);
       expect(player.newbie).to.be.true;
       expect(player.connection).to.equal(conn);
-      expect(conn._handler()).to.be.an.instanceof(Game);
       expect(stubConnClose.calledOnce).to.be.false;
       conn.clearHandlers();
+      conn.addHandler.restore();
       conn.close.restore();
   });
 
