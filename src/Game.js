@@ -36,13 +36,26 @@ class Game extends ConnectionHandler {
   }
 
   handle(data) {
+    const parseWord = Util.parseWord;
+    const removeWord = Util.removeWord;
     const p = this.player;
 
     // check if the player wants to repeat a command
     if (data === '/') data = this.lastcommand;
     else this.lastcommand = data; // if not, record the command.
 
+    // get the first word and lowercase it.
+    const firstWord = parseWord(data, 0);
 
+    // ------------------------------------------------------------------------
+    //  REGULAR access commands
+    // ------------------------------------------------------------------------
+    if (firstWord === "chat" || firstWord === ':') {
+      const text = removeWord(data, 0);
+      Game.sendGame(
+        `<white><bold>${p.name} chats: ${text}</bold></white>`);
+      return;
+    }
   }
 
   goToTrain() {

@@ -23,9 +23,11 @@ describe("Game", () => {
     game = new Game(conn, player);
     player.connection = conn;
     stubSocketSend = sinon.stub(conn.socket, 'write').callsFake();
+    playerDb.add(player);
   });
 
   afterEach(() => {
+    playerDb.map.delete(player.id);
     conn.socket.write.restore();
   });
 
@@ -33,14 +35,50 @@ describe("Game", () => {
     expect(Game.isRunning()).to.be.false;
   });
 
+  it("should properly handles chat command", () => {
+    const stub = stubSocketSend;
+    sinon.stub(player, 'printStatbar').callsFake();
+    const p = player;
+    p.active = p.loggedIn = true;
+    let expectedMsg = cc('white') + cc('bold') +
+      `${p.name} chats: Hello there!` +
+      cc('reset') + cc('white') + cc('reset') +
+      cc('newline');
+    game.handle('chat Hello there!');
+    expect(stub.getCall(0).args[0]).to.equal(expectedMsg);
+    game.handle(': Hello there!');
+    expect(stub.getCall(1).args[0]).to.equal(expectedMsg);
+    player.printStatbar.restore();
+  });
+
+  it("should properly transitions to enter()", () => {
+    const p = player;
+    const stubGoToTrain = sinon.stub(game, 'goToTrain').callsFake();
+    const expectedMsg = cc('bold') + cc('green') +
+      `${p.name} has entered the realm` +
+      cc('reset') + cc('bold') + cc('reset');
+
+    expect(p.active).to.be.false;
+    expect(p.loggedIn).to.be.false;
+    p.newbie = false;
+    game.enter();
+    expect(p.active).to.be.true;
+    expect(p.loggedIn).to.be.true;
+    expect(stubGoToTrain.calledOnce).to.be.false;
+    p.newbie = true;
+    game.enter();
+    expect(stubGoToTrain.calledOnce).to.be.true;
+
+    game.goToTrain.restore();
+  });
+
   it("should properly go to Train handler", () => {
     const stubAddHandler =
       sinon.stub(conn, "addHandler").callsFake();
-    player.name = "Test";
+    player.name = "TestUser201";
     player.connection = conn;
     player.loggedIn = true;
     player.active = true;
-    playerDb.add(player);
 
     const expectedText = cc('red') + cc('bold') +
       player.name + " leaves to edit stats" + cc('reset')+
@@ -51,7 +89,6 @@ describe("Game", () => {
     expect(stubSocketSend.getCall(0).args[0]).to.
       equal(expectedText);
 
-    playerDb.map.delete(player.id);
     conn.addHandler.restore();
   });
 
