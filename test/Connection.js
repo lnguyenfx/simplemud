@@ -71,13 +71,14 @@ describe("Connection", () => {
     expect(conn.handlers.length).to.be.equal(0);
   });
 
-  it("should properly hungs up when cannot send message", () => {
+  it("should properly close connection when cannot send message", () => {
     const handler = new Handler();
-    const spy = sinon.spy(handler, 'hungup');
+    const stubConnClose = sinon.stub(conn, 'close').callsFake();
     conn.addHandler(handler);
-    expect(spy.calledOnce).to.be.false;
+    expect(stubConnClose.calledOnce).to.be.false;
     conn.sendMessage("test");
-    expect(spy.calledOnce).to.be.true;
+    expect(stubConnClose.calledOnce).to.be.true;
+    conn.close.restore();
   });
 
   it("should properly handles disconnect", () => {

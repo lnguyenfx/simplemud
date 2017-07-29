@@ -140,7 +140,8 @@ describe("Logon", () => {
     loginHandler.handle("bad password");
     expect(stubSendMsg.returnValues[4]).to.equal(expectedMsg);
     expectedMsg = cc('green') + "Thank you! " +
-      "You are now entering the realm..." + cc('reset');
+      "You are now entering the realm..." +
+      cc('reset') + cc('newline');
     loginHandler.handle(testPass);
     expect(stubSendMsg.returnValues[5]).to.equal(expectedMsg);
     expect(fs.existsSync(dataPath)).to.be.true;
@@ -168,7 +169,8 @@ describe("Logon", () => {
     loginHandler.handle("bad password");
     expect(stubSendMsg.returnValues[1]).to.equal(expectedMsg);
     expectedMsg = cc('green') + "Thank you! " +
-      "You are now entering the realm..." + cc('reset');
+      "You are now entering the realm..." +
+      cc('reset') + cc('newline');
     loginHandler.handle(testPass);
     expect(stubSendMsg.returnValues[2]).to.equal(expectedMsg);
     expect(stubGoToGame.getCall(0).args[0]).to.be.false;

@@ -101,7 +101,7 @@ class Logon extends ConnectionHandler {
         return;
       }
       msg = "<green>Thank you! " +
-            "You are now entering the realm...</green>";
+            "You are now entering the realm...</green><newline/>";
       this.connection.sendMessage(msg);
 
       const player = new Player();
@@ -127,7 +127,7 @@ class Logon extends ConnectionHandler {
       let msg;
       if (this.password === data) {
         msg = "<green>Thank you! " +
-          "You are now entering the realm...</green>";
+          "You are now entering the realm...</green><newline/>";
         this.connection.sendMessage(msg);
         this.goToGame(false);
       } else {

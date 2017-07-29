@@ -35,20 +35,305 @@ describe("Game", () => {
     expect(Game.isRunning()).to.be.false;
   });
 
-  it("should properly handles chat command", () => {
-    const stub = stubSocketSend;
-    sinon.stub(player, 'printStatbar').callsFake();
-    const p = player;
-    p.active = p.loggedIn = true;
-    let expectedMsg = cc('white') + cc('bold') +
+  it("should properly set flag of whether game is running", () => {
+    Game.setIsRunning(false);
+    expect(Game.isRunning()).to.be.false;
+    Game.setIsRunning(true);
+    expect(Game.isRunning()).to.be.true;
+    Game.setIsRunning(false);
+    expect(Game.isRunning()).to.be.false;
+  });
+
+  describe("handle()", () => {
+
+    it("should properly handles 'chat' commands", () => {
+      const stub = stubSocketSend;
+      sinon.stub(player, 'printStatbar').callsFake();
+      const p = player;
+      p.active = p.loggedIn = true;
+      let expectedMsg = cc('white') + cc('bold') +
       `${p.name} chats: Hello there!` +
       cc('reset') + cc('white') + cc('reset') +
       cc('newline');
-    game.handle('chat Hello there!');
-    expect(stub.getCall(0).args[0]).to.equal(expectedMsg);
-    game.handle(': Hello there!');
-    expect(stub.getCall(1).args[0]).to.equal(expectedMsg);
-    player.printStatbar.restore();
+      game.handle('chat Hello there!');
+      expect(stub.getCall(0).args[0]).to.equal(expectedMsg);
+      game.handle(': Hello there!');
+      expect(stub.getCall(1).args[0]).to.equal(expectedMsg);
+      player.printStatbar.restore();
+    });
+
+    it("should properly handles 'experience' command", () => {
+      const spyPrintExp = sinon.spy(game, 'printExperience');
+      const spySendStr = sinon.spy(player, 'sendString');
+      game.handle("experience");
+      expect(spyPrintExp.calledOnce).to.be.true;
+      expect(spySendStr.calledOnce).to.be.true;
+      player.sendString.restore();
+      game.printExperience.restore();
+    });
+
+    it("should properly handles 'exp' command", () => {
+      const spyPrintExp = sinon.spy(game, 'printExperience');
+      const spySendStr = sinon.spy(player, 'sendString');
+      game.handle("exp");
+      expect(spyPrintExp.calledOnce).to.be.true;
+      expect(spySendStr.calledOnce).to.be.true;
+      player.sendString.restore();
+      game.printExperience.restore();
+    });
+
+    it("should properly handles 'inventory' command", () => {
+      const spyPrintInv = sinon.spy(game, 'printInventory');
+      const spySendStr = sinon.spy(player, 'sendString');
+      game.handle("inventory");
+      expect(spyPrintInv.calledOnce).to.be.true;
+      expect(spySendStr.calledOnce).to.be.true;
+      player.sendString.restore();
+      game.printInventory.restore();
+    });
+
+    it("should properly handles 'inv' command", () => {
+      const spyPrintInv = sinon.spy(game, 'printInventory');
+      const spySendStr = sinon.spy(player, 'sendString');
+      game.handle("inv");
+      expect(spyPrintInv.calledOnce).to.be.true;
+      expect(spySendStr.calledOnce).to.be.true;
+      player.sendString.restore();
+      game.printInventory.restore();
+    });
+
+    it("should properly handles 'quit' command", () => {
+      const stubCloseConn = sinon.stub(conn, 'close').callsFake();
+      const stubLogoutMsg = sinon.stub(Game, 'logoutMessage').callsFake();
+      const expectedMsg = player.name + " has left the realm.";
+      game.handle('quit');
+      expect(stubCloseConn.calledOnce).to.be.true;
+      expect(stubLogoutMsg.getCall(0).args[0]).to.equal(expectedMsg);
+      Game.logoutMessage.restore();
+      conn.close.restore();
+    });
+
+    it("should properly handles 'remove' command", () => {
+      const spy = sinon.spy(game, 'removeItem');
+      game.handle('remove armor');
+      expect(spy.calledOnce).to.be.true;
+      expect(spy.getCall(0).args[0]).to.equal("armor");
+      game.removeItem.restore();
+    });
+
+    it("should properly handles 'stats' command", () => {
+      const spy = sinon.spy(game, 'printStats');
+      game.handle('stats');
+      expect(spy.calledOnce).to.be.true;
+      game.printStats.restore();
+    });
+
+    it("should properly handles 'st' command", () => {
+      const spy = sinon.spy(game, 'printStats');
+      game.handle('st');
+      expect(spy.calledOnce).to.be.true;
+      game.printStats.restore();
+    });
+
+    it("should properly handles 'time' command", () => {
+      const expectedMsg = cc('bold') + cc('cyan') +
+        "The current system time is: " + Util.timeStamp() +
+        " on " + Util.dateStamp() + cc('newline') +
+        "The system has been up for: " + Util.upTime() +
+        "." + cc('reset') + cc('bold') + cc('reset') +
+        cc('newline');
+      game.handle('time');
+      expect(stubSocketSend.getCall(0).args[0]).to.be.
+        equal(expectedMsg);
+    });
+
+    it("should properly handles 'use' command", () => {
+      const spy = sinon.spy(game, 'useItem');
+      game.handle('use high potion');
+      expect(spy.calledOnce).to.be.true;
+      expect(spy.getCall(0).args[0]).to.equal("high potion");
+      game.useItem.restore();
+    });
+
+    it("should properly handles 'whisper' command", () => {
+      const spy = sinon.spy(game, 'whisper');
+      game.handle('whisper test Hello there!');
+      expect(spy.calledOnce).to.be.true;
+      expect(spy.getCall(0).args).to.
+        have.same.members(['Hello there!', 'test']);
+      game.whisper.restore();
+    });
+
+    it("should properly handles 'who' command", () => {
+      const spy = sinon.spy(Game, 'whoList');
+      game.handle('who');
+      expect(spy.calledOnce).to.be.true;
+      expect(spy.getCall(0).args[0]).to.equal('');
+      game.handle('who all');
+      expect(spy.getCall(1).args[0]).to.equal('all');
+      Game.whoList.restore();
+    });
+
+    it("should properly handles 'kick' command", () => {
+      const stubLogoutMsg = sinon.stub(Game, 'logoutMessage').callsFake();
+      const stubConnClose = sinon.stub(conn, 'close').callsFake();
+      const spyFindLoggedIn = sinon.spy(playerDb, 'findLoggedIn');
+      const spySendStr = sinon.spy(player, 'sendString');
+      const admin = new Player();
+      admin.name = "TestAdmin";
+      admin.rank = PlayerRank.ADMIN;
+      admin.loggedIn = true;
+      playerDb.add(admin);
+
+      const testPlayer = new Player();
+      testPlayer.name = "TestPlayer";
+      testPlayer.rank = PlayerRank.REGULAR;
+      testPlayer.loggedIn = true;
+      testPlayer.connection = conn;
+      playerDb.add(testPlayer);
+
+      game.handle("kick someuser");
+      expect(spyFindLoggedIn.calledOnce).to.be.false; // no priviledge
+
+      player.rank = PlayerRank.GOD;
+      game.handle("kick someuser");
+      expect(spySendStr.getCall(0).args[0]).to.
+        have.string("Player could not be found");
+
+      game.handle("kick ");
+      expect(spySendStr.getCall(1).args[0]).to.
+        have.string("Usage: kick <name>");
+
+      game.handle("kick " + testPlayer.name);
+      expect(stubConnClose.calledOnce).to.be.true;
+      expect(stubLogoutMsg.getCall(0).args[0]).to.have.
+        string(testPlayer.name + " has been kicked");
+
+      game.handle("kick " + admin.name);
+      expect(spySendStr.getCall(2).args[0]).to.
+        have.string("You can't kick that player!");
+
+      playerDb.map.delete(testPlayer.id);
+      playerDb.map.delete(admin.id);
+
+      player.sendString.restore();
+      playerDb.findLoggedIn.restore();
+      conn.close.restore();
+      Game.logoutMessage.restore();
+    });
+
+    it("should properly handles 'announce' command", () => {
+      const spy = sinon.spy(Game, 'announce');
+      const p = player;
+      p.rank = PlayerRank.REGULAR;
+      game.handle("announce Test announcement!");
+      expect(spy.calledOnce).to.be.false;
+      p.rank = PlayerRank.GOD;
+      game.handle("announce Test announcement!");
+      expect(spy.calledOnce).to.be.false;
+      p.rank = PlayerRank.ADMIN;
+      game.handle("announce Test announcement!");
+      expect(spy.calledOnce).to.be.true;
+      expect(spy.getCall(0).args[0]).to.
+        equal("Test announcement!");
+      Game.announce.restore();
+    });
+
+    it("should properly handles 'changerank' command", () => {
+      const spySendGame = sinon.spy(Game, 'sendGame');
+      const spySendStr = sinon.spy(player, 'sendString');
+      const spyFindNameFull = sinon.spy(playerDb, 'findByNameFull');
+      const p = player;
+      const testPlayer = new Player();
+      testPlayer.name = "TestPlayer";
+      testPlayer.rank = PlayerRank.REGULAR;
+      playerDb.add(testPlayer);
+
+      p.rank = PlayerRank.REGULAR;
+      game.handle("changerank " + testPlayer.name + " god");
+      expect(spyFindNameFull.calledOnce).to.be.false;
+      p.rank = PlayerRank.GOD;
+      game.handle("changerank " + testPlayer.name + " god");
+      expect(spyFindNameFull.calledOnce).to.be.false;
+      p.rank = PlayerRank.ADMIN;
+      game.handle("changerank " + testPlayer.name + " god");
+      expect(spyFindNameFull.calledOnce).to.be.true
+      expect(spySendGame.getCall(0).args[0]).to.have.
+        string("rank has been changed to: GOD");
+      game.handle("changerank " + testPlayer.name + " Regular");
+      expect(spySendGame.getCall(1).args[0]).to.have.
+        string("rank has been changed to: REGULAR");
+      game.handle("changerank " + testPlayer.name + " ADMIN");
+      expect(spySendGame.getCall(2).args[0]).to.have.
+        string("rank has been changed to: ADMIN");
+
+      game.handle("changerank InvalidPlayer god");
+      expect(spySendStr.getCall(0).args[0]).to.have.
+        string("Could not find user");
+
+      game.handle("changerank " + testPlayer.name);
+      expect(spySendStr.getCall(1).args[0]).to.have.
+        string("Usage: changerank <name> <rank>");
+
+      game.handle("changerank");
+      expect(spySendStr.getCall(2).args[0]).to.have.
+        string("Usage: changerank <name> <rank>");
+
+      playerDb.map.delete(testPlayer.id);
+      playerDb.findByNameFull.restore();
+      player.sendString.restore();
+      Game.sendGame.restore();
+    });
+
+    it("should properly handles 'reload' command", () => {
+      const stubLoadItemDb = sinon.stub(itemDb, 'load').callsFake();
+      const spySendStr = sinon.spy(player, 'sendString');
+      const p = player;
+      p.rank = PlayerRank.REGULAR;
+      game.handle("reload items");
+      expect(spySendStr.calledOnce).to.be.false;
+      p.rank = PlayerRank.GOD;
+      game.handle("reload items");
+      expect(spySendStr.calledOnce).to.be.false;
+      p.rank = PlayerRank.ADMIN;
+      game.handle("reload items");
+      expect(spySendStr.calledOnce).to.be.true;
+      expect(spySendStr.getCall(0).args[0]).to.have.
+        string("Item Database Reloaded!");
+
+      game.handle("reload");
+      expect(spySendStr.getCall(1).args[0]).to.have.
+        string("Usage: reload <db>");
+
+      game.handle("reload invalidDb");
+      expect(spySendStr.getCall(2).args[0]).to.have.
+        string("Invalid Database Name!");
+
+      player.sendString.restore();
+      itemDb.load.restore();
+    });
+
+    it("should properly handles 'shutdown' command", () => {
+      const spy = sinon.spy(Game, 'announce');
+      const p = player;
+      p.rank = PlayerRank.REGULAR;
+      game.handle("shutdown");
+      expect(spy.calledOnce).to.be.false;
+      p.rank = PlayerRank.GOD;
+      game.handle("shtudown");
+      expect(spy.calledOnce).to.be.false;
+      p.rank = PlayerRank.ADMIN;
+      Game.setIsRunning(true);
+      expect(Game.isRunning()).to.be.true;
+      game.handle("shutdown");
+      expect(spy.calledOnce).to.be.true;
+      expect(spy.getCall(0).args[0]).to.
+        equal("SYSTEM IS SHUTTING DOWN");
+      expect(Game.isRunning()).to.be.false;
+      Game.announce.restore();
+    });
+
+
   });
 
   it("should properly transitions to enter()", () => {
@@ -70,6 +355,27 @@ describe("Game", () => {
     expect(stubGoToTrain.calledOnce).to.be.true;
 
     game.goToTrain.restore();
+  });
+
+  it("should properly triggers leave()", () => {
+    const p = player;
+    const stubLogout = sinon.stub(playerDb, 'logout').callsFake();
+    p.active = true;
+    conn.isClosed = true;
+    game.leave();
+    expect(p.active).to.be.false;
+    expect(stubLogout.calledOnce).to.be.true;
+    conn.isClosed = false;
+    playerDb.logout.restore();
+  });
+
+  it("should properly triggers hungup()", () => {
+    const p = player;
+    const stubLogoutMsg = sinon.stub(Game, 'logoutMessage').callsFake();
+    const expectedMsg = p.name + " has suddenly disappeared from the realm.";
+    game.hungup();
+    expect(stubLogoutMsg.getCall(0).args[0]).to.equal(expectedMsg);
+    Game.logoutMessage.restore();
   });
 
   it("should properly go to Train handler", () => {

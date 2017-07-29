@@ -1,7 +1,7 @@
 'use strict';
 
 const Util = require('./Util');
-const { playerDb } = require('./Databases');
+const { itemDb, playerDb } = require('./Databases');
 const ConnectionHandler = require('./ConnectionHandler');
 const { Attribute, PlayerRank, ItemType } = require('./Attributes');
 const Player = require('./Player');
@@ -9,13 +9,17 @@ const Train = require('./Train');
 
 const tostring = Util.tostring;
 
-const isRunning = false;
+let isRunning = false;
 
 // Game Handler class
 class Game extends ConnectionHandler {
 
   static isRunning() {
     return isRunning;
+  }
+
+  static setIsRunning(bool) {
+    isRunning = bool;
   }
 
   constructor(connection, player) {
@@ -56,6 +60,170 @@ class Game extends ConnectionHandler {
         `<white><bold>${p.name} chats: ${text}</bold></white>`);
       return;
     }
+
+    if (firstWord === "experience" || firstWord === "exp") {
+      p.sendString(this.printExperience());
+      return;
+    }
+
+    if (firstWord === "inventory" || firstWord === "inv") {
+      p.sendString(this.printInventory());
+      return;
+    }
+
+    if (firstWord === "quit") {
+      this.connection.close();
+      Game.logoutMessage(p.name + " has left the realm.");
+      return;
+    }
+
+    if (firstWord === "remove") {
+      this.removeItem(parseWord(data, 1));
+      return;
+    }
+
+    if (firstWord === "stats" || firstWord === "st") {
+      p.sendString(this.printStats());
+      return;
+    }
+
+    if (firstWord === "time") {
+      const msg = "<bold><cyan>" +
+        "The current system time is: " +
+        Util.timeStamp() + " on " +
+        Util.dateStamp() + "<newline/>" +
+        "The system has been up for: " +
+        Util.upTime() + ".</cyan></bold>";
+      p.sendString(msg);
+      return;
+    }
+
+    if (firstWord === "use") {
+      this.useItem(removeWord(data, 0));
+      return;
+    }
+
+    if (firstWord === "whisper") {
+      // get the players name
+      const name = parseWord(data, 1);
+      const message = removeWord(removeWord(data, 0), 0);
+      this.whisper(message, name);
+      return;
+    }
+
+    if (firstWord === "who") {
+      p.sendString(Game.whoList(
+        parseWord(data, 1).toLowerCase()));
+      return;
+    }
+
+    // ------------------------------------------------------------------------
+    //  GOD access commands
+    // ------------------------------------------------------------------------
+    if (firstWord === "kick" && p.rank >= PlayerRank.GOD) {
+
+      const targetName = parseWord(data, 1);
+      if (targetName === '') {
+        p.sendString("<red><bold>Usage: kick <name></bold></red>");
+        return;
+      }
+
+      // find a player to kick
+      const target = playerDb.findLoggedIn(targetName);
+      if (!target) {
+        p.sendString("<red><bold>Player could not be found</bold></red>");
+        return;
+      }
+
+      if (target.rank > p.rank) {
+        p.sendString("<red><bold>You can't kick that player!</bold></red>");
+        return;
+      }
+
+      target.connection.close();
+      Game.logoutMessage(target.name +
+        " has been kicked by " + p.name + "!!!");
+      return;
+    }
+
+    // ------------------------------------------------------------------------
+    //  ADMIN access commands
+    // ------------------------------------------------------------------------
+    if (firstWord === "announce" && p.rank >= PlayerRank.ADMIN) {
+      Game.announce(removeWord(data, 0));
+      return;
+    }
+
+    if (firstWord === "changerank" && p.rank >= PlayerRank.ADMIN) {
+      const name = parseWord(data, 1);
+      let rank = parseWord(data, 2);
+
+      if (name === '' || rank === '') {
+        p.sendString("<red><bold>Usage: changerank <name> <rank></bold></red>");
+        return;
+      }
+
+      // find the player to change rank
+      const target = playerDb.findByNameFull(name);
+      if (!target) {
+        p.sendString("<red><bold>Error: Could not find user " +
+          name + "</bold></red>");
+        return;
+      }
+
+      rank = PlayerRank.get(rank.toUpperCase());
+      if (!rank) {
+        p.sendString("<red><bold>Invalid rank!</bold></red>");
+        return;
+      }
+
+      target.rank = rank;
+      Game.sendGame("<green><bold>" + target.name +
+        "'s rank has been changed to: " + target.rank.toString());
+      return;
+    }
+
+    if (firstWord === "reload" && p.rank >= PlayerRank.ADMIN) {
+      const db = parseWord(data, 1);
+
+      if (db === '') {
+        p.sendString("<red><bold>Usage: reload <db></bold></red>");
+        return;
+      }
+
+      if (db === "items") {
+        itemDb.load();
+        p.sendString("<bold><cyan>Item Database Reloaded!</cyan></bold>");
+      } else {
+        p.sendString("<bold><red>Invalid Database Name!</red></bold>");
+      }
+      return;
+    }
+
+    if (firstWord === "shutdown" && p.rank >= PlayerRank.ADMIN) {
+      Game.announce("SYSTEM IS SHUTTING DOWN");
+      Game.setIsRunning(false);
+      return;
+    }
+
+  }
+
+  leave() {
+    const p = this.player;
+    // deactivate player
+    p.active = false;
+    // log out the player from the database if the connection has been closed
+    if (this.connection.isClosed) {
+      playerDb.logout(p.id);
+    }
+  }
+
+  // ------------------------------------------------------------------------
+  //  This notifies the handler that a connection has unexpectedly hung up.
+  // ------------------------------------------------------------------------
+  hungup() {
+    const p = this.player;
+    Game.logoutMessage(`${p.name} has suddenly disappeared from the realm.`);
   }
 
   goToTrain() {

@@ -36,6 +36,8 @@ describe("Util", () => {
     str = "     this   is  also              a test   ";
     expect(parse(str)).to.equal("this");
     expect(parse(str, 4)).to.equal("test");
+    expect(parse(str, 10)).to.equal("");
+    expect(parse("blah ", 1)).to.equal("");
   });
 
   it("should properly executes removeWord()", () => {
@@ -46,6 +48,43 @@ describe("Util", () => {
     str = "     this   is  also              a test   ";
     expect(remove(str, 1)).to.equal("this also a test");
     expect(remove(str, 3)).to.equal("this is also test");
+    expect(remove('', 10)).to.equal('');
   });
+
+  it("should properly executes timeStamp()", () => {
+    const timeStamp = Util.timeStamp;
+    const date = new Date();
+    const h = date.getHours();
+    const m = date.getMinutes()
+    const s = date.getSeconds();
+    const expectedStr =
+      (h < 10 ? '0' + h : h) + ':' +
+      (m < 10 ? '0' + m : m) + ':' +
+      (s < 10 ? '0' + s : s);
+    expect(timeStamp()).to.equal(expectedStr);
+  });
+
+  it("should properly executes dateStamp()", () => {
+    const dateStamp = Util.dateStamp;
+    const date = new Date();
+    const y = date.getFullYear();
+    const m = date.getMonth() + 1;
+    const d = date.getDate();
+    const expectedStr = y + '.' +
+      (m < 10 ? '0' + m : m) + '.' +
+      (d < 10 ? '0' + d : d);
+    expect(dateStamp()).to.equal(expectedStr);
+  });
+
+  it("should properly executes upTime()", () => {
+    const upTime = Util.upTime;
+    const secNum =
+      (365 * 86400 + 2 * 86400 + 3 * 3600 + 4 * 60 + 5);
+    const expectedStr =
+      "1 year, 2 days, 3 hours, 4 minutes";
+    expect(upTime(secNum)).to.equal(expectedStr);
+    expect(upTime()).to.equal("0 minute");
+  });
+
 
 });

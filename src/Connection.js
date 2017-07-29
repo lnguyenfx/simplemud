@@ -9,6 +9,7 @@ class Connection {
     this.protocol = protocol;
     this.handlers = []; // handler methods: handle, enter, leave
     this._bindEvents();
+    this.isClosed = false;
   }
 
   addHandler(handler) {
@@ -27,7 +28,7 @@ class Connection {
     try {
       this.socket.write(this.protocol.translate(msg));
     } catch(err) {
-      if (this._handler()) this._handler().hungup();
+      this.close();
     }
   }
 
@@ -37,6 +38,7 @@ class Connection {
   }
 
   close() {
+    this.isClosed = true;
     this.socket.end();
   }
 
@@ -58,7 +60,9 @@ class Connection {
   }
 
   _connectionClosed() {
+    if (!this.isClosed && this._handler()) this._handler().hungup();
     this.clearHandlers();
+    this.isClosed = true;
   }
 
 }
