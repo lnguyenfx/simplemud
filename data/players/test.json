@@ -1,7 +1,7 @@
 {
   "ID": 2,
   "NAME": "test",
-  "PASS": "abc",
+  "PASS": "test",
   "RANK": "REGULAR",
   "STATPOINTS": 10,
   "EXPERIENCE": 50,

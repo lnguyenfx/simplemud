@@ -1,7 +1,7 @@
 {
   "ID": 1,
   "NAME": "admin",
-  "PASS": "123456",
+  "PASS": "admin",
   "RANK": "ADMIN",
   "STATPOINTS": 0,
   "EXPERIENCE": 0,

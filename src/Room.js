@@ -74,6 +74,43 @@ class Room extends Entity {
     return item;
   }
 
+  loadTemplate(templateObject) {
+    this.id = parseInt(templateObject["ID"]);
+    this.name = templateObject["NAME"];
+    this.description = templateObject["DESCRIPTION"];
+    this.type = RoomType.get(templateObject["TYPE"]);
+    this.data = parseInt(templateObject["DATA"]);
+    Direction.enums.forEach(dir => {
+      this.rooms[dir] = parseInt(templateObject[dir.key]);
+    });
+    this.spawnWhich = parseInt(templateObject["ENEMY"]);
+    this.maxEnemies = parseInt(templateObject["MAXENEMIES"]);
+  }
+
+  loadData(dataObject, itemDb) {
+    this.id = parseInt(dataObject["ROOMID"]);
+    this.items = [];
+    dataObject["ITEMS"].split(' ').forEach(id => {
+      id = parseInt(id);
+      if (!id) return;
+      this.items.push(itemDb.findById(id));
+    });
+    this.money = parseInt(dataObject["MONEY"]);
+  }
+
+  saveData() {
+    const obj = {
+      "ROOMID": this.id,
+      "ITEMS": this.items.map(item => item.id).join(' '),
+      "MONEY": this.money
+    }
+    const file = require('path').join(__dirname, '..', 'data', 'mapdata.json');
+    const jsonfile = require('jsonfile');
+    const dataArray = jsonfile.readFileSync(file);
+    dataArray.push(obj);
+    jsonfile.writeFileSync(file, dataArray, {spaces: 2});
+  }
+
 } // end class Room
 
 module.exports = Room;

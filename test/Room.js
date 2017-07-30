@@ -1,6 +1,8 @@
 const { expect } = require('chai');
 const sinon = require('sinon');
 const path = require('path');
+const fs = require('fs');
+const jsonfile = require('jsonfile');
 
 const { itemDb } =
   require(path.join(__dirname, '..', 'src', 'Databases'));
@@ -78,6 +80,61 @@ describe("Room", () => {
     expect(room.findItem("Chainmail Armor")).to.equal(0);
     room.addItem(armor);
     expect(room.findItem("Chainmail Armor")).to.equal(armor);
+  });
+
+  it("should proplery loads template", () => {
+    const templateObject = {
+      "ID": "1",
+      "NAME": "Test Room",
+      "DESCRIPTION": "This is just a test room.",
+      "TYPE": "PLAINROOM",
+      "DATA": "1",
+      "NORTH": "2",
+      "EAST": "25",
+      "SOUTH": "4",
+      "WEST": "5",
+      "ENEMY": "9",
+      "MAXENEMIES": "3"
+    };
+
+    room.loadTemplate(templateObject);
+    expect(room.id).to.equal(1);
+    expect(room.name).to.equal("Test Room");
+    expect(room.description).to.
+      equal("This is just a test room.");
+    expect(room.type).to.equal(RoomType.PLAINROOM);
+    expect(room.data).to.equal(1);
+
+    expect(room.rooms[Direction.NORTH]).to.equal(2);
+    expect(room.rooms[Direction.EAST]).to.equal(25);
+    expect(room.rooms[Direction.SOUTH]).to.equal(4);
+    expect(room.rooms[Direction.WEST]).to.equal(5);
+
+    expect(room.spawnWhich).to.equal(9);
+    expect(room.maxEnemies).to.equal(3);
+  });
+
+  it("should proplery saves/loads data", () => {
+    const dataObject = {
+      "ROOMID": "123456",
+      "ITEMS": "1 2 3",
+      "MONEY": "456"
+    };
+    room.loadData(dataObject, itemDb);
+    expect(room.items[0].name).to.equal("Knife");
+    expect(room.items[1].name).to.equal("Short Sword");
+    expect(room.items[2].name).to.equal("Leather Armor");
+    expect(room.money).to.equal(456);
+
+    room.saveData();
+    const file = path.join(__dirname, '..', 'data', 'mapdata.json');
+    const dataArray = jsonfile.readFileSync(file);
+    const room2 = new Room();
+    room2.loadData(dataArray[dataArray.length - 1], itemDb);
+    expect(room2.items).to.have.members(room.items);
+    expect(room2.money).to.equal(room.money);
+    dataArray.pop(); // clean up test data
+    jsonfile.writeFileSync(file, dataArray, {spaces: 2});
   });
 
 
