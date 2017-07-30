@@ -7,7 +7,7 @@ const { Attribute, ItemType }
 
 const Item = require(path.join(__dirname, '..', 'src', 'Item'));
 
-describe("Item",() => {
+describe("Item", () => {
 
   const testItem = new Item();
 

@@ -4,7 +4,7 @@ const path = require('path');
 const Entity = require(path.join(__dirname, '..', 'src', 'Entity'));
 const EntityDatabase = require(path.join(__dirname, '..', 'src', 'EntityDatabase'));
 
-describe("EntityDatabase",() => {
+describe("EntityDatabase", () => {
   let db;
 
   beforeEach(() => {

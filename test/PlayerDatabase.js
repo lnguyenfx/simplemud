@@ -9,7 +9,7 @@ const { Attribute, PlayerRank } = require(path.join(__dirname, '..', 'src', 'Att
 const { itemDb, playerDb } = require(path.join(__dirname, '..', 'src', 'Databases'));
 const Player = require(path.join(__dirname, '..', 'src', 'Player'));
 
-describe("PlayerDatabase",() => {
+describe("PlayerDatabase", () => {
 
   const dataPath = path.join(__dirname, '..', 'data', 'players');
 

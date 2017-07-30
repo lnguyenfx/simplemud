@@ -4,7 +4,7 @@ const path = require('path');
 const { Attribute, ItemType, PlayerRank, RoomType, Direction }
   = require(path.join(__dirname, '..', 'src', 'Attributes'));
 
-describe("Attributes",() => {
+describe("Attributes", () => {
 
   it("should properly declare Attribute enum", () => {
     const attr = ['STRENGTH', 'HEALTH', 'AGILITY',

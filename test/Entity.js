@@ -3,7 +3,7 @@ const path = require('path');
 
 const Entity = require(path.join(__dirname, '..', 'src', 'Entity'));
 
-describe("Entity",() => {
+describe("Entity", () => {
 
   it("should instantiate default data", () => {
     const entity = new Entity();

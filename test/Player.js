@@ -12,7 +12,7 @@ const Player = require(path.join(__dirname, '..', 'src', 'Player'));
 const ItemDatabase = require(path.join(__dirname, '..', 'src', 'ItemDatabase'));
 const telnet = require(path.join(__dirname, '..', 'src', 'Telnet'));
 
-describe("Player",() => {
+describe("Player", () => {
 
   const db = new ItemDatabase();
   db.load();

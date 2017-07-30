@@ -4,7 +4,7 @@ const path = require('path');
 const { ItemType } = require(path.join(__dirname, '..', 'src', 'Attributes'));
 const { itemDb } = require(path.join(__dirname, '..', 'src', 'Databases'));
 
-describe("ItemDatabase",() => {
+describe("ItemDatabase", () => {
 
   it("should properly loads all items from file", () => {
     expect(itemDb.size()).to.equal(35);
