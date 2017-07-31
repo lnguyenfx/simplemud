@@ -47,7 +47,7 @@ describe("Logon", () => {
     conn.sendMessage.restore();
   })
 
-  it("should properly display welcome on enter", () => {
+  it("should properly diplay welcome on enter", () => {
     const expectedMsg = cc('bold') + cc('red') + "Weclome to SimpleMUD" +
                         cc('reset') + cc('bold') + cc('reset') + cc('newline') +
                         "Please enter your name, or \"new\" if you are new: ";
@@ -57,7 +57,7 @@ describe("Logon", () => {
     expect(stubSendMsg.returnValues[0]).to.equal(expectedMsg);
   });
 
-  it("should properly disconnects if max invalid response reached", () => {
+  it("should properly disconnect if max invalid response reached", () => {
     const stubCloseConn = sinon.stub(conn, 'close').callsFake();
 
     loginHandler.numErrors = 5;
@@ -70,7 +70,7 @@ describe("Logon", () => {
     conn.close.restore();
   });
 
-  it("should properly handles new connection -- 'new'", () => {
+  it("should properly handle new connection -- 'new'", () => {
     loginHandler.handle('new');
     const expectedMsg = cc('yellow') +
       "Please enter your desired name: " + cc('reset');
@@ -79,7 +79,7 @@ describe("Logon", () => {
     expect(loginHandler.state).to.equal("NEWUSER");
   });
 
-  it("should properly handles new connection -- 'non-existing user'", () => {
+  it("should properly handle new connection -- 'non-existing user'", () => {
     loginHandler.handle('INVALID');
     let expectedMsg = cc('red') + cc('bold') +
       "Sorry, the user '" + cc('white') +
@@ -92,7 +92,7 @@ describe("Logon", () => {
     expect(loginHandler.state).to.equal("NEWCONNECTION");
   });
 
-  it ("should properly validates acceptable user names", () => {
+  it ("should properly validate acceptable user names", () => {
     const validate = loginHandler.acceptableName;
     const invalidNames = ["te", "test$$@", "!test",
                           "AReallyLongUserName", "Test User"];
@@ -105,7 +105,7 @@ describe("Logon", () => {
     })
   });
 
-  it("should properly register new user", () =>{
+  it("should properly regiter new user", () =>{
     const stubGoToGame =
       sinon.stub(loginHandler, 'goToGame').callsFake();
     loginHandler.handle('new');
@@ -149,7 +149,7 @@ describe("Logon", () => {
     loginHandler.goToGame.restore();
   });
 
-  it("should properly handles new connection -- 'existing user'", () => {
+  it("should properly handle new connection -- 'existing user'", () => {
     const stubGoToGame =
       sinon.stub(loginHandler, 'goToGame').callsFake();
     loginHandler.handle(testUser);
@@ -177,7 +177,7 @@ describe("Logon", () => {
     loginHandler.goToGame.restore();
   });
 
-  it("should properly transitions to Game handler -- loggedIn = false", () =>{
+  it("should properly transition to Game handler -- loggedIn = false", () =>{
       const stubConnClose =
         sinon.stub(conn, 'close').callsFake();
       const player = playerDb.findByNameFull(testUser);
@@ -195,7 +195,7 @@ describe("Logon", () => {
       conn.close.restore();
   });
 
-  it("should properly transitions to Game handler -- loggedIn = true", () =>{
+  it("should properly transition to Game handler -- loggedIn = true", () =>{
       const stubConnClose =
         sinon.stub(conn, 'close').callsFake();
       const player = playerDb.findByNameFull(testUser);

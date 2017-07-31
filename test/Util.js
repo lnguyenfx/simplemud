@@ -11,7 +11,7 @@ describe("Util", () => {
   let name = telnet.cc('bold');
   console.log(String.raw`${name}`);
 
-  it("should properly executes tostring()", () => {
+  it("should properly execute tostring()", () => {
     const tostring = Util.tostring;
     let expectedStr = "test";
     expect(tostring("test")).to.equal(expectedStr);
@@ -20,7 +20,7 @@ describe("Util", () => {
     expect(tostring("test", 10)).to.equal(expectedStr);
   });
 
-  it("should properly executes randomInt()", () => {
+  it("should properly execute randomInt()", () => {
     const randomInt = Util.randomInt;
     let min = 15, max = 95;
     for (let i = 0; i < 100; i++) {
@@ -28,7 +28,7 @@ describe("Util", () => {
     }
   });
 
-  it("should properly executes parseWord()", () => {
+  it("should properly execute parseWord()", () => {
     const parse = Util.parseWord;
     let str = "this is a test";
     expect(parse(str, 0)).to.equal("this");
@@ -40,7 +40,7 @@ describe("Util", () => {
     expect(parse("blah ", 1)).to.equal("");
   });
 
-  it("should properly executes removeWord()", () => {
+  it("should properly execute removeWord()", () => {
     const remove = Util.removeWord;
     let str = "this is a test";
     expect(remove(str, 2)).to.equal("this is test");
@@ -51,7 +51,7 @@ describe("Util", () => {
     expect(remove('', 10)).to.equal('');
   });
 
-  it("should properly executes timeStamp()", () => {
+  it("should properly execute timeStamp()", () => {
     const timeStamp = Util.timeStamp;
     const date = new Date();
     const h = date.getHours();
@@ -64,7 +64,7 @@ describe("Util", () => {
     expect(timeStamp()).to.equal(expectedStr);
   });
 
-  it("should properly executes dateStamp()", () => {
+  it("should properly execute dateStamp()", () => {
     const dateStamp = Util.dateStamp;
     const date = new Date();
     const y = date.getFullYear();
@@ -76,7 +76,7 @@ describe("Util", () => {
     expect(dateStamp()).to.equal(expectedStr);
   });
 
-  it("should properly executes upTime()", () => {
+  it("should properly execute upTime()", () => {
     const upTime = Util.upTime;
     const secNum =
       (365 * 86400 + 2 * 86400 + 3 * 3600 + 4 * 60 + 5);

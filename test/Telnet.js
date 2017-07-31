@@ -7,7 +7,7 @@ const telnet = require(path.join(__dirname, '..', 'src', 'Telnet'));
 const cc = telnet.cc;
 
 describe("Telnet", () => {
-  it('should correctly translates for single line', () => {
+  it('should properly translate for single line', () => {
     const text = "This is <bold><cyan>cyan</cyan></bold>.<newline/>";
     const parsedText = telnet.translate(text);
     const expectedText = "This is " + cc('bold') + cc('cyan') + "cyan" +
@@ -16,7 +16,7 @@ describe("Telnet", () => {
     expect(parsedText).to.equal(expectedText);
   });
 
-  it('should correctly translates for multiple lines', () => {
+  it('should properly translate for multiple lines', () => {
     const text = "This is <yellow>yellow</yellow>.\n" +
                  "This is <bold><blue>blue and bold</blue></bold>.\r\n"  +
                  "This is <green>green</green>.\n" +

@@ -11,7 +11,7 @@ describe("Item", () => {
 
   const testItem = new Item();
 
-  it("should properly intializes", () => {
+  it("should properly intialize", () => {
     expect(testItem.id).to.equal(0);
     expect(testItem.name).to.equal("UNDEFINED");
     expect(testItem.type).to.equal(ItemType.WEAPON);
@@ -22,7 +22,7 @@ describe("Item", () => {
     expect(testItem.attributes.length).to.equal(0);
   });
 
-  it("should properly loads from dataObject", () => {
+  it("should properly load from dataObject", () => {
     const dataObject = {
       "ID":"1","NAME":"Test Item","TYPE":"WEAPON","MIN":"2","MAX":"5",
       "SPEED":"2", "PRICE":"10","STRENGTH":"10","HEALTH":"20","AGILITY":"30",

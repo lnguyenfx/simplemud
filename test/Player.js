@@ -17,7 +17,7 @@ describe("Player", () => {
   const db = new ItemDatabase();
   db.load();
 
-  it("should properly intializes", () => {
+  it("should properly intialize", () => {
 
     const player = new Player();
 
@@ -107,14 +107,14 @@ describe("Player", () => {
     expect(player.hitPoints).to.equal(8);
   });
 
-  it("should properly calculates experiences needed for level", () => {
+  it("should properly calculate experiences needed for level", () => {
     const player = new Player();
     expect(player.needForLevel(1)).to.equal(0);
     expect(player.needForLevel(2)).to.equal(40);
     expect(player.needForLevel(5)).to.equal(284);
   });
 
-  it("should properly calculates experiences needed for next level", () => {
+  it("should properly calculate experiences needed for next level", () => {
     const player = new Player();
     expect(player.needForNextLevel()).to.equal(40);
     player.experience = 25;
@@ -189,7 +189,7 @@ describe("Player", () => {
     expect(invalidIndex).to.equal(-1);
   });
 
-  it("should properly sends string to player's connection", () => {
+  it("should properly send string to player's connection", () => {
     const conn = new Connection(new require('net').Socket(), telnet);
     const stub = sinon.stub(conn.socket, 'write').callsFake();
 
@@ -211,7 +211,7 @@ describe("Player", () => {
     player.printStatbar.restore();
   });
 
-  it("should properly prints the status bar", () => {
+  it("should properly print the status bar", () => {
     const conn = new Connection(new require('net').Socket(), telnet);
     const stub = sinon.stub(conn.socket, 'write').callsFake();
     const cc = telnet.cc;
@@ -250,7 +250,7 @@ describe("Player", () => {
 
   });
 
-  it("should properly saves to and loads from JSON file", () => {
+  it("should properly save to and loads from JSON file", () => {
 
     const testUser = 'UnitTestUser101';
     const dataPath =

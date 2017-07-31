@@ -88,7 +88,7 @@ class Room extends Entity {
   }
 
   loadData(dataObject, itemDb) {
-    this.id = parseInt(dataObject["ROOMID"]);
+    if (!this.id) this.id = parseInt(dataObject["ROOMID"]);
     this.items = [];
     dataObject["ITEMS"].split(' ').forEach(id => {
       id = parseInt(id);
@@ -98,7 +98,7 @@ class Room extends Entity {
     this.money = parseInt(dataObject["MONEY"]);
   }
 
-  saveData() {
+  saveData(dataArray) {
     const obj = {
       "ROOMID": this.id,
       "ITEMS": this.items.map(item => item.id).join(' '),
@@ -106,9 +106,25 @@ class Room extends Entity {
     }
     const file = require('path').join(__dirname, '..', 'data', 'mapdata.json');
     const jsonfile = require('jsonfile');
-    const dataArray = jsonfile.readFileSync(file);
-    dataArray.push(obj);
-    jsonfile.writeFileSync(file, dataArray, {spaces: 2});
+    let exists = false;
+    let empty = false;
+    dataArray = dataArray || jsonfile.readFileSync(file);
+    for (let dataObject of dataArray) {
+      if (parseInt(dataObject["ROOMID"]) === obj["ROOMID"]) {
+        dataObject["ITEMS"] = obj["ITEMS"];
+        dataObject["MONEY"] = obj["MONEY"];
+        exists = true;
+        break;
+      }
+    }
+    if (!this.items.length && !this.money) {
+      dataArray = dataArray.filter(
+        dataObject => this.id !== parseInt(dataObject["ROOMID"]));
+      empty = true;
+    }
+    if (!empty && !exists) dataArray.push(obj);
+    if (exists || (!empty && !exists))
+      jsonfile.writeFileSync(file, dataArray, {spaces: 2});
   }
 
 } // end class Room

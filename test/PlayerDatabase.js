@@ -13,7 +13,7 @@ describe("PlayerDatabase", () => {
 
   const dataPath = path.join(__dirname, '..', 'data', 'players');
 
-  it("should properly loads all items from file", () => {
+  it("should properly load all items from file", () => {
     const dataArray = jsonfile.readFileSync(
       path.join(dataPath, '_players.json'));
     const expectedSize = dataArray.length;
@@ -34,7 +34,7 @@ describe("PlayerDatabase", () => {
     expect(playerDb.size()).to.equal(expectedSize);
   });
 
-  it("should properly adds/removes player", () => {
+  it("should properly add/removes player", () => {
     const testUser = 'UnitTestUser103';
     const testPass = "validPassword";
     const file = path.join(dataPath, testUser + '.json');
@@ -60,7 +60,7 @@ describe("PlayerDatabase", () => {
     expect(getDataArray().indexOf(testUser)).to.equal(-1);
   });
 
-  it("should properly logs out players", () => {
+  it("should properly log out players", () => {
     const player = playerDb.findByNameFull("test");
     expect(player.name).to.equal("test");
     const spy = sinon.spy(player, 'save');
@@ -75,7 +75,7 @@ describe("PlayerDatabase", () => {
     player.save.restore();
   });
 
-  it("should properly finds active players", () => {
+  it("should properly find active players", () => {
     const player = playerDb.findByNameFull("test");
     expect(player.name).to.equal("test");
     player.active = 0;
@@ -84,7 +84,7 @@ describe("PlayerDatabase", () => {
     expect(playerDb.findActive(player.name)).to.be.equal(player);
   });
 
-  it("should properly finds logged in players", () => {
+  it("should properly find logged in players", () => {
     const player = playerDb.findByNameFull("test");
     expect(player.name).to.equal("test");
     player.loggedIn = 0;

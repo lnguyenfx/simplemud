@@ -31,7 +31,7 @@ describe("Game", () => {
     conn.socket.write.restore();
   });
 
-  it("should properly returns whether game is running", () => {
+  it("should properly return whether game is running", () => {
     expect(Game.isRunning()).to.be.false;
   });
 
@@ -46,7 +46,7 @@ describe("Game", () => {
 
   describe("handle()", () => {
 
-    it("should properly handles 'chat' commands", () => {
+    it("should properly handle 'chat' commands", () => {
       const stub = stubSocketSend;
       sinon.stub(player, 'printStatbar').callsFake();
       const p = player;
@@ -62,7 +62,7 @@ describe("Game", () => {
       player.printStatbar.restore();
     });
 
-    it("should properly handles 'experience' command", () => {
+    it("should properly handle 'experience' command", () => {
       const spyPrintExp = sinon.spy(game, 'printExperience');
       const spySendStr = sinon.spy(player, 'sendString');
       game.handle("experience");
@@ -72,7 +72,7 @@ describe("Game", () => {
       game.printExperience.restore();
     });
 
-    it("should properly handles 'exp' command", () => {
+    it("should properly handle 'exp' command", () => {
       const spyPrintExp = sinon.spy(game, 'printExperience');
       const spySendStr = sinon.spy(player, 'sendString');
       game.handle("exp");
@@ -82,7 +82,7 @@ describe("Game", () => {
       game.printExperience.restore();
     });
 
-    it("should properly handles 'inventory' command", () => {
+    it("should properly handle 'inventory' command", () => {
       const spyPrintInv = sinon.spy(game, 'printInventory');
       const spySendStr = sinon.spy(player, 'sendString');
       game.handle("inventory");
@@ -92,7 +92,7 @@ describe("Game", () => {
       game.printInventory.restore();
     });
 
-    it("should properly handles 'inv' command", () => {
+    it("should properly handle 'inv' command", () => {
       const spyPrintInv = sinon.spy(game, 'printInventory');
       const spySendStr = sinon.spy(player, 'sendString');
       game.handle("inv");
@@ -102,7 +102,7 @@ describe("Game", () => {
       game.printInventory.restore();
     });
 
-    it("should properly handles 'quit' command", () => {
+    it("should properly handle 'quit' command", () => {
       const stubCloseConn = sinon.stub(conn, 'close').callsFake();
       const stubLogoutMsg = sinon.stub(Game, 'logoutMessage').callsFake();
       const expectedMsg = player.name + " has left the realm.";
@@ -113,7 +113,7 @@ describe("Game", () => {
       conn.close.restore();
     });
 
-    it("should properly handles 'remove' command", () => {
+    it("should properly handle 'remove' command", () => {
       const spy = sinon.spy(game, 'removeItem');
       game.handle('remove armor');
       expect(spy.calledOnce).to.be.true;
@@ -121,21 +121,21 @@ describe("Game", () => {
       game.removeItem.restore();
     });
 
-    it("should properly handles 'stats' command", () => {
+    it("should properly handle 'stats' command", () => {
       const spy = sinon.spy(game, 'printStats');
       game.handle('stats');
       expect(spy.calledOnce).to.be.true;
       game.printStats.restore();
     });
 
-    it("should properly handles 'st' command", () => {
+    it("should properly handle 'st' command", () => {
       const spy = sinon.spy(game, 'printStats');
       game.handle('st');
       expect(spy.calledOnce).to.be.true;
       game.printStats.restore();
     });
 
-    it("should properly handles 'time' command", () => {
+    it("should properly handle 'time' command", () => {
       const expectedMsg = cc('bold') + cc('cyan') +
         "The current system time is: " + Util.timeStamp() +
         " on " + Util.dateStamp() + cc('newline') +
@@ -147,7 +147,7 @@ describe("Game", () => {
         equal(expectedMsg);
     });
 
-    it("should properly handles 'use' command", () => {
+    it("should properly handle 'use' command", () => {
       const spy = sinon.spy(game, 'useItem');
       game.handle('use high potion');
       expect(spy.calledOnce).to.be.true;
@@ -155,7 +155,7 @@ describe("Game", () => {
       game.useItem.restore();
     });
 
-    it("should properly handles 'whisper' command", () => {
+    it("should properly handle 'whisper' command", () => {
       const spy = sinon.spy(game, 'whisper');
       game.handle('whisper test Hello there!');
       expect(spy.calledOnce).to.be.true;
@@ -164,7 +164,7 @@ describe("Game", () => {
       game.whisper.restore();
     });
 
-    it("should properly handles 'who' command", () => {
+    it("should properly handle 'who' command", () => {
       const spy = sinon.spy(Game, 'whoList');
       game.handle('who');
       expect(spy.calledOnce).to.be.true;
@@ -174,7 +174,7 @@ describe("Game", () => {
       Game.whoList.restore();
     });
 
-    it("should properly handles 'kick' command", () => {
+    it("should properly handle 'kick' command", () => {
       const stubLogoutMsg = sinon.stub(Game, 'logoutMessage').callsFake();
       const stubConnClose = sinon.stub(conn, 'close').callsFake();
       const spyFindLoggedIn = sinon.spy(playerDb, 'findLoggedIn');
@@ -222,7 +222,7 @@ describe("Game", () => {
       Game.logoutMessage.restore();
     });
 
-    it("should properly handles 'announce' command", () => {
+    it("should properly handle 'announce' command", () => {
       const spy = sinon.spy(Game, 'announce');
       const p = player;
       p.rank = PlayerRank.REGULAR;
@@ -239,7 +239,7 @@ describe("Game", () => {
       Game.announce.restore();
     });
 
-    it("should properly handles 'changerank' command", () => {
+    it("should properly handle 'changerank' command", () => {
       const spySendGame = sinon.spy(Game, 'sendGame');
       const spySendStr = sinon.spy(player, 'sendString');
       const spyFindNameFull = sinon.spy(playerDb, 'findByNameFull');
@@ -285,7 +285,7 @@ describe("Game", () => {
       Game.sendGame.restore();
     });
 
-    it("should properly handles 'reload' command", () => {
+    it("should properly handle 'reload' command", () => {
       const stubLoadItemDb = sinon.stub(itemDb, 'load').callsFake();
       const spySendStr = sinon.spy(player, 'sendString');
       const p = player;
@@ -313,7 +313,7 @@ describe("Game", () => {
       itemDb.load.restore();
     });
 
-    it("should properly handles 'shutdown' command", () => {
+    it("should properly handle 'shutdown' command", () => {
       const spy = sinon.spy(Game, 'announce');
       const p = player;
       p.rank = PlayerRank.REGULAR;
@@ -336,7 +336,7 @@ describe("Game", () => {
 
   });
 
-  it("should properly transitions to enter()", () => {
+  it("should properly transition to enter()", () => {
     const p = player;
     const stubGoToTrain = sinon.stub(game, 'goToTrain').callsFake();
     const expectedMsg = cc('bold') + cc('green') +
@@ -357,7 +357,7 @@ describe("Game", () => {
     game.goToTrain.restore();
   });
 
-  it("should properly triggers leave()", () => {
+  it("should properly trigger leave()", () => {
     const p = player;
     const stubLogout = sinon.stub(playerDb, 'logout').callsFake();
     p.active = true;
@@ -369,7 +369,7 @@ describe("Game", () => {
     playerDb.logout.restore();
   });
 
-  it("should properly triggers hungup()", () => {
+  it("should properly trigger hungup()", () => {
     const p = player;
     const stubLogoutMsg = sinon.stub(Game, 'logoutMessage').callsFake();
     const expectedMsg = p.name + " has suddenly disappeared from the realm.";
@@ -422,15 +422,15 @@ describe("Game", () => {
     expect(playerDb.size()).to.equal(originalDbSize);
   };
 
-  it("should properly sends message to all logged in users", () => {
+  it("should properly send message to all logged in users", () => {
     testSendToPlayers('sendGlobal', 'loggedIn');
   });
 
-  it("should properly sends message to all active users", () => {
+  it("should properly send message to all active users", () => {
     testSendToPlayers('sendGame', 'active');
   });
 
-  it("should properly sends logout message to active players", () => {
+  it("should properly send logout message to active players", () => {
     const stub = sinon.stub(Game, 'sendGame').callsFake();
     const expectedMsg = "<red><bold>Player X is dropped.</bold></red>";
     Game.logoutMessage("Player X is dropped.");
@@ -438,7 +438,7 @@ describe("Game", () => {
     Game.sendGame.restore();
   });
 
-  it("should properly sends announcement to logged in players", () => {
+  it("should properly send announcement to logged in players", () => {
     const stub = sinon.stub(Game, 'sendGlobal').callsFake();
     const expectedMsg = "<cyan><bold>Test announcement!</bold></cyan>";
     Game.announce("Test announcement!");
@@ -446,7 +446,7 @@ describe("Game", () => {
     Game.sendGlobal.restore();
   });
 
-  it("should properly sends whispers", () => {
+  it("should properly send whispers", () => {
     const stub = stubSocketSend;
     const p = player;
     const recipient = new Player();
@@ -474,7 +474,7 @@ describe("Game", () => {
     playerDb.map.delete(recipient.id);
   });
 
-  it ("should properly displays who list", () => {
+  it ("should properly display who list", () => {
     const originalPlayerMap = playerDb.map;
     playerDb.map = new Map();
     expect(playerDb.size()).to.equal(0);
@@ -536,7 +536,7 @@ describe("Game", () => {
     playerDb.map = originalPlayerMap;
   });
 
-  it ("should properly displays help", () => {
+  it ("should properly display help", () => {
     const help = cc('white') + cc('bold') +
         "--------------------------------- Command List ---------------------------------\r\n" +
         " /                          - Repeats your last command exactly.\r\n" +
@@ -586,7 +586,7 @@ describe("Game", () => {
         equal(help + god + admin + end);
   });
 
-  it("should properly prints player's experience", () => {
+  it("should properly print player's experience", () => {
     const p = game.player;
     p.level = 2;
     p.experience = 25;
@@ -600,7 +600,7 @@ describe("Game", () => {
       equal(expectedText)
   });
 
-  it("should properly prints player's stats", () => {
+  it("should properly print player's stats", () => {
     const p = game.player;
     const attr = p.GetAttr.bind(p);
     p.level = 2;
@@ -637,7 +637,7 @@ describe("Game", () => {
       equal(expectedText)
   });
 
-  it("should properly prints player's inventory", () => {
+  it("should properly print player's inventory", () => {
     const p = player;
     const weapon = itemDb.findByNameFull("Short Sword");
     const armor = itemDb.findByNameFull("Leather Armor");
@@ -678,7 +678,7 @@ describe("Game", () => {
 
   });
 
-  it("should properly uses item from player's inventory", () => {
+  it("should properly use item from player's inventory", () => {
     const spy = sinon.spy(game, 'useItem');
     const p = player;
     const weapon = itemDb.findByNameFull("Short Sword");
@@ -717,7 +717,7 @@ describe("Game", () => {
     game.useItem.restore();
   });
 
-  it("should properly removes item from player", () => {
+  it("should properly remove item from player", () => {
     const spy = sinon.spy(game, 'removeItem');
     const p = player;
     const weapon = itemDb.findByNameFull("Short Sword");

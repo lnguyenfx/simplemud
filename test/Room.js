@@ -20,7 +20,7 @@ describe("Room", () => {
     room = new Room();
   });
 
-  it("should properly intializes", () => {
+  it("should properly intialize", () => {
     expect(room.id).to.equal(0);
     expect(room.name).to.equal("UNDEFINED");
     expect(room.type).to.equal(RoomType.PLAINROOM);
@@ -42,7 +42,7 @@ describe("Room", () => {
     expect(room.enemies).to.be.an('array').that.is.empty;
   });
 
-  it("should properly adds/removes players", () => {
+  it("should properly add/remove players", () => {
     const p = new Player();
     expect(room.players.length).to.equal(0);
     room.addPlayer(p);
@@ -52,7 +52,7 @@ describe("Room", () => {
     expect(room.players.length).to.equal(0);
   });
 
-  it("should properly adds/removes items", () => {
+  it("should properly add/remove items", () => {
     const sword = itemDb.findByNameFull("Short Sword");
     const armor = itemDb.findByNameFull("Chainmail Armor");
     expect(room.items.length).to.equal(0);
@@ -71,7 +71,7 @@ describe("Room", () => {
     expect(room.items[31]).to.equal(armor);
   });
 
-  it("should properly finds items", () => {
+  it("should properly find items", () => {
     const sword = itemDb.findByNameFull("Short Sword");
     const armor = itemDb.findByNameFull("Chainmail Armor");
     expect(room.findItem("sword")).to.equal(0);
@@ -82,7 +82,7 @@ describe("Room", () => {
     expect(room.findItem("Chainmail Armor")).to.equal(armor);
   });
 
-  it("should proplery loads template", () => {
+  it("should properly load template", () => {
     const templateObject = {
       "ID": "1",
       "NAME": "Test Room",
@@ -114,7 +114,7 @@ describe("Room", () => {
     expect(room.maxEnemies).to.equal(3);
   });
 
-  it("should proplery saves/loads data", () => {
+  it("should proplery save/load data", () => {
     const dataObject = {
       "ROOMID": "123456",
       "ITEMS": "1 2 3",

@@ -29,7 +29,7 @@ describe("Train", () => {
     conn.socket.write.restore();
   });
 
-  it("should properly prints stats", () => {
+  it("should properly print stats", () => {
     const p = player;
     const expectedMsg = cc('white') + cc('bold') +
       "--------------------------------- Your Stats ----------------------------------" + cc('newline') +
@@ -50,7 +50,7 @@ describe("Train", () => {
     expect(stub.getCall(1).args[0]).to.equal(cc('clearscreen') + expectedMsg);
   });
 
-  it("should properly enters", () => {
+  it("should properly enter", () => {
     const p = player;
     const spy = sinon.spy(train, 'printStats');
     const expectedMsg = cc('magenta') + cc('bold') +
@@ -67,7 +67,7 @@ describe("Train", () => {
     train.printStats.restore();
   });
 
-  it("should properly handles quit", () => {
+  it("should properly handle quit", () => {
     const p = player;
     const stubSavePlayer = sinon.stub(p, "save").callsFake();
     const spy = sinon.spy(train, "leave");
@@ -80,7 +80,7 @@ describe("Train", () => {
     p.save.restore();
   });
 
-  it("should properly handles stats assignment", () => {
+  it("should properly handle stats assignment", () => {
     const p = player;
     const attr = p.GetAttr.bind(p);
     const spy = sinon.spy(p, "addToBaseAttr");

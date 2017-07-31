@@ -34,7 +34,7 @@ describe("Connection", () => {
   });
 
   const thirdHandler = new Handler();
-  it("should properly removes handler from list of 3", () => {
+  it("should properly remove handler from list of 3", () => {
     conn.addHandler(thirdHandler);
     const spySecond = sinon.spy(secondHandler, 'enter')
     const spyThird = sinon.spy(thirdHandler, 'leave');
@@ -47,7 +47,7 @@ describe("Connection", () => {
     thirdHandler.leave.restore();
   });
 
-  it("should properly sends translated telnet message", () => {
+  it("should properly send translated telnet message", () => {
     const stub = sinon.stub(conn.socket, 'write');
     stub.callsFake(function (data, encoding, cb) {
       var args = stub.args;
@@ -64,7 +64,7 @@ describe("Connection", () => {
     conn.socket.write.restore();
   });
 
-  it("should properly clears all handlers", () => {
+  it("should properly clear all handlers", () => {
     const spySecond = sinon.spy(secondHandler, 'leave');
     conn.clearHandlers();
     expect(spySecond.calledOnce).to.be.true;
@@ -81,7 +81,7 @@ describe("Connection", () => {
     conn.close.restore();
   });
 
-  it("should properly handles disconnect", () => {
+  it("should properly handle disconnect", () => {
     const stub = sinon.stub(conn.socket, 'end');
     stub.callsFake(function (data, encoding) {
         this.emit('close');
