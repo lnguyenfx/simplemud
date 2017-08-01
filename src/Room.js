@@ -118,8 +118,10 @@ class Room extends Entity {
       }
     }
     if (!this.items.length && !this.money) {
-      dataArray = dataArray.filter(
-        dataObject => this.id !== parseInt(dataObject["ROOMID"]));
+      if (exists) {
+        dataArray = dataArray.filter(
+          dataObject => this.id !== parseInt(dataObject["ROOMID"]));
+      }
       empty = true;
     }
     if (!empty && !exists) dataArray.push(obj);

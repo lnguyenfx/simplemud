@@ -61,30 +61,30 @@ describe("Player", () => {
     const player = new Player();
     const spy = sinon.spy(player, 'recalculateStats');
     expect(player.attributes[Attribute.ACCURACY]).to.equal(3);
-    const weapon = db.findByNameFull("Knife");
+    const weapon = db.findByNameFull("Rusty Knife");
     player.addBonuses(weapon);
-    expect(player.baseAttributes[Attribute.ACCURACY]).to.equal(10);
+    expect(player.baseAttributes[Attribute.ACCURACY]).to.equal(5);
     expect(player.baseAttributes[Attribute.DODGING]).to.equal(0);
     expect(player.baseAttributes[Attribute.DAMAGEABSORB]).to.equal(0);
     const armor = db.findByNameFull("Leather Armor");
     player.addBonuses(armor);
-    expect(player.baseAttributes[Attribute.DODGING]).to.equal(10);
-    expect(player.baseAttributes[Attribute.DAMAGEABSORB]).to.equal(2);
+    expect(player.baseAttributes[Attribute.DODGING]).to.equal(15);
+    expect(player.baseAttributes[Attribute.DAMAGEABSORB]).to.equal(0);
     expect(spy.callCount).to.equal(2);
   });
 
   it("should properly add dynamic bonuses", () => {
     const player = new Player();
     expect(player.attributes[Attribute.ACCURACY]).to.equal(3);
-    const weapon = db.findByNameFull("Knife");
+    const weapon = db.findByNameFull("Rusty Knife");
     player.addDynamicBonuses(weapon);
-    expect(player.attributes[Attribute.ACCURACY]).to.equal(13);
+    expect(player.attributes[Attribute.ACCURACY]).to.equal(8);
     expect(player.attributes[Attribute.DODGING]).to.equal(3);
     expect(player.attributes[Attribute.DAMAGEABSORB]).to.equal(0);
     const armor = db.findByNameFull("Leather Armor");
     player.addDynamicBonuses(armor);
-    expect(player.attributes[Attribute.DODGING]).to.equal(13);
-    expect(player.attributes[Attribute.DAMAGEABSORB]).to.equal(2);
+    expect(player.attributes[Attribute.DODGING]).to.equal(18);
+    expect(player.attributes[Attribute.DAMAGEABSORB]).to.equal(0);
   });
 
   it("should properly set and add to base attributes", () => {
@@ -170,21 +170,21 @@ describe("Player", () => {
   });
 
   it("should properly find item indexes", () => {
-    const itemsList = ["Knife", "Chainmail Armor", "Healing Potion",
-                       "Magic Sword of Killing",
-                       "Magic Potion of Strength"
+    const itemsList = ["Rusty Knife", "Chainmail Armor", "Small Healing Potion",
+                       "Heavy Longsword",
+                       "Heavy Club"
                       ];
     const items = itemsList.map(itemName => db.findByNameFull(itemName));
     const player = new Player();
     items.forEach((item) => player.pickUpItem(item));
-    const swordIndex = player.getItemIndex("Magic Sword");
-    expect(player.inventory[swordIndex].name).to.equal("Magic Sword of Killing");
+    const swordIndex = player.getItemIndex("Heavy");
+    expect(player.inventory[swordIndex].name).to.equal("Heavy Longsword");
     const armorIndex = player.getItemIndex("Chainmail Armor");
     expect(player.inventory[armorIndex].name).to.equal("Chainmail Armor");
     const potionIndex = player.getItemIndex("Potion");
-    expect(player.inventory[potionIndex].name).to.equal("Healing Potion");
-    const magicPotionIndex = player.getItemIndex("Magic Potion");
-    expect(player.inventory[magicPotionIndex].name).to.equal("Magic Potion of Strength");
+    expect(player.inventory[potionIndex].name).to.equal("Small Healing Potion");
+    const magicPotionIndex = player.getItemIndex("Knife");
+    expect(player.inventory[magicPotionIndex].name).to.equal("Rusty Knife");
     const invalidIndex = player.getItemIndex("INVALID");
     expect(invalidIndex).to.equal(-1);
   });
@@ -265,13 +265,13 @@ describe("Player", () => {
     });
 
     const player = new Player();
-    const weapon = db.findByNameFull("Short Sword");
+    const weapon = db.findByNameFull("RustY Knife");
     player.pickUpItem(weapon);
     player.useWeapon(0);
     const armor = db.findByNameFull("Chainmail Armor");
     player.pickUpItem(armor);
     player.useArmor(1);
-    const potion = db.findByNameFull("Healing Potion");
+    const potion = db.findByNameFull("Small Healing Potion");
     player.pickUpItem(potion);
     player.id = 2;
     player.name = testUser;

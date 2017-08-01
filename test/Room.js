@@ -53,17 +53,17 @@ describe("Room", () => {
   });
 
   it("should properly add/remove items", () => {
-    const sword = itemDb.findByNameFull("Short Sword");
+    const knife = itemDb.findByNameFull("Short Sword");
     const armor = itemDb.findByNameFull("Chainmail Armor");
     expect(room.items.length).to.equal(0);
-    room.addItem(sword);
+    room.addItem(knife);
     expect(room.items.length).to.equal(1);
-    expect(room.items[0]).to.equal(sword);
-    room.removeItem(sword);
+    expect(room.items[0]).to.equal(knife);
+    room.removeItem(knife);
     expect(room.items.length).to.equal(0);
 
     for (let i = 0; i < 32; i++) {
-      room.addItem(sword);
+      room.addItem(knife);
     }
     expect(room.items.length).to.equal(32);
     room.addItem(armor);
@@ -72,11 +72,11 @@ describe("Room", () => {
   });
 
   it("should properly find items", () => {
-    const sword = itemDb.findByNameFull("Short Sword");
+    const knife = itemDb.findByNameFull("Rusty knife");
     const armor = itemDb.findByNameFull("Chainmail Armor");
-    expect(room.findItem("sword")).to.equal(0);
-    room.addItem(sword);
-    expect(room.findItem("sword")).to.equal(sword);
+    expect(room.findItem("knife")).to.equal(0);
+    room.addItem(knife);
+    expect(room.findItem("knife")).to.equal(knife);
     expect(room.findItem("Chainmail Armor")).to.equal(0);
     room.addItem(armor);
     expect(room.findItem("Chainmail Armor")).to.equal(armor);
@@ -117,13 +117,13 @@ describe("Room", () => {
   it("should proplery save/load data", () => {
     const dataObject = {
       "ROOMID": "123456",
-      "ITEMS": "1 2 3",
+      "ITEMS": "42 69 71",
       "MONEY": "456"
     };
     room.loadData(dataObject, itemDb);
-    expect(room.items[0].name).to.equal("Knife");
-    expect(room.items[1].name).to.equal("Short Sword");
-    expect(room.items[2].name).to.equal("Leather Armor");
+    expect(room.items[0].name).to.equal("Dagger");
+    expect(room.items[1].name).to.equal("Rapier");
+    expect(room.items[2].name).to.equal("Cutlass");
     expect(room.money).to.equal(456);
 
     room.saveData();
@@ -135,6 +135,9 @@ describe("Room", () => {
     expect(room2.money).to.equal(room.money);
     dataArray.pop(); // clean up test data
     jsonfile.writeFileSync(file, dataArray, {spaces: 2});
+
+    // Note: more in indepth coverage of load/remove room
+    // functionality is covered in the ./test/RoomDatabase.js
   });
 
 

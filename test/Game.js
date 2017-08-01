@@ -681,9 +681,9 @@ describe("Game", () => {
   it("should properly use item from player's inventory", () => {
     const spy = sinon.spy(game, 'useItem');
     const p = player;
-    const weapon = itemDb.findByNameFull("Short Sword");
+    const weapon = itemDb.findByNameFull("Rusty Knife");
     const armor = itemDb.findByNameFull("Leather Armor");
-    const potion = itemDb.findByNameFull("Healing Potion");
+    const potion = itemDb.findByNameFull("Small Healing Potion");
 
     const expectedMsg = cc('red') + cc('bold') +
       "Could not find that item!" + cc('reset') +
@@ -720,7 +720,7 @@ describe("Game", () => {
   it("should properly remove item from player", () => {
     const spy = sinon.spy(game, 'removeItem');
     const p = player;
-    const weapon = itemDb.findByNameFull("Short Sword");
+    const weapon = itemDb.findByNameFull("Rusty Knife");
     const armor = itemDb.findByNameFull("Leather Armor");
     const expectedMsg = cc('red') + cc('bold') +
       "Could not Remove item!" + cc('reset') +

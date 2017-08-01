@@ -30,14 +30,15 @@ describe("RoomDatabase", () => {
   });
 
   it("should properly save/load room data", () => {
-    const sword = itemDb.findByNameFull("Short Sword");
+    const sword = itemDb.findByNameFull("Shortsword");
     const armor = itemDb.findByNameFull("Leather Armor");
-    const potion = itemDb.findByNameFull("Healing Potion");
+    const potion = itemDb.findByNameFull("Small Healing Potion");
     const room = roomDb.findByNameFull("Street");
     expect(room.items).to.be.empty;
     expect(room.money).to.equal(0);
     room.items = [sword, armor, potion];
     room.money = 123;
+    // room data is not empty and doesn't exist in flat file
     roomDb.saveData();
     room.items = [];
     room.money = 0;
@@ -45,12 +46,26 @@ describe("RoomDatabase", () => {
     expect(room.items).to.have.
       members([sword, armor, potion]);
     expect(room.money).to.equal(123);
+    room.items = [armor];
+    room.money = 25;
+    // room data is not empty and exists in flat file
+    roomDb.saveData();
+    roomDb.loadData(itemDb);
+    expect(room.items).to.have.
+      members([armor]);
+    expect(room.money).to.equal(25);
+    // room data is empty and exists in flat file
     room.items = [];
     room.money = 0;
     roomDb.saveData();
     roomDb.loadData(itemDb);
     expect(room.items).to.be.empty;
     expect(room.money).to.equal(0);
-  })
+    // room data is empty and doesn't exist in flat file
+    roomDb.saveData();
+    roomDb.loadData(itemDb);
+    expect(room.items).to.be.empty;
+    expect(room.money).to.equal(0);
+  });
 
 });

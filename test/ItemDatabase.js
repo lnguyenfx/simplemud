@@ -7,11 +7,11 @@ const { itemDb } = require(path.join(__dirname, '..', 'src', 'Databases'));
 describe("ItemDatabase", () => {
 
   it("should properly load all items from file", () => {
-    expect(itemDb.size()).to.equal(35);
+    expect(itemDb.size()).to.equal(72);
   });
 
   it("should find item based on id", () => {
-    const item = itemDb.findById(3);
+    const item = itemDb.findById(46);
     expect(item.name).to.equal("Leather Armor");
     expect(item.type).to.equal(ItemType.ARMOR);
   });
@@ -23,9 +23,9 @@ describe("ItemDatabase", () => {
   });
 
   it("should find partial-match of item's name", () => {
-    const item = itemDb.findByNamePartial("Sword");
-    expect(item.name).to.equal("Short Sword");
-    expect(item.type).to.equal(ItemType.WEAPON);
+    const item = itemDb.findByNamePartial("Power");
+    expect(item.name).to.equal("Chainmail Armor of Power");
+    expect(item.type).to.equal(ItemType.ARMOR);
   });
 
 });
