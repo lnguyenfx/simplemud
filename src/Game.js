@@ -1,9 +1,10 @@
 'use strict';
 
 const Util = require('./Util');
-const { itemDb, playerDb } = require('./Databases');
+const { itemDb, playerDb, roomDb } = require('./Databases');
 const ConnectionHandler = require('./ConnectionHandler');
-const { Attribute, PlayerRank, ItemType } = require('./Attributes');
+const { Attribute, PlayerRank, ItemType, Direction } =
+  require('./Attributes');
 const Player = require('./Player');
 const Train = require('./Train');
 
@@ -28,15 +29,22 @@ class Game extends ConnectionHandler {
   }
 
   enter() {
-    const p = this.player;
     this.lastCommand = "";
+
+    const p = this.player;
     p.active = true;
     p.loggedIn = true;
+    // p.room is initially a room id when Player object
+    // first initialized -- so converting to actual
+    // room object here
+    if (!isNaN(p.room)) p.room = roomDb.findById(p.room);
+    p.room.addPlayer(p);
 
     Game.sendGame("<bold><green>" + p.name +
       " has entered the realm.</green></bold>");
 
     if (p.newbie) this.goToTrain();
+    else p.sendString(Game.printRoom(p.room));
   }
 
   handle(data) {
@@ -483,6 +491,58 @@ class Game extends ConnectionHandler {
         "</bold></white>";
 
     return itemList;
+  }
+
+  static printRoom(room) {
+    let desc = `<newline/><bold><white>${room.name}</white></bold><newline/>` +
+      `<bold><magenta>${room.description}</magenta></bold><newline/>` +
+      "<bold><green>exits: ";
+
+    Direction.enums.forEach(dir => {
+      if (room.rooms[dir] !== 0) {
+        desc += dir.key + "  ";
+      }
+    });
+    desc += "</green></bold><newline/>";
+
+    // ---------------------------------
+    // ITEMS
+    // ---------------------------------
+    let temp = "<bold><yellow>You see: ";
+    let count = 0;
+    if (room.money > 0) {
+      count++;
+      temp += "$" + room.money + ", ";
+    }
+
+    room.items.forEach(item => {
+      count++;
+      temp += item.name + ", ";
+    });
+
+    if (count > 0) {
+      temp = temp.substr(0, temp.length - 2);
+      desc += temp + "</yellow></bold><newline/>";
+    }
+
+    // ---------------------------------
+    // PEOPLE
+    // ---------------------------------
+    temp = "<bold><cyan>People: ";
+    count = 0;
+
+    room.players.forEach(player => {
+      count++;
+      temp += player.name + ", ";
+    });
+
+    if (count > 0) {
+      temp = temp.substr(0, temp.length - 2);
+      desc += temp + "</cyan></bold><newline/>";
+    }
+
+    return desc;
+
   }
 
 }

@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "ROOMID": 2,
+    "ITEMS": "",
+    "MONEY": 0
+  },
+  {
+    "ROOMID": 3,
+    "ITEMS": "43 46",
+    "MONEY": 123
+  }
+]

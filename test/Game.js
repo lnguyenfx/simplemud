@@ -6,8 +6,10 @@ const path = require('path');
 
 const Util = require(path.join(__dirname, '..', 'src', 'Util'));
 const Connection = require(path.join(__dirname, '..', 'src', 'Connection'));
-const { itemDb, playerDb } = require(path.join(__dirname, '..', 'src', 'Databases'));
-const { Attribute, PlayerRank } = require(path.join(__dirname, '..', 'src', 'Attributes'));
+const { itemDb, playerDb, roomDb } =
+  require(path.join(__dirname, '..', 'src', 'Databases'));
+const { Attribute, PlayerRank, Direction } =
+  require(path.join(__dirname, '..', 'src', 'Attributes'));
 const telnet = require(path.join(__dirname, '..', 'src', 'Telnet'));
 const Player = require(path.join(__dirname, '..', 'src', 'Player'));
 const Game = require(path.join(__dirname, '..', 'src', 'Game'));
@@ -754,5 +756,54 @@ describe("Game", () => {
 
     game.removeItem.restore();
   });
+
+  it("should properly print room's info", () => {
+    const room = roomDb.findByNameFull("Training Room")
+
+    const expectedText = cc('newline') + cc('bold') + cc('white') +
+      room.name + cc('reset') + cc('bold') + cc('reset') +
+      cc('newline') + cc('bold') + cc('magenta') +
+      room.description + cc('reset') + cc('bold') + cc('reset') +
+      cc('newline') + cc('bold') + cc('green') +
+      "exits: NORTH  " + cc('reset') + cc('bold') + cc('reset') +
+      cc('newline');
+
+    expect(telnet.translate(Game.printRoom(room))).to.
+      equal(expectedText);
+
+    room.money = 123;
+
+    let extraText = cc('bold') + cc('yellow') +
+      "You see: $123" + cc('reset') + cc('bold') +
+      cc('reset') + cc('newline');
+
+    expect(telnet.translate(Game.printRoom(room))).to.
+      equal(expectedText + extraText);
+
+    const weapon = itemDb.findByNameFull("Shortsword");
+    const armor = itemDb.findByNameFull("Leather Armor");
+    room.items = [weapon, armor];
+
+    extraText = cc('bold') + cc('yellow') +
+      "You see: $123, Shortsword, Leather Armor" +
+      cc('reset') + cc('bold') +
+      cc('reset') + cc('newline');
+
+    expect(telnet.translate(Game.printRoom(room))).to.
+      equal(expectedText + extraText);
+
+    player.name = "Test Player";
+    room.addPlayer(player);
+
+    extraText += cc('bold') + cc('cyan') +
+      "People: Test Player" +
+      cc('reset') + cc('bold') +
+      cc('reset') + cc('newline');
+
+    expect(telnet.translate(Game.printRoom(room))).to.
+      equal(expectedText + extraText);
+
+  });
+
 
 });
