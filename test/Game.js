@@ -803,6 +803,88 @@ describe("Game", () => {
     expect(telnet.translate(Game.printRoom(room))).to.
       equal(expectedText + extraText);
 
+    room.removePlayer(player);
+    room.items = [];
+    room.money = 0;
+
+  });
+
+  it("should properly send text to players in a room", () => {
+    const room = roomDb.findByNameFull("Training Room");
+    const testP1 = new Player();
+    const testP2 = new Player();
+    const stubP1SendString = sinon.stub(testP1, 'sendString').callsFake();
+    const stubP2SendString = sinon.stub(testP2, 'sendString').callsFake();
+
+    room.addPlayer(testP1);
+    room.addPlayer(testP2);
+
+    Game.sendRoom("Testing", room);
+
+    expect(stubP1SendString.calledOnce).to.be.true;
+    expect(stubP2SendString.calledOnce).to.be.true;
+
+    room.removePlayer(testP1);
+    room.removePlayer(testP2);
+
+    testP1.sendString.restore();
+    testP2.sendString.restore();
+  });
+
+  it("should properly move player to new rooms", () => {
+    const trainingRoom = roomDb.findByNameFull("Training Room");
+    const avenue = roomDb.findByNameFull("Avenue");
+
+    const testP1 = player;
+    testP1.name = "TP1";
+    testP1.room = trainingRoom;
+    const stubP1SendString = sinon.stub(testP1, 'sendString').callsFake();
+
+    const testP2 = new Player();
+    testP2.name = "TP2";
+    testP2.room = trainingRoom;
+    const stubP2SendString = sinon.stub(testP2, 'sendString').callsFake();
+
+    const testP3 = new Player();
+    testP3.name = "TP3";
+    testP3.room = avenue;
+    const stubP3SendString = sinon.stub(testP3, 'sendString').callsFake();
+
+    trainingRoom.addPlayer(testP1);
+    trainingRoom.addPlayer(testP2);
+    avenue.addPlayer(testP3);
+
+    game.move('INVALID DIRECTION');
+
+    expect(stubP1SendString.getCall(0).args[0]).to.have.
+      string("<red>Invalid direction!</red>");
+
+    game.move(Direction.SOUTH);
+    expect(stubP1SendString.getCall(1).args[0]).to.have.
+      string("<red>TP1 bumps into the wall to the SOUTH!!!</red>");
+    expect(stubP2SendString.getCall(0).args[0]).to.have.
+      string("<red>TP1 bumps into the wall to the SOUTH!!!</red>");
+
+    game.move(Direction.NORTH);
+    expect(stubP1SendString.getCall(2).args[0]).to.have.
+      string("<green>You walk NORTH.</green>");
+
+    expect(stubP2SendString.getCall(1).args[0]).to.have.
+      string("<green>TP1 leaves to the NORTH.</green>");
+
+    expect(stubP3SendString.getCall(0).args[0]).to.have.
+      string("<green>TP1 enters from the SOUTH.</green>");
+
+    expect(stubP1SendString.getCall(3).args[0]).to.have.
+      string("<cyan>People: TP3, TP1</cyan>");
+
+    trainingRoom.removePlayer(testP2);
+    avenue.removePlayer(testP1);
+    avenue.removePlayer(testP3);
+
+    testP1.sendString.restore();
+    testP2.sendString.restore();
+    testP3.sendString.restore();
   });
 
 

@@ -290,12 +290,62 @@ class Game extends ConnectionHandler {
     return false;
   }
 
+  move(dir) {
+    const p = this.player;
+    if (!dir.hasOwnProperty('key')) {
+      p.sendString("<red>Invalid direction!</red>");
+      return;
+    }
+    const next = roomDb.findById(p.room.rooms[dir]);
+    const previous = p.room;
+
+    if (!next) {
+      Game.sendRoom("<red>" + p.name + " bumps into the wall to the " +
+                    dir.key + "!!!</red>", p.room);
+      return;
+    }
+
+    previous.removePlayer(p);
+
+    Game.sendRoom("<green>"  + p.name + " leaves to the " +
+                  dir.key + ".</green>", previous);
+    Game.sendRoom("<green>"  + p.name + " enters from the " +
+                  this._oppositeDirection(dir) + ".</green>", next);
+    p.sendString("<green>You walk " + dir.key + ".</green>");
+
+    p.room = next;
+    next.addPlayer(p);
+
+    p.sendString(Game.printRoom(next));
+  }
+
+  _oppositeDirection(dir) {
+    switch (dir) {
+      case Direction.NORTH:
+        return Direction.SOUTH.key;
+      case Direction.EAST:
+        return Direction.WEST.key;
+      case Direction.SOUTH:
+        return Direction.NORTH.key;
+      case Direction.WEST:
+        return Direction.EAST.key;
+      default:
+        return false;
+    }
+  }
+
   static sendGlobal(msg) {
     Game._sendToPlayers(msg, 'loggedIn');
   }
 
   static sendGame(msg) {
     Game._sendToPlayers(msg, 'active');
+  }
+
+  static sendRoom(text, room) {
+    room.players.forEach(player => {
+      player.sendString(text);
+    });
   }
 
   static _sendToPlayers(msg, filter) {
@@ -544,6 +594,8 @@ class Game extends ConnectionHandler {
     return desc;
 
   }
+
+
 
 }
 
