@@ -1,7 +1,8 @@
 'use strict';
 
 const Util = require('./Util');
-const { itemDb, playerDb, roomDb } = require('./Databases');
+const { itemDb, playerDb, roomDb, storeDb } =
+  require('./Databases');
 const ConnectionHandler = require('./ConnectionHandler');
 const { Attribute, PlayerRank, ItemType, Direction } =
   require('./Attributes');
@@ -404,6 +405,50 @@ class Game extends ConnectionHandler {
     p.dropItem(i);
   }
 
+  buy(itemName) {
+    const p = this.player;
+    const s = storeDb.findById(p.room.data);
+    if (!s) return false;
+    const i = s.findItem(itemName);
+
+    if (i === 0) {
+      p.sendString("<red><bold>Sorry, we don't have that item!</bold></red>");
+      return;
+    }
+    if (p.money < i.price) {
+      p.sendString("<red><bold>Sorry, but you can't afford that!</bold></red>");
+      return;
+    }
+    if (!p.pickUpItem(i)) {
+      p.sendString("<red><bold>Sorry, but you can't carry that much!</bold></red>");
+      return;
+    }
+
+    p.money -= i.price;
+    Game.sendRoom("<cyan><bold>" + p.name + " buys a " +
+                  i.name +"</bold></cyan>", p.room);
+  }
+
+  sell(itemName) {
+    const p = this.player;
+    const s = storeDb.findById(p.room.data);
+    if (!s) return false;
+    const index = p.getItemIndex(itemName);
+
+    if (index === -1) {
+      p.sendString("<red><bold>Sorry, you don't have that!</bold></red>");
+      return;
+    }
+    const i = p.inventory[index];
+    if (!s.findItem(i.name)) {
+      p.sendString("<red><bold>Sorry, we don't want that item!</bold></red>");
+    }
+    p.dropItem(index);
+    p.money += i.price;
+    Game.sendRoom("<cyan><bold>" + p.name + " sells a " +
+                  i.name + "</bold></cyan>", p.room);
+  }
+
   static sendGlobal(msg) {
     Game._sendToPlayers(msg, 'loggedIn');
   }
@@ -543,6 +588,25 @@ class Game extends ConnectionHandler {
         default:
           return help + god + admin + end;
       }
+  }
+
+  static storeList(storeId) {
+    const s = storeDb.findById(storeId);
+    if (!s) return false;
+    let output = "<white><bold>" +
+                "--------------------------------------------------------------------------------\r\n";
+      output += " Welcome to " + s.name + "!\r\n";
+      output += "--------------------------------------------------------------------------------\r\n";
+      output += " Item                           | Price\r\n";
+      output += "--------------------------------------------------------------------------------\r\n";
+
+    s.items.forEach(item => {
+      output += " " + tostring(item.name, 31) + "| ";
+      output += tostring(item.price) + "\r\n";
+    });
+    output += "--------------------------------------------------------------------------------\r\n" +
+              "</bold></white>";
+    return output;
   }
 
   printExperience() {

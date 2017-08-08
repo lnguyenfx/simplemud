@@ -6,12 +6,14 @@ const path = require('path');
 
 const Util = require(path.join(__dirname, '..', 'src', 'Util'));
 const Connection = require(path.join(__dirname, '..', 'src', 'Connection'));
-const { itemDb, playerDb, roomDb } =
+const { itemDb, playerDb, roomDb, storeDb } =
   require(path.join(__dirname, '..', 'src', 'Databases'));
 const { Attribute, PlayerRank, Direction } =
   require(path.join(__dirname, '..', 'src', 'Attributes'));
 const telnet = require(path.join(__dirname, '..', 'src', 'Telnet'));
 const Player = require(path.join(__dirname, '..', 'src', 'Player'));
+const Room = require(path.join(__dirname, '..', 'src', 'Room'));
+const Store = require(path.join(__dirname, '..', 'src', 'Store'));
 const Game = require(path.join(__dirname, '..', 'src', 'Game'));
 
 const tostring = Util.tostring;
@@ -1013,6 +1015,100 @@ describe("Game", () => {
     p.sendString.restore();
   });
 
+  it("should properly prints out info of a store", () => {
+    const store = new Store();
+    const knife = itemDb.findByNameFull("Knife");
+    const armor = itemDb.findByNameFull("Leather Armor");
+    const potion = itemDb.findByNameFull("Minor Healing Potion");
+    store.name = "Test Store";
+    store.items = [knife, armor, potion];
+    knife.price = 100;
+    armor.price = 200;
+    potion.price = 50;
+    storeDb.add(store);
+    const expectedText = cc('white') + cc('bold') +
+        "--------------------------------------------------------------------------------\r\n" +
+        " Welcome to " + store.name + "!\r\n" +
+        "--------------------------------------------------------------------------------\r\n" +
+        " Item                           | Price\r\n" +
+        "--------------------------------------------------------------------------------\r\n" +
+        " Knife                          | 100\r\n" +
+        " Leather Armor                  | 200\r\n" +
+        " Minor Healing Potion           | 50\r\n" +
+        "--------------------------------------------------------------------------------\r\n" +
+        cc('reset') + cc('white') + cc('reset');
+    expect(Game.storeList('INVALID ID')).to.be.false;
+    expect(telnet.translate(Game.storeList(store.id))).to.
+      equal(expectedText);
+    storeDb.map.delete(store.id);
+  });
 
+  it("should properly allow player to buy items from a store", () => {
+    const p = player;
+    p.name = "Test";
+    p.room = new Room();
 
+    expect(game.buy('Item from Invalid Store')).to.be.false;
+
+    const room = roomDb.findByNameFull("Samuels Armorsmith");
+    p.room = room;
+
+    const stubSendString = sinon.stub(p, 'sendString').callsFake();
+    room.addPlayer(p);
+    room.money = 0;
+
+    game.buy('Invalid Item');
+    expect(stubSendString.getCall(0).args[0]).to.have.
+      string("<red><bold>Sorry, we don't have that item!</bold></red>");
+
+    game.buy('Chainmail Armor');
+    expect(stubSendString.getCall(1).args[0]).to.have.
+      string("<red><bold>Sorry, but you can't afford that!</bold></red>");
+
+    p.money = 100;
+    p.items = 16;
+
+    game.buy('Chainmail Armor');
+    expect(stubSendString.getCall(2).args[0]).to.have.
+      string("<red><bold>Sorry, but you can't carry that much!</bold></red>");
+
+    p.items = 0;
+    game.buy('Chainmail Armor');
+    expect(stubSendString.getCall(3).args[0]).to.have.
+      string("<cyan><bold>Test buys a Chainmail Armor</bold></cyan>");
+
+    expect(p.money).to.equal(20); // armor costs 80 in items.json:item 47
+
+    p.sendString.restore();
+  });
+
+  it("should properly allow player to sell items to a store", () => {
+    const p = player;
+    p.name = "Test";
+    p.room = new Room();
+
+    expect(game.sell('Item from Invalid Store')).to.be.false;
+
+    const room = roomDb.findByNameFull("The Insane Alchemist's Workshop");
+    p.room = room;
+    p.money = 0;
+
+    const stubSendString = sinon.stub(p, 'sendString').callsFake();
+    room.addPlayer(p);
+
+    const sword = itemDb.findByNameFull("Shortsword");
+    const potion = itemDb.findByNameFull("Minor Healing Potion")
+
+    game.sell("Shortsword");
+    expect(stubSendString.getCall(0).args[0]).to.have.
+      string("<red><bold>Sorry, you don't have that!</bold></red>");
+
+    p.pickUpItem(sword);
+    game.sell("Shortsword");
+    expect(stubSendString.getCall(1).args[0]).to.have.
+      string("<red><bold>Sorry, we don't want that item!</bold></red>");
+
+    p.sendString.restore();
+
+  });
 });

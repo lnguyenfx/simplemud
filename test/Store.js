@@ -35,4 +35,15 @@ describe("Store", () => {
 
   });
 
+  it("should properly find items", () => {
+    const knife = itemDb.findByNameFull("Rusty knife");
+    const armor = itemDb.findByNameFull("Chainmail Armor");
+    expect(store.findItem("knife")).to.equal(0);
+    store.items.push(knife);
+    expect(store.findItem("knife")).to.equal(knife);
+    expect(store.findItem("Chainmail Armor")).to.equal(0);
+    store.items.push(armor);
+    expect(store.findItem("Chainmail Armor")).to.equal(armor);
+  });
+
 });

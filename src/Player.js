@@ -276,7 +276,7 @@ class Player extends Entity {
       "STATPOINTS": this.statPoints,
       "EXPERIENCE": this.experience,
       "LEVEL": this.level,
-      "ROOM": this.room,
+      "ROOM": (isNaN(this.room) ? this.room.id : this.room),
       "MONEY": this.money,
       "HITPOINTS": this.hitPoints,
       "NEXTATTACKTIME": this.nextAttackTime,

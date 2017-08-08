@@ -9,6 +9,20 @@ class Store extends Entity {
       this.items = [];
   }
 
+  findItem(itemName) {
+    const find = matchFn => {
+      for (let item of this.items) {
+        if (item[matchFn].bind(item, itemName)()) {
+          return item;
+        }
+      }
+      return 0;
+    };
+    let item = find('matchFull');
+    if (!item) item = find('matchPartial');
+    return item;
+  }
+
   load(dataObject, itemDb) {
     this.id = parseInt(dataObject["ID"]);
     this.name = dataObject["NAME"];
