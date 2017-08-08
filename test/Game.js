@@ -887,5 +887,132 @@ describe("Game", () => {
     testP3.sendString.restore();
   });
 
+  it("should properly allow player to pick up money from rooms", () => {
+    const room = roomDb.findByNameFull("Training Room");
+    const p = player;
+    p.name = "Test";
+    p.room = room;
+
+    const stubSendString = sinon.stub(p, 'sendString').callsFake();
+    room.addPlayer(p);
+    room.money = 150;
+
+    game.getItem('$Invalid Amount');
+    expect(stubSendString.getCall(0).args[0]).to.
+    equal("<red><bold>You don't see that here!</bold></red>");
+
+    game.getItem('$1000');
+    expect(stubSendString.getCall(1).args[0]).to.
+      equal("<red><bold>There isn't that much here!</bold></red>");
+
+    game.getItem('$125');
+    expect(stubSendString.getCall(2).args[0]).to.
+      equal("<cyan><bold>Test picks up $125.</bold></cyan>");
+    expect(p.money).to.equal(125);
+    expect(room.money).to.equal(25);
+
+    room.removePlayer(p);
+    room.money = 0;
+
+    p.sendString.restore();
+  });
+
+  it("should properly allow player to pick up items from rooms", () => {
+    const room = roomDb.findByNameFull("Training Room");
+    const sword = itemDb.findByNameFull("Shortsword");
+    const p = player;
+    p.name = "Test";
+    p.room = room;
+
+    const stubSendString = sinon.stub(p, 'sendString').callsFake();
+    room.addPlayer(p);
+    room.addItem(sword);
+
+    game.getItem('Invalid Item');
+    expect(stubSendString.getCall(0).args[0]).to.
+      equal("<red><bold>You don't see that here!</bold></red>");
+
+    p.items = 16;
+    game.getItem('Shortsword');
+    expect(stubSendString.getCall(1).args[0]).to.
+      equal("<red><bold>You can't carry that much!</bold></red>");
+
+    expect(p.room.items[0]).to.equal(sword);
+    p.items = 0;
+    game.getItem('Shortsword');
+    expect(stubSendString.getCall(2).args[0]).to.
+      equal("<cyan><bold>Test picks up Shortsword.</bold></cyan>");
+
+    expect(p.inventory[0]).to.equal(sword);
+    expect(p.room.items).to.be.empty;
+
+    room.items = [];
+    room.removePlayer(p);
+
+    p.sendString.restore();
+  });
+
+  it("should properly allow player to drop money in rooms", () => {
+    const room = roomDb.findByNameFull("Training Room");
+    const p = player;
+    p.name = "Test";
+    p.room = room;
+    p.money = 150;
+
+    const stubSendString = sinon.stub(p, 'sendString').callsFake();
+    room.addPlayer(p);
+    room.money = 0;
+
+    game.dropItem('$Invalid Amount');
+    expect(stubSendString.getCall(0).args[0]).to.
+    equal("<red><bold>You don't have that!</bold></red>");
+
+    game.dropItem('$1000');
+    expect(stubSendString.getCall(1).args[0]).to.
+      equal("<red><bold>You don't have that much!</bold></red>");
+
+    game.dropItem('$125');
+    expect(stubSendString.getCall(2).args[0]).to.
+      equal("<cyan><bold>Test drops $125.</bold></cyan>");
+    expect(p.money).to.equal(25);
+    expect(room.money).to.equal(125);
+
+    room.removePlayer(p);
+    room.money = 0;
+
+    p.sendString.restore();
+  });
+
+  it("should properly allow player to drop items in rooms", () => {
+    const room = roomDb.findByNameFull("Training Room");
+    const sword = itemDb.findByNameFull("Shortsword");
+    const p = player;
+    p.name = "Test";
+    p.room = room;
+    p.pickUpItem(sword);
+
+    const stubSendString = sinon.stub(p, 'sendString').callsFake();
+    room.addPlayer(p);
+    room.items = [];
+
+    game.dropItem('Invalid Item');
+    expect(stubSendString.getCall(0).args[0]).to.
+      equal("<red><bold>You don't have that!</bold></red>");
+
+    expect(p.inventory[0]).to.equal(sword);
+    game.dropItem('Shortsword');
+    expect(stubSendString.getCall(1).args[0]).to.
+      equal("<cyan><bold>Test drops Shortsword.</bold></cyan>");
+
+    expect(p.inventory[0]).to.equal(0);
+    expect(p.room.items[0]).to.equal(sword);
+
+    room.items = [];
+    room.removePlayer(p);
+
+    p.sendString.restore();
+  });
+
+
 
 });

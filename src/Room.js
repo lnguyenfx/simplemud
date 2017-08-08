@@ -60,9 +60,7 @@ class Room extends Entity {
 
   findItem(itemName) {
     const find = matchFn => {
-      const items = this.items;
-      for (let i = 0; i < items.length; i++) {
-        const item = items[i];
+      for (let item of this.items) {
         if (item[matchFn].bind(item, itemName)()) {
           return item;
         }

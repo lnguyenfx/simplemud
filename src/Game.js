@@ -334,6 +334,76 @@ class Game extends ConnectionHandler {
     }
   }
 
+  getItem(item) {
+    const p = this.player;
+
+    if (item[0] === '$') {
+      // clear off the '$', and convert the result into a number.
+      const money = parseInt(item.substr(1, item.length - 1));
+      if (!isNaN(money)) { // if valid money amount
+        // make sure there's enough money in the room
+        if (money > p.room.money) {
+          p.sendString("<red><bold>There isn't that much here!</bold></red>");
+        } else {
+          p.money += money;
+          p.room.money -= money;
+          Game.sendRoom("<cyan><bold>" + p.name + " picks up $" +
+                        money + ".</bold></cyan>", p.room);
+        }
+        return;
+      }
+    }
+
+    const i = p.room.findItem(item);
+
+    if (!i) {
+      p.sendString("<red><bold>You don't see that here!</bold></red>");
+      return;
+    }
+
+    if (!p.pickUpItem(i)) {
+      p.sendString("<red><bold>You can't carry that much!</bold></red>");
+      return;
+    }
+
+    p.room.removeItem(i);
+    Game.sendRoom("<cyan><bold>" + p.name + " picks up " +
+                  i.name + ".</bold></cyan>", p.room);
+  }
+
+  dropItem(item) {
+    const p = this.player;
+
+    if (item[0] === '$') {
+      // clear off the '$', and convert the result into a number.
+      const money = parseInt(item.substr(1, item.length - 1));
+      if (!isNaN(money)) { // if valid money amount
+        // make sure there's enough money in the room
+        if (money > p.money) {
+          p.sendString("<red><bold>You don't have that much!</bold></red>");
+        } else {
+          p.money -= money;
+          p.room.money += money;
+          Game.sendRoom("<cyan><bold>" + p.name + " drops $" +
+                        money + ".</bold></cyan>", p.room);
+        }
+        return;
+      }
+    }
+
+    const i = p.getItemIndex(item);
+
+    if (i === -1) {
+      p.sendString("<red><bold>You don't have that!</bold></red>");
+      return;
+    }
+
+    Game.sendRoom("<cyan><bold>" + p.name + " drops " +
+                  p.inventory[i].name + ".</bold></cyan>", p.room);
+    p.room.addItem(p.inventory[i]);
+    p.dropItem(i);
+  }
+
   static sendGlobal(msg) {
     Game._sendToPlayers(msg, 'loggedIn');
   }
