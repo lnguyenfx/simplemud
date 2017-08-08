@@ -1,6 +1,6 @@
 # SimpleMUD
 
-SimpleMUD from 'MUD Game Programming book' (by Ron Penton) rewritten for NodeJS.
+SimpleMUD from _MUD Game Programming_ book (by Ron Penton) rewritten for NodeJS.
 
 ## To Run Server
     git clone https://github.com/lnguyenfx/simplemud.git
