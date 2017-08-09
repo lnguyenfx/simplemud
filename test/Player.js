@@ -220,8 +220,8 @@ describe("Player", () => {
 
     const format =
       cc('white') + cc('bold') +
-      "[%s%i" + cc('reset') + cc('bold') +
-      cc('white') + "/%i]" + cc('reset') +
+      "[%s%s" + cc('reset') + cc('bold') +
+      cc('white') + "/%s]" + cc('reset') +
       cc('white') + cc('reset') + cc('newline');
     const sprintf = require('util').format.bind(player, format);
 

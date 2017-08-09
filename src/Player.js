@@ -259,7 +259,7 @@ class Player extends Entity {
     else color = "green";
 
     const statbar = require('util').format(
-        "<white><bold>[<%s>%i</%s>/%i]</bold></white>",
+        "<white><bold>[<%s>%s</%s>/%s]</bold></white>",
         color, this.hitPoints, color,
         this.GetAttr(Attribute.MAXHITPOINTS));
 

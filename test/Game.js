@@ -771,21 +771,21 @@ describe("Game", () => {
     playerDb.map = new Map();
     expect(playerDb.size()).to.equal(0);
     const admin = new Player();
-    admin.name = "Admin";
+    admin.name = "TestAdmin";
     admin.rank = PlayerRank.ADMIN;
     admin.active = false;
     admin.loggedIn = true;
     admin.level = 100;
     playerDb.add(admin);
     const god = new Player();
-    god.name = "God";
+    god.name = "TestGod";
     god.rank = PlayerRank.GOD;
     god.active = true;
     god.loggedIn = true;
     god.level = 505;
     playerDb.add(god);
     const user = new Player();
-    user.name = "User";
+    user.name = "TestUser";
     user.rank = PlayerRank.REGULAR;
     user.active = false;
     user.loggedIn = false;
@@ -801,15 +801,15 @@ describe("Game", () => {
       cc('reset') + cc('white') + cc('reset');
 
     let expectedText = whoHeader +
-      " Admin            | 100       | " +
+      " TestAdmin        | 100       | " +
       cc('yellow') + "Inactive" + cc('reset') + cc('bold') + cc('white') +
        " | " + cc('green') + "ADMIN" + cc('reset') + cc('bold') + cc('white') +
        cc('newline') +
-      " God              | 505       | " +
+      " TestGod          | 505       | " +
       cc('green') + "Online  " + cc('reset') + cc('bold') + cc('white') +
        " | " + cc('yellow') + "GOD" + cc('reset') + cc('bold') + cc('white') +
        cc('newline') +
-      " User             | 10        | " +
+      " TestUser         | 10        | " +
       cc('red') + "Offline " + cc('reset') + cc('bold') + cc('white') +
        " | " + cc('white') + "REGULAR" + cc('reset') + cc('bold') + cc('white') +
        cc('newline') + whoFooter;
@@ -818,7 +818,7 @@ describe("Game", () => {
 
     admin.loggedIn = false;
     expectedText = whoHeader +
-      " God              | 505       | " +
+      " TestGod          | 505       | " +
       cc('green') + "Online  " + cc('reset') + cc('bold') + cc('white') +
        " | " + cc('yellow') + "GOD" + cc('reset') + cc('bold') + cc('white') +
        cc('newline') + whoFooter;

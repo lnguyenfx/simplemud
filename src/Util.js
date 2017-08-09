@@ -3,10 +3,10 @@
 class Util {
 
   static tostring(str, width = 0) {
-    // str = str.toString();
-    // if (str.length >= width) return str;
-    // return str + Array(width - str.length + 1).join(' ');
-    return str.toString().padEnd(width);
+    str = str.toString();
+    if (str.length >= width) return str;
+    return str + Array(width - str.length + 1).join(' ');
+    //return str.toString().padEnd(width);
   }
 
   static randomInt(min, max) {
