@@ -18,8 +18,6 @@ describe("PlayerDatabase", () => {
       path.join(dataPath, '_players.json'));
     const expectedSize = dataArray.length;
     expect(playerDb.size()).to.equal(expectedSize);
-    expect(playerDb.findByNameFull("admin").name).to.equal("admin");
-    expect(playerDb.findByNameFull("test").name).to.equal("test");
     expect(playerDb.lastId()).to.equal(playerDb.size());
   });
 
@@ -63,7 +61,7 @@ describe("PlayerDatabase", () => {
   it("should properly log out players", () => {
     const player = playerDb.findByNameFull("test");
     expect(player.name).to.equal("test");
-    const spy = sinon.spy(player, 'save');
+    const spy = sinon.spy(player, 'serialize');
     player.connection = 1;
     player.loggedIn = true;
     player.active = true;
@@ -72,7 +70,7 @@ describe("PlayerDatabase", () => {
     expect(player.loggedIn).to.be.false;
     expect(player.active).to.be.false;
     expect(spy.calledOnce).to.be.true;
-    player.save.restore();
+    player.serialize.restore();
   });
 
   it("should properly find active players", () => {

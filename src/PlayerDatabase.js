@@ -29,6 +29,7 @@ class PlayerDatabase extends EntityDatabase {
   }
 
   load(itemDb) {
+    this.map.clear();
     const file = path.join(dataPath, '_players.json');
     const dataArray = jsonfile.readFileSync(file);
     dataArray.forEach(playerName => {
@@ -64,7 +65,8 @@ class PlayerDatabase extends EntityDatabase {
   }
 
   savePlayer(player) {
-    player.save();
+    const file = path.join(dataPath, player.name + '.json');
+    jsonfile.writeFileSync(file, player.serialize(), {spaces: 2});
   }
 
   logout(playerId) {
@@ -75,7 +77,7 @@ class PlayerDatabase extends EntityDatabase {
     player.active = false;
 
     // make sure the player is saved to disk
-    player.save();
+    this.savePlayer(player);
   }
 
   lastId() {

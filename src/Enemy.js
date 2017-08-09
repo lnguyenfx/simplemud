@@ -22,6 +22,7 @@ class EnemyTemplate extends Entity {
   }
 
   load(dataObject) {
+    this.name = dataObject["NAME"];
     this.hitPoints = parseInt(dataObject["HITPOINTS"]);
     this.accuracy = parseInt(dataObject["ACCURACY"]);
     this.dodging = parseInt(dataObject["DODGING"]);
@@ -49,46 +50,25 @@ class Enemy extends Entity {
   loadTemplate(template) {
     this.tp = template;
     this.hitPoints = template.hitPoints;
+    this.name = template.name;
   }
 
-  loadData(dataObject) {
-    this.tp = parseInt(dataObject["TEMPLATEID"]);
+  loadData(dataObject, enemyTpDb, roomDb) {
+    this.tp = enemyTpDb.findById(parseInt(dataObject["TEMPLATEID"]));
+    this.name = this.tp.name;
     this.hitPoints = parseInt(dataObject["HITPOINTS"]);
-    this.room = parseInt(dataObject["ROOM"]);
+    this.room = roomDb.findById(parseInt(dataObject["ROOM"]));
     this.nextAttackTime = parseInt(dataObject["NEXTATTACKTIME"]);
   }
 
-  saveData(dataArray) {
-    const obj = {
+  serialize() {
+    return {
       "ID": this.id,
       "TEMPLATEID": (isNaN(this.tp) ? this.tp.id : this.tp),
       "HITPOINTS": this.hitPoints,
-      "ROOM": this.room,
+      "ROOM": (isNaN(this.room) ? this.room.id : this.room),
       "NEXTATTACKTIME": this.nextAttackTime
     };
-    const file =
-      require('path').join(__dirname, '..', 'data', 'enemiesdata.json');
-    const jsonfile = require('jsonfile');
-    let exists = false;
-    let empty = false;
-    dataArray = dataArray || jsonfile.readFileSync(file);
-    for (let dataObject of dataArray) {
-      if (parseInt(dataObject["ID"]) === obj["ID"]) {
-        dataObject["TEMPLATEID"] = obj["TEMPLATEID"];
-        dataObject["HITPOINTS"] = obj["HITPOINTS"];
-        dataObject["ROOM"] = obj["ROOM"];
-        dataObject["NEXTATTACKTIME"] = obj["NEXTATTACKTIME"];
-        exists = true;
-        break;
-      }
-    }
-    if (exists) {
-      dataArray = dataArray.filter(
-        dataObject => this.id !== parseInt(dataObject["ID"]));
-    }
-    dataArray.push(obj);
-    dataArray.sort((a, b) => a.id > b.id);
-    jsonfile.writeFileSync(file, dataArray, {spaces: 2});
   }
 
 }

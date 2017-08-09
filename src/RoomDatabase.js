@@ -17,6 +17,7 @@ class RoomDatabase extends EntityDatabase {
   }
 
   loadTemplates() {
+    this.map.clear();
     const dataArray = jsonfile.readFileSync(fileMap);
     dataArray.forEach(dataObject => {
       const room = new Room();
@@ -35,10 +36,12 @@ class RoomDatabase extends EntityDatabase {
   }
 
   saveData()  {
-    const dataArray = jsonfile.readFileSync(fileMapData);
+    const dataArray = [];
     for (let room of this.map.values()) {
-      room.saveData(dataArray);
+      if (room.items.length && room.money)
+        dataArray.push(room.serialize());
     }
+    jsonfile.writeFileSync(fileMapData, dataArray, {spaces: 2});
   }
 
 }

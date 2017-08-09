@@ -14,8 +14,8 @@ const telnet = require(path.join(__dirname, '..', 'src', 'Telnet'));
 
 describe("Player", () => {
 
-  const db = new ItemDatabase();
-  db.load();
+  const itemDb = new ItemDatabase();
+  itemDb.load();
 
   it("should properly intialize", () => {
 
@@ -61,12 +61,12 @@ describe("Player", () => {
     const player = new Player();
     const spy = sinon.spy(player, 'recalculateStats');
     expect(player.attributes[Attribute.ACCURACY]).to.equal(3);
-    const weapon = db.findByNameFull("Rusty Knife");
+    const weapon = itemDb.findByNameFull("Rusty Knife");
     player.addBonuses(weapon);
     expect(player.baseAttributes[Attribute.ACCURACY]).to.equal(5);
     expect(player.baseAttributes[Attribute.DODGING]).to.equal(0);
     expect(player.baseAttributes[Attribute.DAMAGEABSORB]).to.equal(0);
-    const armor = db.findByNameFull("Leather Armor");
+    const armor = itemDb.findByNameFull("Leather Armor");
     player.addBonuses(armor);
     expect(player.baseAttributes[Attribute.DODGING]).to.equal(15);
     expect(player.baseAttributes[Attribute.DAMAGEABSORB]).to.equal(0);
@@ -76,12 +76,12 @@ describe("Player", () => {
   it("should properly add dynamic bonuses", () => {
     const player = new Player();
     expect(player.attributes[Attribute.ACCURACY]).to.equal(3);
-    const weapon = db.findByNameFull("Rusty Knife");
+    const weapon = itemDb.findByNameFull("Rusty Knife");
     player.addDynamicBonuses(weapon);
     expect(player.attributes[Attribute.ACCURACY]).to.equal(8);
     expect(player.attributes[Attribute.DODGING]).to.equal(3);
     expect(player.attributes[Attribute.DAMAGEABSORB]).to.equal(0);
-    const armor = db.findByNameFull("Leather Armor");
+    const armor = itemDb.findByNameFull("Leather Armor");
     player.addDynamicBonuses(armor);
     expect(player.attributes[Attribute.DODGING]).to.equal(18);
     expect(player.attributes[Attribute.DAMAGEABSORB]).to.equal(0);
@@ -136,7 +136,7 @@ describe("Player", () => {
   });
 
   it("should properly pick up items", () => {
-    const weapon = db.findByNameFull("Rusty Knife");
+    const weapon = itemDb.findByNameFull("Rusty Knife");
     const player = new Player();
     expect(player.items).to.equal(0);
     player.pickUpItem(weapon);
@@ -150,9 +150,9 @@ describe("Player", () => {
   });
 
   it("should properly drop items", () => {
-    const weapon = db.findByNameFull("Short Sword");
-    const armor = db.findByNameFull("Leather Armor");
-    const potion = db.findByNameFull("Healing Potion");
+    const weapon = itemDb.findByNameFull("Short Sword");
+    const armor = itemDb.findByNameFull("Leather Armor");
+    const potion = itemDb.findByNameFull("Healing Potion");
     const player = new Player();
     player.pickUpItem(weapon);
     player.pickUpItem(armor);
@@ -174,7 +174,7 @@ describe("Player", () => {
                        "Heavy Longsword",
                        "Heavy Club"
                       ];
-    const items = itemsList.map(itemName => db.findByNameFull(itemName));
+    const items = itemsList.map(itemName => itemDb.findByNameFull(itemName));
     const player = new Player();
     items.forEach((item) => player.pickUpItem(item));
     const swordIndex = player.getItemIndex("Heavy");
@@ -250,82 +250,56 @@ describe("Player", () => {
 
   });
 
-  it("should properly save to and loads from JSON file", () => {
+  it("should properly loads data", () => {
 
-    const testUser = 'UnitTestUser101';
-    const dataPath =
-      path.join(__dirname, '..', 'data', 'players',
-                testUser + '.json');
-    before(() => {
-      if (fs.existsSync(dataPath)) fs.unlinkSync(dataPath);
-    });
+    const dataObject = {
+      "ID": 123, "NAME": "TestUser",
+      "PASS": "abc", "RANK": "REGULAR",
+      "STATPOINTS": 10, "EXPERIENCE": 50,
+      "LEVEL": 2, "ROOM": 3, "MONEY": 250,
+      "HITPOINTS": 18, "NEXTATTACKTIME": 1,
+      "STRENGTH": 1, "HEALTH": 2, "AGILITY": 3,
+      "MAXHITPOINTS": 4, "ACCURACY": 5,
+      "DODGING": 6, "STRIKEDAMAGE": 7,
+      "DAMAGEABSORB": 8, "HPREGEN": 9,
+      "INVENTORY": "43 46 36", "WEAPON": 0,
+      "ARMOR": 1
+    }
 
-    after(() => {
-      if (fs.existsSync(dataPath)) fs.unlinkSync(dataPath);
-    });
-
+    const weapon = itemDb.findByNameFull("Shortsword");
+    const armor = itemDb.findByNameFull("Leather Armor");
+    const potion = itemDb.findByNameFull("Small Healing Potion");
     const player = new Player();
-    const weapon = db.findByNameFull("RustY Knife");
-    player.pickUpItem(weapon);
-    player.useWeapon(0);
-    const armor = db.findByNameFull("Chainmail Armor");
-    player.pickUpItem(armor);
-    player.useArmor(1);
-    const potion = db.findByNameFull("Small Healing Potion");
-    player.pickUpItem(potion);
-    player.id = 2;
-    player.name = testUser;
-    player.password = "abc";
-    player.rank = PlayerRank.REGULAR;
-    player.statPoints = 10;
-    player.experience = 50;
-    player.level = 2;
-    player.room = 3;
-    player.money = 250;
-    player.hitPoints = 18;
-    player.nextAttackTime = 1;
-    player.baseAttributes[Attribute.STRENGTH] = 1;
-    player.baseAttributes[Attribute.HEALTH] = 2;
-    player.baseAttributes[Attribute.AGILITY] = 3;
-    player.baseAttributes[Attribute.MAXHITPOINTS] = 4;
-    player.baseAttributes[Attribute.ACCURACY] = 5;
-    player.baseAttributes[Attribute.DODGING] = 6;
-    player.baseAttributes[Attribute.STRIKEDAMAGE] = 7;
-    player.baseAttributes[Attribute.DAMAGEABSORB] = 8;
-    player.baseAttributes[Attribute.HPREGEN] = 9;
+    player.load(dataObject, itemDb);
 
-    player.save();
+    expect(player.id).to.equal(123);
+    expect(player.name).to.equal("TestUser");
+    expect(player.password).to.equal("abc");
+    expect(player.rank).to.equal(PlayerRank.REGULAR);
+    expect(player.statPoints).to.equal(10);
+    expect(player.experience).to.equal(50);
+    expect(player.level).to.equal(2);
+    expect(player.room).to.equal(3);
+    expect(player.money).to.equal(250);
+    expect(player.hitPoints).to.equal(18);
+    expect(player.nextAttackTime).to.equal(1);
+    expect(player.baseAttributes[Attribute.STRENGTH]).to.equal(1);
+    expect(player.baseAttributes[Attribute.HEALTH]).to.equal(2);
+    expect(player.baseAttributes[Attribute.AGILITY]).to.equal(3);
+    expect(player.baseAttributes[Attribute.MAXHITPOINTS]).to.equal(4);
+    expect(player.baseAttributes[Attribute.ACCURACY]).to.equal(5);
+    expect(player.baseAttributes[Attribute.DODGING]).to.equal(6);
+    expect(player.baseAttributes[Attribute.STRIKEDAMAGE]).to.equal(7);
+    expect(player.baseAttributes[Attribute.DAMAGEABSORB]).to.equal(8);
+    expect(player.baseAttributes[Attribute.HPREGEN]).to.equal(9);
+    expect(player.items).to.equal(3);
+    expect(player.inventory[0]).to.equal(weapon);
+    expect(player.inventory[1]).to.equal(armor);
+    expect(player.inventory[2]).to.equal(potion);
+    expect(player.weapon).to.equal(0);
+    expect(player.armor).to.equal(1);
 
-    const dataObject = jsonfile.readFileSync(dataPath);
-    const dbPlayer = new Player();
-    dbPlayer.load(dataObject, db);
-
-    expect(dbPlayer.id).to.equal(2);
-    expect(dbPlayer.name).to.equal(testUser);
-    expect(dbPlayer.password).to.equal("abc");
-    expect(dbPlayer.rank).to.equal(PlayerRank.REGULAR);
-    expect(dbPlayer.statPoints).to.equal(10);
-    expect(dbPlayer.experience).to.equal(50);
-    expect(dbPlayer.level).to.equal(2);
-    expect(dbPlayer.room).to.equal(3);
-    expect(dbPlayer.money).to.equal(250);
-    expect(dbPlayer.hitPoints).to.equal(18);
-    expect(dbPlayer.nextAttackTime).to.equal(1);
-    expect(dbPlayer.baseAttributes[Attribute.STRENGTH]).to.equal(1);
-    expect(dbPlayer.baseAttributes[Attribute.HEALTH]).to.equal(2);
-    expect(dbPlayer.baseAttributes[Attribute.AGILITY]).to.equal(3);
-    expect(dbPlayer.baseAttributes[Attribute.MAXHITPOINTS]).to.equal(4);
-    expect(dbPlayer.baseAttributes[Attribute.ACCURACY]).to.equal(5);
-    expect(dbPlayer.baseAttributes[Attribute.DODGING]).to.equal(6);
-    expect(dbPlayer.baseAttributes[Attribute.STRIKEDAMAGE]).to.equal(7);
-    expect(dbPlayer.baseAttributes[Attribute.DAMAGEABSORB]).to.equal(8);
-    expect(dbPlayer.baseAttributes[Attribute.HPREGEN]).to.equal(9);
-    expect(dbPlayer.items).to.equal(3);
-    expect(dbPlayer.inventory[0]).to.equal(weapon);
-    expect(dbPlayer.inventory[1]).to.equal(armor);
-    expect(dbPlayer.inventory[2]).to.equal(potion);
-    expect(dbPlayer.weapon).to.equal(0);
-    expect(dbPlayer.armor).to.equal(1);
+    expect(player.serialize()).to.include(dataObject);
   });
 
 });

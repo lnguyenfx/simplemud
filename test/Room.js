@@ -4,7 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const jsonfile = require('jsonfile');
 
-const { itemDb } =
+const { itemDb, enemyTpDb } =
   require(path.join(__dirname, '..', 'src', 'Databases'));
 
 const { RoomType, Direction }
@@ -12,6 +12,7 @@ const { RoomType, Direction }
 
 const Room = require(path.join(__dirname, '..', 'src', 'Room'));
 const Player = require(path.join(__dirname, '..', 'src', 'Player'));
+const { Enemy } = require(path.join(__dirname, '..', 'src', 'Enemy'));
 
 describe("Room", () => {
 
@@ -82,6 +83,29 @@ describe("Room", () => {
     expect(room.findItem("Chainmail Armor")).to.equal(armor);
   });
 
+  it("should properly add/remove enemies", () => {
+    const e = new Enemy();
+    expect(room.enemies.length).to.equal(0);
+    room.addEnemy(e);
+    expect(room.enemies.length).to.equal(1);
+    expect(room.enemies[0]).to.equal(e);
+    room.removeEnemy(e);
+    expect(room.enemies.length).to.equal(0);
+  });
+
+  it("should properly find enemies", () => {
+    const bandit = new Enemy();
+    bandit.loadTemplate(enemyTpDb.findByNameFull("Bandit"));
+    const gangLeader = new Enemy();
+    gangLeader.loadTemplate(enemyTpDb.findByNameFull("Gang Leader"));
+    expect(room.findEnemy("Bandit")).to.equal(0);
+    room.addEnemy(bandit);
+    expect(room.findEnemy("Bandit")).to.equal(bandit);
+    expect(room.findEnemy("Gang Leader")).to.equal(0);
+    room.addEnemy(gangLeader);
+    expect(room.findEnemy("Gang Leader")).to.equal(gangLeader);
+  });
+
   it("should properly load template", () => {
     const templateObject = {
       "ID": "1",
@@ -114,11 +138,11 @@ describe("Room", () => {
     expect(room.maxEnemies).to.equal(3);
   });
 
-  it("should proplery save/load data", () => {
+  it("should proplery load data", () => {
     const dataObject = {
-      "ROOMID": "123456",
+      "ROOMID": 123456,
       "ITEMS": "42 69 71",
-      "MONEY": "456"
+      "MONEY": 456
     };
     room.loadData(dataObject, itemDb);
     expect(room.items[0].name).to.equal("Dagger");
@@ -126,18 +150,7 @@ describe("Room", () => {
     expect(room.items[2].name).to.equal("Cutlass");
     expect(room.money).to.equal(456);
 
-    room.saveData();
-    const file = path.join(__dirname, '..', 'data', 'mapdata.json');
-    const dataArray = jsonfile.readFileSync(file);
-    const room2 = new Room();
-    room2.loadData(dataArray[dataArray.length - 1], itemDb);
-    expect(room2.items).to.have.members(room.items);
-    expect(room2.money).to.equal(room.money);
-    dataArray.pop(); // clean up test data
-    jsonfile.writeFileSync(file, dataArray, {spaces: 2});
-
-    // Note: more in in-depth coverage of load/save room
-    // functionality is covered in the ./test/RoomDatabase.js
+    expect(room.serialize()).to.include(dataObject);
   });
 
 

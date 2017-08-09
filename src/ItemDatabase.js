@@ -14,6 +14,7 @@ class ItemDatabase extends EntityDatabase {
   }
 
   load() {
+    this.map.clear();
     const dataArray = jsonfile.readFileSync(file);
     dataArray.forEach(dataObject => {
       const item = new Item();

@@ -266,38 +266,6 @@ class Player extends Entity {
     this.connection.sendMessage(statbar + '\n');
   }
 
-  save() {
-    const attr = this.baseAttributes;
-    const obj = {
-      "ID": this.id,
-      "NAME": this.name,
-      "PASS": this.password,
-      "RANK": this.rank.toString(),
-      "STATPOINTS": this.statPoints,
-      "EXPERIENCE": this.experience,
-      "LEVEL": this.level,
-      "ROOM": (isNaN(this.room) ? this.room.id : this.room),
-      "MONEY": this.money,
-      "HITPOINTS": this.hitPoints,
-      "NEXTATTACKTIME": this.nextAttackTime,
-      "STRENGTH": attr[Attribute.STRENGTH],
-      "HEALTH": attr[Attribute.HEALTH],
-      "AGILITY": attr[Attribute.AGILITY],
-      "MAXHITPOINTS": attr[Attribute.MAXHITPOINTS],
-      "ACCURACY": attr[Attribute.ACCURACY],
-      "DODGING": attr[Attribute.DODGING],
-      "STRIKEDAMAGE": attr[Attribute.STRIKEDAMAGE],
-      "DAMAGEABSORB": attr[Attribute.DAMAGEABSORB],
-      "HPREGEN": attr[Attribute.HPREGEN],
-      "INVENTORY": this.inventory.map(item => item.id).join(' '),
-      "WEAPON": this.weapon,
-      "ARMOR": this.armor
-    }
-    const file = require('path').join(__dirname, '..', 'data', 'players', this.name + '.json');
-    const jsonfile = require('jsonfile');
-    jsonfile.writeFileSync(file, obj, {spaces: 2});
-  }
-
   load(dataObject, itemDb) {
     const parse = (key) => parseInt(dataObject[key]);
     this.id = parse("ID");
@@ -328,6 +296,34 @@ class Player extends Entity {
     this.recalculateStats();
   }
 
+  serialize() {
+    const attr = this.baseAttributes;
+    return {
+      "ID": this.id,
+      "NAME": this.name,
+      "PASS": this.password,
+      "RANK": this.rank.toString(),
+      "STATPOINTS": this.statPoints,
+      "EXPERIENCE": this.experience,
+      "LEVEL": this.level,
+      "ROOM": (isNaN(this.room) ? this.room.id : this.room),
+      "MONEY": this.money,
+      "HITPOINTS": this.hitPoints,
+      "NEXTATTACKTIME": this.nextAttackTime,
+      "STRENGTH": attr[Attribute.STRENGTH],
+      "HEALTH": attr[Attribute.HEALTH],
+      "AGILITY": attr[Attribute.AGILITY],
+      "MAXHITPOINTS": attr[Attribute.MAXHITPOINTS],
+      "ACCURACY": attr[Attribute.ACCURACY],
+      "DODGING": attr[Attribute.DODGING],
+      "STRIKEDAMAGE": attr[Attribute.STRIKEDAMAGE],
+      "DAMAGEABSORB": attr[Attribute.DAMAGEABSORB],
+      "HPREGEN": attr[Attribute.HPREGEN],
+      "INVENTORY": this.inventory.map(item => item.id).join(' '),
+      "WEAPON": this.weapon,
+      "ARMOR": this.armor
+    }
+  }
 }
 
 module.exports = Player;

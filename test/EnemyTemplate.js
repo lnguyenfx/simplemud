@@ -4,7 +4,7 @@ const path = require('path');
 
 const { EnemyTemplate } =
   require(path.join(__dirname, '..', 'src', 'Enemy'));
-
+  
 describe("EnemyTemplate", () => {
 
   const template = new EnemyTemplate();
@@ -36,6 +36,7 @@ describe("EnemyTemplate", () => {
 
     template.load(dataObject);
 
+    expect(template.name).to.equal("Ruffian");
     expect(template.hitPoints).to.equal(100);
     expect(template.accuracy).to.equal(140);
     expect(template.dodging).to.equal(40);

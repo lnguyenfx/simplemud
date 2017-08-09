@@ -72,6 +72,28 @@ class Room extends Entity {
     return item;
   }
 
+  addEnemy(enemy) {
+    this.enemies.push(enemy);
+  }
+
+  removeEnemy(enemy) {
+    this.enemies = this.enemies.filter(e => e !== enemy);
+  }
+
+  findEnemy(enemyName) {
+    const find = matchFn => {
+      for (let enemy of this.enemies) {
+        if (enemy[matchFn].bind(enemy, enemyName)()) {
+          return enemy;
+        }
+      }
+      return 0;
+    };
+    let item = find('matchFull');
+    if (!item) item = find('matchPartial');
+    return item;
+  }
+
   loadTemplate(templateObject) {
     this.id = parseInt(templateObject["ID"]);
     this.name = templateObject["NAME"];
@@ -96,37 +118,12 @@ class Room extends Entity {
     this.money = parseInt(dataObject["MONEY"]);
   }
 
-  saveData(dataArray) {
-    const obj = {
+  serialize() {
+    return {
       "ROOMID": this.id,
       "ITEMS": this.items.map(item => item.id).join(' '),
       "MONEY": this.money
     };
-    const file = require('path').join(__dirname, '..', 'data', 'mapdata.json');
-    const jsonfile = require('jsonfile');
-    let exists = false;
-    let empty = false;
-    dataArray = dataArray || jsonfile.readFileSync(file);
-    for (let dataObject of dataArray) {
-      if (parseInt(dataObject["ROOMID"]) === obj["ROOMID"]) {
-        dataObject["ITEMS"] = obj["ITEMS"];
-        dataObject["MONEY"] = obj["MONEY"];
-        exists = true;
-        break;
-      }
-    }
-    if (!this.items.length && !this.money) {
-      if (exists) {
-        dataArray = dataArray.filter(
-          dataObject => this.id !== parseInt(dataObject["ROOMID"]));
-      }
-      empty = true;
-    }
-    if (!empty && !exists) dataArray.push(obj);
-    if (exists || (!empty && !exists)){
-      dataArray.sort((a, b) => a.id > b.id);
-      jsonfile.writeFileSync(file, dataArray, {spaces: 2});
-    }
   }
 
 } // end class Room

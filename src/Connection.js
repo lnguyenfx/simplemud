@@ -58,6 +58,9 @@ class Connection {
 
     // Fix for Microsoft Telnet client
     const dataStr = data.toString();
+    if (!buffer.length && dataStr.match(/[\b]/)) {
+      this.socket.write(' ');
+    }
     buffer += (dataStr.match(/[\b]/) ? '' : dataStr);
     if (buffer.length && dataStr !== ' \b' && dataStr.match(/[\b]/)) {
       buffer = buffer.substr(0, buffer.length - 1);

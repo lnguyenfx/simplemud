@@ -69,7 +69,7 @@ describe("Train", () => {
 
   it("should properly handle quit", () => {
     const p = player;
-    const stubSavePlayer = sinon.stub(p, "save").callsFake();
+    const stubSavePlayer = sinon.stub(playerDb, "savePlayer").callsFake();
     const spy = sinon.spy(train, "leave");
     conn.addHandler(train);
     train.handle("quit");
@@ -77,7 +77,7 @@ describe("Train", () => {
     expect(spy.calledOnce).to.be.true;
     conn.clearHandlers();
     train.leave.restore();
-    p.save.restore();
+    playerDb.savePlayer.restore();
   });
 
   it("should properly handle hungup()", () => {

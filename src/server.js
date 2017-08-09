@@ -7,7 +7,7 @@ const net = require('net');
 const cm = require('./ConnectionManager');
 const telnet = require('./Telnet');
 const Game = require('./Game');
-const { playerDb, roomDb } = require('./Databases');
+const { playerDb, roomDb, enemyDb } = require('./Databases');
 
 net.createServer((socket) => {
   cm.newConnection(socket, telnet);
@@ -20,4 +20,5 @@ Game.setIsRunning(true);
 setInterval(() => {
   playerDb.save();
   roomDb.saveData();
+  enemyDb.save();
 }, 5 * 60 * 1000); // auto-save every 5 minutes
