@@ -6,7 +6,7 @@ const path = require('path');
 
 const Connection = require(path.join(__dirname, '..', 'src', 'Connection'));
 const telnet = require(path.join(__dirname, '..', 'src', 'Telnet'));
-const { playerDb } = require(path.join(__dirname, '..', 'src', 'Databases'));
+const { playerDb, roomDb } = require(path.join(__dirname, '..', 'src', 'Databases'));
 
 const { Attribute }
   = require(path.join(__dirname, '..', 'src', 'Attributes'));
@@ -78,6 +78,19 @@ describe("Train", () => {
     conn.clearHandlers();
     train.leave.restore();
     p.save.restore();
+  });
+
+  it("should properly handle hungup()", () => {
+    const p = player;
+    const stubLogout = sinon.stub(playerDb, 'logout').callsFake();
+    const stubSaveData = sinon.stub(roomDb, 'saveData').callsFake();
+
+    train.hungup();
+    expect(stubLogout.calledOnce).to.be.true;
+    expect(stubSaveData.calledOnce).to.be.true;
+
+    playerDb.logout.restore();
+    roomDb.saveData.restore();
   });
 
   it("should properly handle stats assignment", () => {

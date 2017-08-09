@@ -98,7 +98,7 @@ class Player extends Entity {
   }
 
   addDynamicBonuses(item) {
-    if (item == 0) return;
+    if (item === 0) return;
     Attribute.enums.forEach(attr => {
       this.attributes[attr] += item.attributes[attr];
     });

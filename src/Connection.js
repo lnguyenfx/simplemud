@@ -52,12 +52,18 @@ class Connection {
   }
 
   _receivedData(data) {
+    // Fix for Putty Telnet client
+    if (data.includes(Buffer.from('fffb1f', 'hex')))
+      return;
+
+    // Fix for Microsoft Telnet client
     const dataStr = data.toString();
     buffer += (dataStr.match(/[\b]/) ? '' : dataStr);
     if (buffer.length && dataStr !== ' \b' && dataStr.match(/[\b]/)) {
       buffer = buffer.substr(0, buffer.length - 1);
       this.socket.write(' \b');
     }
+
     if (buffer.match(/\n/)) {
       this._handler().handle(buffer.replace(/[\r\n]*$/,''));
       buffer = '';

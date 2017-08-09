@@ -4,7 +4,7 @@ const Util = require('./Util');
 const { itemDb, playerDb, roomDb, storeDb } =
   require('./Databases');
 const ConnectionHandler = require('./ConnectionHandler');
-const { Attribute, PlayerRank, ItemType, Direction } =
+const { Attribute, PlayerRank, ItemType, Direction, RoomType } =
   require('./Attributes');
 const Player = require('./Player');
 const Train = require('./Train');
@@ -58,11 +58,12 @@ class Game extends ConnectionHandler {
     else this.lastcommand = data; // if not, record the command.
 
     // get the first word and lowercase it.
-    const firstWord = parseWord(data, 0);
+    const firstWord = parseWord(data, 0).toLowerCase();
 
     // ------------------------------------------------------------------------
     //  REGULAR access commands
     // ------------------------------------------------------------------------
+
     if (firstWord === "chat" || firstWord === ':') {
       const text = removeWord(data, 0);
       Game.sendGame(
@@ -72,6 +73,11 @@ class Game extends ConnectionHandler {
 
     if (firstWord === "experience" || firstWord === "exp") {
       p.sendString(this.printExperience());
+      return;
+    }
+
+    if (firstWord === "help" || firstWord === "commands") {
+      p.sendString(Game.printHelp(p.rank));
       return;
     }
 
@@ -126,9 +132,96 @@ class Game extends ConnectionHandler {
       return;
     }
 
+    if (firstWord === "look" || firstWord === "l") {
+      p.sendString(Game.printRoom(p.room));
+      return;
+    }
+
+    if (firstWord === "north" || firstWord === "n") {
+      this.move(Direction.NORTH);
+      return;
+    }
+
+    if (firstWord === "east" || firstWord === "e") {
+      this.move(Direction.EAST);
+      return;
+    }
+
+    if (firstWord === "south" || firstWord === "s") {
+      this.move(Direction.SOUTH);
+      return;
+    }
+
+    if (firstWord === "west" || firstWord === "w") {
+      this.move(Direction.WEST);
+      return;
+    }
+
+    if (firstWord === "get" || firstWord === "take") {
+      this.getItem(removeWord(data, 0));
+      return;
+    }
+
+    if (firstWord === "drop") {
+      this.dropItem(removeWord(data, 0));
+      return;
+    }
+
+    if (firstWord === "train") {
+      if (p.room.type !== RoomType.TRAININGROOM) {
+        p.sendString("<red><bold>You cannot train here!</bold></red>");
+        return;
+      }
+      if (p.train()) {
+        p.sendString("<green><bold>You are now level " +
+                     p.level + "</bold></green>");
+      } else {
+        p.sendString("<red><bold>You don't have enough " +
+                     "experience to train!</bold></red>");
+      }
+      return;
+    }
+
+    if (firstWord === "editstats") {
+      if (p.room.type !== RoomType.TRAININGROOM) {
+        p.sendString("<red><bold>You cannot edit your stats here!</bold></red>");
+        return;
+      }
+      this.goToTrain();
+      return;
+    }
+
+    if (firstWord === "list") {
+      if (p.room.type !== RoomType.STORE) {
+        p.sendString("<red><bold>You're not in a store!</bold></red>");
+        return;
+      }
+      p.sendString(Game.storeList(p.room.data));
+      return;
+    }
+
+    if (firstWord === "buy") {
+      if (p.room.type !== RoomType.STORE) {
+        p.sendString("<red><bold>You're not in a store!</bold></red>");
+        return;
+      }
+      this.buy(removeWord(data, 0));
+      return;
+    }
+
+    if (firstWord === "sell") {
+      if (p.room.type !== RoomType.STORE) {
+        p.sendString("<red><bold>You're not in a store!</bold></red>");
+        return;
+      }
+      this.sell(removeWord(data, 0));
+      return;
+    }
+
     // ------------------------------------------------------------------------
     //  GOD access commands
     // ------------------------------------------------------------------------
+
     if (firstWord === "kick" && p.rank >= PlayerRank.GOD) {
 
       const targetName = parseWord(data, 1);
@@ -158,6 +251,7 @@ class Game extends ConnectionHandler {
     // ------------------------------------------------------------------------
     //  ADMIN access commands
     // ------------------------------------------------------------------------
+
     if (firstWord === "announce" && p.rank >= PlayerRank.ADMIN) {
       Game.announce(removeWord(data, 0));
       return;
@@ -203,6 +297,12 @@ class Game extends ConnectionHandler {
       if (db === "items") {
         itemDb.load();
         p.sendString("<bold><cyan>Item Database Reloaded!</cyan></bold>");
+      } else if (db === 'rooms') {
+        roomDb.loadTemplates();
+        p.sendString("<bold><cyan>Room Database Reloaded!</cyan></bold>");
+      } else if (db === 'stores') {
+        storeDb.load(itemDb);
+        p.sendString("<bold><cyan>Store Database Reloaded!</cyan></bold>");
       } else {
         p.sendString("<bold><red>Invalid Database Name!</red></bold>");
       }
@@ -215,6 +315,12 @@ class Game extends ConnectionHandler {
       return;
     }
 
+    // ------------------------------------------------------------------------
+    //  Command not recognized, send to room
+    // ------------------------------------------------------------------------
+    Game.sendRoom("<bold>" + p.name + " says: <dim>" +
+                  data + "</dim></bold>", p.room);
+
   }
 
   leave() {
@@ -223,7 +329,9 @@ class Game extends ConnectionHandler {
     p.active = false;
     // log out the player from the database if the connection has been closed
     if (this.connection.isClosed) {
+      if (isNaN(p.room)) p.room.removePlayer(p);
       playerDb.logout(p.id);
+      roomDb.saveData();
     }
   }
 
@@ -256,9 +364,13 @@ class Game extends ConnectionHandler {
     switch(item.type) {
       case ItemType.WEAPON:
         p.useWeapon(index);
+        Game.sendRoom("<green><bold>" + p.name + " arms a " +
+                      item.name + "</bold></green>", p.room);
         return true;
       case ItemType.ARMOR:
         p.useArmor(index);
+        Game.sendRoom("<green><bold>" + p.name + " puts on a " +
+                      item.name + "</bold></green>", p.room);
         return true;
       case ItemType.HEALING:
         const min = item.min;

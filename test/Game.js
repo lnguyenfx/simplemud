@@ -50,6 +50,19 @@ describe("Game", () => {
 
   describe("handle()", () => {
 
+    let stubSendRoom;
+    beforeEach(() => {
+      stubSendRoom = sinon.stub(Game, 'sendRoom').callsFake();
+    });
+
+    afterEach(() => {
+      Game.sendRoom.restore();
+    })
+
+    // ------------------------------------------------------------------------
+    //  REGULAR access commands
+    // ------------------------------------------------------------------------
+
     it("should properly handle 'chat' commands", () => {
       const stub = stubSocketSend;
       sinon.stub(player, 'printStatbar').callsFake();
@@ -84,6 +97,26 @@ describe("Game", () => {
       expect(spySendStr.calledOnce).to.be.true;
       player.sendString.restore();
       game.printExperience.restore();
+    });
+
+    it("should properly handle 'help' command", () => {
+      const spyPrintHelp = sinon.spy(Game, 'printHelp');
+      const spySendStr = sinon.spy(player, 'sendString');
+      game.handle("help");
+      expect(spyPrintHelp.calledOnce).to.be.true;
+      expect(spySendStr.calledOnce).to.be.true;
+      player.sendString.restore();
+      Game.printHelp.restore();
+    });
+
+    it("should properly handle 'commands' command", () => {
+      const spyPrintHelp = sinon.spy(Game, 'printHelp');
+      const spySendStr = sinon.spy(player, 'sendString');
+      game.handle("help");
+      expect(spyPrintHelp.calledOnce).to.be.true;
+      expect(spySendStr.calledOnce).to.be.true;
+      player.sendString.restore();
+      Game.printHelp.restore();
     });
 
     it("should properly handle 'inventory' command", () => {
@@ -178,6 +211,219 @@ describe("Game", () => {
       Game.whoList.restore();
     });
 
+    it("should properly handle 'look' command", () => {
+      player.room = roomDb.findByNameFull("Training Room");
+      const spy = sinon.spy(Game, 'printRoom');
+      game.handle('look');
+      expect(spy.calledOnce).to.be.true;
+      Game.printRoom.restore();
+    });
+
+    it("should properly handle 'l' command", () => {
+      player.room = roomDb.findByNameFull("Training Room");
+      const spy = sinon.spy(Game, 'printRoom');
+      game.handle('l');
+      expect(spy.calledOnce).to.be.true;
+      Game.printRoom.restore();
+    });
+
+    it("should properly handle 'north' command", () => {
+      const stub = sinon.stub(game, 'move').callsFake();
+      game.handle('North');
+      expect(stub.getCall(0).args[0]).to.
+        equal(Direction.NORTH);
+      game.move.restore();
+    });
+
+    it("should properly handle 'n' command", () => {
+      const stub = sinon.stub(game, 'move').callsFake();
+      game.handle('n');
+      expect(stub.getCall(0).args[0]).to.
+        equal(Direction.NORTH);
+      game.move.restore();
+    });
+
+    it("should properly handle 'east' command", () => {
+      const stub = sinon.stub(game, 'move').callsFake();
+      game.handle('East');
+      expect(stub.getCall(0).args[0]).to.
+        equal(Direction.EAST);
+      game.move.restore();
+    });
+
+    it("should properly handle 'e' command", () => {
+      const stub = sinon.stub(game, 'move').callsFake();
+      game.handle('e');
+      expect(stub.getCall(0).args[0]).to.
+        equal(Direction.EAST);
+      game.move.restore();
+    });
+
+    it("should properly handle 'south' command", () => {
+      const stub = sinon.stub(game, 'move').callsFake();
+      game.handle('South');
+      expect(stub.getCall(0).args[0]).to.
+        equal(Direction.SOUTH);
+      game.move.restore();
+    });
+
+    it("should properly handle 's' command", () => {
+      const stub = sinon.stub(game, 'move').callsFake();
+      game.handle('s');
+      expect(stub.getCall(0).args[0]).to.
+        equal(Direction.SOUTH);
+      game.move.restore();
+    });
+
+    it("should properly handle 'west' command", () => {
+      const stub = sinon.stub(game, 'move').callsFake();
+      game.handle('West');
+      expect(stub.getCall(0).args[0]).to.
+        equal(Direction.WEST);
+      game.move.restore();
+    });
+
+    it("should properly handle 'w' command", () => {
+      const stub = sinon.stub(game, 'move').callsFake();
+      game.handle('West');
+      expect(stub.getCall(0).args[0]).to.
+        equal(Direction.WEST);
+      game.move.restore();
+    });
+
+    it("should properly handle 'get' command", () => {
+      const stub = sinon.stub(game, 'getItem').callsFake();
+      game.handle('get sword');
+      expect(stub.getCall(0).args[0]).to.
+        equal('sword');
+      game.getItem.restore();
+    });
+
+    it("should properly handle 'take' command", () => {
+      const stub = sinon.stub(game, 'getItem').callsFake();
+      game.handle('take sword');
+      expect(stub.getCall(0).args[0]).to.
+        equal('sword');
+      game.getItem.restore();
+    });
+
+    it("should properly handle 'drop' command", () => {
+      const stub = sinon.stub(game, 'dropItem').callsFake();
+      game.handle('drop healing potion');
+      expect(stub.getCall(0).args[0]).to.
+        equal('healing potion');
+      game.dropItem.restore();
+    });
+
+    it("should properly handle 'train' command", () => {
+      const p = player;
+      const stub = sinon.stub(p, 'sendString').callsFake();
+      p.experience = 0;
+
+      p.room = roomDb.findByNameFull("Avenue");
+      game.handle('train');
+      expect(stub.getCall(0).args[0]).to.
+      equal("<red><bold>You cannot train here!</bold></red>");
+
+      p.room = roomDb.findByNameFull("Training Room");
+      game.handle('train');
+      expect(stub.getCall(1).args[0]).to.
+        equal("<red><bold>You don't have enough " +
+              "experience to train!</bold></red>");
+
+      p.experience = 40;
+      game.handle('train');
+      expect(stub.getCall(2).args[0]).to.
+        equal("<green><bold>You are now level 2</bold></green>");
+
+      p.sendString.restore();
+    });
+
+    it("should properly handle 'editstats' command", () => {
+      const p = player;
+      const stubSendString = sinon.stub(p, 'sendString').callsFake();
+      const stubGoToTrain = sinon.stub(game, 'goToTrain').callsFake();
+      p.experience = 0;
+
+      p.room = roomDb.findByNameFull("Avenue");
+      game.handle('editstats');
+      expect(stubSendString.getCall(0).args[0]).to.
+      equal("<red><bold>You cannot edit your stats here!</bold></red>");
+      expect(stubGoToTrain.calledOnce).to.be.false;
+
+      p.room = roomDb.findByNameFull("Training Room");
+      game.handle('editstats');
+      expect(stubGoToTrain.calledOnce).to.be.true;
+
+      p.sendString.restore();
+      game.goToTrain.restore();
+    });
+
+    it("should properly handle 'list' command", () => {
+      const p = player;
+      const spySendStr = sinon.spy(p, 'sendString');
+      const spyStoreList = sinon.spy(Game, 'storeList');
+
+      p.room = roomDb.findByNameFull("Avenue");
+      game.handle('list');
+      expect(spySendStr.getCall(0).args[0]).to.
+        equal("<red><bold>You're not in a store!</bold></red>");
+      expect(spyStoreList.calledOnce).to.be.false;
+
+      p.room = roomDb.findByNameFull("Bobs Weapon Shop");
+      game.handle('list');
+      expect(spySendStr.getCall(1).args[0]).to.have.
+        string("Rusty Knife");
+      expect(spyStoreList.calledOnce).to.be.true;
+
+      p.sendString.restore();
+      Game.storeList.restore();
+    });
+
+    it("should properly handle 'buy' command", () => {
+      const p = player;
+      const spySendStr = sinon.spy(p, 'sendString');
+      const stubBuy = sinon.stub(game, 'buy').callsFake();
+
+      p.room = roomDb.findByNameFull("Avenue");
+      game.handle('buy shortsword');
+      expect(spySendStr.getCall(0).args[0]).to.
+        equal("<red><bold>You're not in a store!</bold></red>");
+      expect(stubBuy.calledOnce).to.be.false;
+
+      p.room = roomDb.findByNameFull("Bobs Weapon Shop");
+      game.handle('buy shortsword');
+      expect(stubBuy.calledOnce).to.be.true;
+      expect(stubBuy.getCall(0).args[0]).to.equal("shortsword");
+
+      p.sendString.restore();
+      game.buy.restore();
+    });
+
+    it("should properly handle 'sell' command", () => {
+      const p = player;
+      const spySendStr = sinon.spy(p, 'sendString');
+      const stubSell = sinon.stub(game, 'sell').callsFake();
+
+      p.room = roomDb.findByNameFull("Avenue");
+      game.handle('sell shortsword');
+      expect(spySendStr.getCall(0).args[0]).to.
+        equal("<red><bold>You're not in a store!</bold></red>");
+      expect(stubSell.calledOnce).to.be.false;
+
+      p.room = roomDb.findByNameFull("Bobs Weapon Shop");
+      game.handle('sell shortsword');
+      expect(stubSell.calledOnce).to.be.true;
+      expect(stubSell.getCall(0).args[0]).to.equal("shortsword");
+
+      p.sendString.restore();
+      game.sell.restore();
+    });
+
+    // ------------------------------------------------------------------------
+    //  GOD access commands
+    // ------------------------------------------------------------------------
+
     it("should properly handle 'kick' command", () => {
       const stubLogoutMsg = sinon.stub(Game, 'logoutMessage').callsFake();
       const stubConnClose = sinon.stub(conn, 'close').callsFake();
@@ -225,6 +471,10 @@ describe("Game", () => {
       conn.close.restore();
       Game.logoutMessage.restore();
     });
+
+    // ------------------------------------------------------------------------
+    //  ADMIN access commands
+    // ------------------------------------------------------------------------
 
     it("should properly handle 'announce' command", () => {
       const spy = sinon.spy(Game, 'announce');
@@ -291,30 +541,51 @@ describe("Game", () => {
 
     it("should properly handle 'reload' command", () => {
       const stubLoadItemDb = sinon.stub(itemDb, 'load').callsFake();
+      const stubLoadRoomDb = sinon.stub(roomDb, 'loadTemplates').callsFake();
+      const stubLoadStoreDb = sinon.stub(storeDb, 'load').callsFake();
       const spySendStr = sinon.spy(player, 'sendString');
       const p = player;
+
       p.rank = PlayerRank.REGULAR;
       game.handle("reload items");
       expect(spySendStr.calledOnce).to.be.false;
+
       p.rank = PlayerRank.GOD;
       game.handle("reload items");
       expect(spySendStr.calledOnce).to.be.false;
+
       p.rank = PlayerRank.ADMIN;
+      expect(stubLoadItemDb.calledOnce).to.be.false;
       game.handle("reload items");
       expect(spySendStr.calledOnce).to.be.true;
       expect(spySendStr.getCall(0).args[0]).to.have.
         string("Item Database Reloaded!");
+      expect(stubLoadItemDb.calledOnce).to.be.true;
+
+      expect(stubLoadRoomDb.calledOnce).to.be.false;
+      game.handle("reload rooms");
+      expect(spySendStr.getCall(1).args[0]).to.have.
+        string("Room Database Reloaded!");
+      expect(stubLoadRoomDb.calledOnce).to.be.true;
+
+      expect(stubLoadStoreDb.calledOnce).to.be.false;
+      game.handle("reload stores");
+      expect(spySendStr.getCall(2).args[0]).to.have.
+        string("Store Database Reloaded!");
+      expect(stubLoadStoreDb.calledOnce).to.be.true;
 
       game.handle("reload");
-      expect(spySendStr.getCall(1).args[0]).to.have.
+      expect(spySendStr.getCall(3).args[0]).to.have.
         string("Usage: reload <db>");
 
       game.handle("reload invalidDb");
-      expect(spySendStr.getCall(2).args[0]).to.have.
+      expect(spySendStr.getCall(4).args[0]).to.have.
         string("Invalid Database Name!");
 
       player.sendString.restore();
       itemDb.load.restore();
+      roomDb.loadTemplates.restore();
+      storeDb.load.restore();
     });
 
     it("should properly handle 'shutdown' command", () => {
@@ -337,6 +608,18 @@ describe("Game", () => {
       Game.announce.restore();
     });
 
+    // ------------------------------------------------------------------------
+    //  Command not recognized, send to room
+    // ------------------------------------------------------------------------
+
+    it("should send command to room if not recognized", () => {
+      const p = player;
+      p.name = "Test";
+      game.handle("this is a test");
+      const expectedMsg =
+        "<bold>Test says: <dim>this is a test</dim></bold>";
+      expect(stubSendRoom.getCall(0).args[0]).to.equal(expectedMsg);
+    });
 
   });
 
@@ -364,13 +647,18 @@ describe("Game", () => {
   it("should properly trigger leave()", () => {
     const p = player;
     const stubLogout = sinon.stub(playerDb, 'logout').callsFake();
+    const stubSaveData = sinon.stub(roomDb, 'saveData').callsFake();
+
     p.active = true;
     conn.isClosed = true;
     game.leave();
     expect(p.active).to.be.false;
     expect(stubLogout.calledOnce).to.be.true;
+    expect(stubSaveData.calledOnce).to.be.true;
     conn.isClosed = false;
+
     playerDb.logout.restore();
+    roomDb.saveData.restore();
   });
 
   it("should properly trigger hungup()", () => {
@@ -684,7 +972,9 @@ describe("Game", () => {
 
   it("should properly use item from player's inventory", () => {
     const spy = sinon.spy(game, 'useItem');
+    const stubSendRoom = sinon.stub(Game, 'sendRoom').callsFake();
     const p = player;
+    p.name = "Test";
     const weapon = itemDb.findByNameFull("Rusty Knife");
     const armor = itemDb.findByNameFull("Leather Armor");
     const potion = itemDb.findByNameFull("Small Healing Potion");
@@ -704,11 +994,15 @@ describe("Game", () => {
     expect(p.weapon).to.equal(-1);
     game.useItem(weapon.name);
     expect(spy.returnValues[1]).to.be.true;
+    expect(stubSendRoom.getCall(0).args[0]).to.
+      equal("<green><bold>Test arms a Rusty Knife</bold></green>");
     expect(p.weapon).to.equal(0);
 
     expect(p.armor).to.equal(-1);
     game.useItem(armor.name);
     expect(spy.returnValues[2]).to.be.true;
+    expect(stubSendRoom.getCall(1).args[0]).to.
+      equal("<green><bold>Test puts on a Leather Armor</bold></green>");
     expect(p.armor).to.equal(1);
 
     p.hitPoints = 0;
@@ -757,6 +1051,7 @@ describe("Game", () => {
     expect(p.Armor()).to.equal(0);
 
     game.removeItem.restore();
+    Game.sendRoom.restore();
   });
 
   it("should properly print room's info", () => {

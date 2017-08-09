@@ -19,7 +19,7 @@
   "STRIKEDAMAGE": 7,
   "DAMAGEABSORB": 8,
   "HPREGEN": 9,
-  "INVENTORY": "2 4 5",
-  "WEAPON": 0,
-  "ARMOR": 1
+  "INVENTORY": "",
+  "WEAPON": -1,
+  "ARMOR": -1
 }

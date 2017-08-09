@@ -1,6 +1,6 @@
 'use strict';
 
-const { playerDb } = require('./Databases');
+const { playerDb, roomDb } = require('./Databases');
 const ConnectionHandler = require('./ConnectionHandler');
 const { Attribute } = require('./Attributes');
 const Player = require('./Player');
@@ -29,7 +29,9 @@ class Train extends ConnectionHandler {
   handle(data) {
     const p = this.player;
     if (data === "quit") {
+      if (isNaN(p.room)) p.room.removePlayer(p);
       playerDb.savePlayer(p);
+      roomDb.saveData();
       this.connection.removeHandler();
       return;
     }
@@ -63,7 +65,10 @@ class Train extends ConnectionHandler {
   }
 
   hungup() {
-    playerDb.logout(this.player.id);
+    const p = this.player;
+    if (isNaN(p.room)) p.room.removePlayer(p);
+    playerDb.logout(p.id);
+    roomDb.saveData();
   }
 
 }
