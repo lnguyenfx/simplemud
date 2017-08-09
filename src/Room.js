@@ -101,7 +101,7 @@ class Room extends Entity {
       "ROOMID": this.id,
       "ITEMS": this.items.map(item => item.id).join(' '),
       "MONEY": this.money
-    }
+    };
     const file = require('path').join(__dirname, '..', 'data', 'mapdata.json');
     const jsonfile = require('jsonfile');
     let exists = false;
@@ -123,8 +123,10 @@ class Room extends Entity {
       empty = true;
     }
     if (!empty && !exists) dataArray.push(obj);
-    if (exists || (!empty && !exists))
+    if (exists || (!empty && !exists)){
+      dataArray.sort((a, b) => a.id > b.id);
       jsonfile.writeFileSync(file, dataArray, {spaces: 2});
+    }
   }
 
 } // end class Room

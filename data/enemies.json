@@ -1,0 +1,374 @@
+[
+  {
+    "ID": 1,
+    "NAME": "Rabid Monkey",
+    "HITPOINTS": 6,
+    "ACCURACY": 40,
+    "DODGING": -30,
+    "STRIKEDAMAGE": 0,
+    "DAMAGEABSORB": 0,
+    "EXPERIENCE": 4,
+    "WEAPON": 40,
+    "MONEYMIN": 0,
+    "MONEYMAX": 2,
+    "LOOT": [
+      {
+        "itemId": 40,
+        "chance": 3
+      },
+      {
+        "itemId": 35,
+        "chance": 2
+      }
+    ]
+  },
+  {
+    "ID": 2,
+    "NAME": "Thug",
+    "HITPOINTS": 15,
+    "ACCURACY": 70,
+    "DODGING": -10,
+    "STRIKEDAMAGE": 0,
+    "DAMAGEABSORB": 0,
+    "EXPERIENCE": 10,
+    "WEAPON": 41,
+    "MONEYMIN": 0,
+    "MONEYMAX": 4,
+    "LOOT": [
+      {
+        "itemId": 41,
+        "chance": 1
+      },
+      {
+        "itemId": 35,
+        "chance": 2
+      }
+    ]
+  },
+  {
+    "ID": 3,
+    "NAME": "Gangmember",
+    "HITPOINTS": 15,
+    "ACCURACY": 80,
+    "DODGING": -20,
+    "STRIKEDAMAGE": 0,
+    "DAMAGEABSORB": 0,
+    "EXPERIENCE": 13,
+    "WEAPON": 42,
+    "MONEYMIN": 0,
+    "MONEYMAX": 5,
+    "LOOT": [
+      {
+        "itemId": 42,
+        "chance": 1
+      },
+      {
+        "itemId": 57,
+        "chance": 2
+      }
+    ]
+  },
+  {
+    "ID": 4,
+    "NAME": "Tentacle Monster",
+    "HITPOINTS": 30,
+    "ACCURACY": 100,
+    "DODGING": -10,
+    "STRIKEDAMAGE": 4,
+    "DAMAGEABSORB": 1,
+    "EXPERIENCE": 20,
+    "WEAPON": 7,
+    "MONEYMIN": 0,
+    "MONEYMAX": 0
+  },
+  {
+    "ID": 5,
+    "NAME": "Abomination",
+    "HITPOINTS": 50,
+    "ACCURACY": 110,
+    "DODGING": 10,
+    "STRIKEDAMAGE": 6,
+    "DAMAGEABSORB": 2,
+    "EXPERIENCE": 50,
+    "WEAPON": 7,
+    "MONEYMIN": 0,
+    "MONEYMAX": 0
+  },
+  {
+    "ID": 6,
+    "NAME": "Evil Squirrel",
+    "HITPOINTS": 4,
+    "ACCURACY": 110,
+    "DODGING": 10,
+    "STRIKEDAMAGE": -2,
+    "DAMAGEABSORB": 0,
+    "EXPERIENCE": 3,
+    "WEAPON": 0,
+    "MONEYMIN": 0,
+    "MONEYMAX": 0
+  },
+  {
+    "ID": 7,
+    "NAME": "Monkey Trainer",
+    "HITPOINTS": 100,
+    "ACCURACY": 100,
+    "DODGING": 15,
+    "STRIKEDAMAGE": 5,
+    "DAMAGEABSORB": 2,
+    "EXPERIENCE": 70,
+    "WEAPON": 59,
+    "MONEYMIN": 0,
+    "MONEYMAX": 10,
+    "LOOT": [
+      {
+        "itemId": 59,
+        "chance": 1
+      },
+      {
+        "itemId": 57,
+        "chance": 1
+      }
+    ]
+  },
+  {
+    "ID": 8,
+    "NAME": "Bandit",
+    "HITPOINTS": 30,
+    "ACCURACY": 70,
+    "DODGING": 30,
+    "STRIKEDAMAGE": 0,
+    "DAMAGEABSORB": 1,
+    "EXPERIENCE": 30,
+    "WEAPON": 44,
+    "MONEYMIN": 2,
+    "MONEYMAX": 15,
+    "LOOT": [
+      {
+        "itemId": 44,
+        "chance": 1
+      }
+    ]
+  },
+  {
+    "ID": 9,
+    "NAME": "Mutant",
+    "HITPOINTS": 20,
+    "ACCURACY": 90,
+    "DODGING": 10,
+    "STRIKEDAMAGE": 2,
+    "DAMAGEABSORB": 0,
+    "EXPERIENCE": 15,
+    "WEAPON": 28,
+    "MONEYMIN": 0,
+    "MONEYMAX": 1
+  },
+  {
+    "ID": 10,
+    "NAME": "Vagrant",
+    "HITPOINTS": 10,
+    "ACCURACY": 80,
+    "DODGING": 0,
+    "STRIKEDAMAGE": 1,
+    "DAMAGEABSORB": 0,
+    "EXPERIENCE": 9,
+    "WEAPON": 40,
+    "MONEYMIN": 0,
+    "MONEYMAX": 1,
+    "LOOT": [
+      {
+        "itemId": 40,
+        "chance": 1
+      }
+    ]
+  },
+  {
+    "ID": 11,
+    "NAME": "Thief",
+    "HITPOINTS": 15,
+    "ACCURACY": 110,
+    "DODGING": 10,
+    "STRIKEDAMAGE": 1,
+    "DAMAGEABSORB": 0,
+    "EXPERIENCE": 14,
+    "WEAPON": 42,
+    "MONEYMIN": 3,
+    "MONEYMAX": 15,
+    "LOOT": [
+      {
+        "itemId": 42,
+        "chance": 1
+      },
+      {
+        "itemId": 41,
+        "chance": 1
+      }
+    ]
+  },
+  {
+    "ID": 12,
+    "NAME": "Rock Lobster",
+    "HITPOINTS": 10,
+    "ACCURACY": 90,
+    "DODGING": 10,
+    "STRIKEDAMAGE": 2,
+    "DAMAGEABSORB": 0,
+    "EXPERIENCE": 8,
+    "WEAPON": 26,
+    "MONEYMIN": 0,
+    "MONEYMAX": 0
+  },
+  {
+    "ID": 13,
+    "NAME": "Bikini Whale",
+    "HITPOINTS": 175,
+    "ACCURACY": 160,
+    "DODGING": -20,
+    "STRIKEDAMAGE": 0,
+    "DAMAGEABSORB": 5,
+    "EXPERIENCE": 150,
+    "WEAPON": 27,
+    "MONEYMIN": 0,
+    "MONEYMAX": 0
+  },
+  {
+    "ID": 14,
+    "NAME": "Gang Leader",
+    "HITPOINTS": 120,
+    "ACCURACY": 180,
+    "DODGING": 30,
+    "STRIKEDAMAGE": 4,
+    "DAMAGEABSORB": 2,
+    "EXPERIENCE": 110,
+    "WEAPON": 63,
+    "MONEYMIN": 0,
+    "MONEYMAX": 20,
+    "LOOT": [
+      {
+        "itemId": 63,
+        "chance": 1
+      }
+    ]
+  },
+  {
+    "ID": 15,
+    "NAME": "Ruffian",
+    "HITPOINTS": 100,
+    "ACCURACY": 140,
+    "DODGING": 40,
+    "STRIKEDAMAGE": 2,
+    "DAMAGEABSORB": 3,
+    "EXPERIENCE": 80,
+    "WEAPON": 43,
+    "MONEYMIN": 0,
+    "MONEYMAX": 10,
+    "LOOT": [
+      {
+        "itemId": 43,
+        "chance": 1
+      },
+      {
+        "itemId": 35,
+        "chance": 1
+      }
+    ]
+  },
+  {
+    "ID": 16,
+    "NAME": "Robber",
+    "HITPOINTS": 50,
+    "ACCURACY": 140,
+    "DODGING": 40,
+    "STRIKEDAMAGE": 2,
+    "DAMAGEABSORB": 3,
+    "EXPERIENCE": 35,
+    "WEAPON": 42,
+    "MONEYMIN": 5,
+    "MONEYMAX": 15,
+    "LOOT": [
+      {
+        "itemId": 42,
+        "chance": 2
+      },
+      {
+        "itemId": 57,
+        "chance": 5
+      }
+    ]
+  },
+  {
+    "ID": 17,
+    "NAME": "Corsair",
+    "HITPOINTS": 50,
+    "ACCURACY": 180,
+    "DODGING": 10,
+    "STRIKEDAMAGE": 5,
+    "DAMAGEABSORB": 2,
+    "EXPERIENCE": 65,
+    "WEAPON": 32,
+    "MONEYMIN": 0,
+    "MONEYMAX": 20,
+    "LOOT": [
+      {
+        "itemId": 69,
+        "chance": 1
+      }
+    ]
+  },
+  {
+    "ID": 18,
+    "NAME": "Pirate",
+    "HITPOINTS": 100,
+    "ACCURACY": 120,
+    "DODGING": 0,
+    "STRIKEDAMAGE": 0,
+    "DAMAGEABSORB": 8,
+    "EXPERIENCE": 95,
+    "WEAPON": 33,
+    "MONEYMIN": 10,
+    "MONEYMAX": 40,
+    "LOOT": [
+      {
+        "itemId": 70,
+        "chance": 1
+      }
+    ]
+  },
+  {
+    "ID": 19,
+    "NAME": "Captain Jack",
+    "HITPOINTS": 200,
+    "ACCURACY": 200,
+    "DODGING": 50,
+    "STRIKEDAMAGE": 10,
+    "DAMAGEABSORB": 10,
+    "EXPERIENCE": 200,
+    "WEAPON": 34,
+    "MONEYMIN": 0,
+    "MONEYMAX": 200,
+    "LOOT": [
+      {
+        "itemId": 71,
+        "chance": 1
+      }
+    ]
+  },
+  {
+    "ID": 20,
+    "NAME": "Backstreet Boy",
+    "HITPOINTS": 150,
+    "ACCURACY": 125,
+    "DODGING": 100,
+    "STRIKEDAMAGE": 2,
+    "DAMAGEABSORB": 3,
+    "EXPERIENCE": 150,
+    "WEAPON": 58,
+    "MONEYMIN": 0,
+    "MONEYMAX": 40,
+    "LOOT": [
+      {
+        "itemId": 58,
+        "chance": 1
+      }
+    ]
+  }
+]

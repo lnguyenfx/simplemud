@@ -136,7 +136,7 @@ describe("Room", () => {
     dataArray.pop(); // clean up test data
     jsonfile.writeFileSync(file, dataArray, {spaces: 2});
 
-    // Note: more in indepth coverage of load/remove room
+    // Note: more in in-depth coverage of load/save room
     // functionality is covered in the ./test/RoomDatabase.js
   });
 
