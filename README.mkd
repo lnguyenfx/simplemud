@@ -16,4 +16,5 @@ SimpleMUD from _MUD Game Programming_ book (by Ron Penton) rewritten for NodeJS.
 
 ## License
 Copyright (c) 2017
-Licensed under the [MIT License](../blob/master/LICENSE.txt)
+
+Licensed under the [MIT License](../master/LICENSE.txt)
