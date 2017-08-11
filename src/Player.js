@@ -90,7 +90,7 @@ class Player extends Entity {
   }
 
   addBonuses(item) {
-    if (item == 0) return;
+    if (!item) return;
     Attribute.enums.forEach(attr => {
       this.baseAttributes[attr] += item.attributes[attr];
     });
@@ -98,7 +98,7 @@ class Player extends Entity {
   }
 
   addDynamicBonuses(item) {
-    if (item === 0) return;
+    if (!item) return;
     Attribute.enums.forEach(attr => {
       this.attributes[attr] += item.attributes[attr];
     });
@@ -177,7 +177,8 @@ class Player extends Entity {
         this.removeArmor();
       }
 
-      this.inventory[index] = 0;
+      this.inventory =
+        this.inventory.filter((o, i) => i !== index);
       this.items--;
 
       return true;

@@ -668,7 +668,7 @@ describe("Game", () => {
   it("should properly trigger leave()", () => {
     const p = player;
     const stubLogout = sinon.stub(playerDb, 'logout').callsFake();
-    
+
     p.active = true;
     conn.isClosed = true;
     game.leave();
@@ -1334,7 +1334,7 @@ describe("Game", () => {
     expect(stubSendString.getCall(1).args[0]).to.
       equal("<cyan><bold>Test drops Shortsword.</bold></cyan>");
 
-    expect(p.inventory[0]).to.equal(0);
+    expect(p.inventory[0]).to.be.undefined;
     expect(p.room.items[0]).to.equal(sword);
 
     room.items = [];

@@ -1,15 +1,18 @@
 'use strict';
 
+const { SortedMap } = require("insort");
+
 class EntityDatabase {
 
   constructor() {
-    this.map = new Map();
+    this.map = new SortedMap([], (a, b) => a > b);
   }
 
   add(entity) {
     const id = this.findOpenId();
     entity.id = id;
-    this.map.set(id, entity);
+    this.map.set(parseInt(id), entity);
+    //console.log(id);
   }
 
   get(id) {
@@ -29,7 +32,7 @@ class EntityDatabase {
   //  finds entity based in ID
   // --------------------------------------------------------------------
   findById(id) {
-    return this.map.get(id); // returns undefined if no match
+    return this.map.get(id) || undefined; // returns undefined if no match
   }
 
   // --------------------------------------------------------------------

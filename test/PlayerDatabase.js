@@ -32,7 +32,6 @@ describe("PlayerDatabase", () => {
     expect(playerDb.lastId()).to.equal(playerDb.size());
   });
 
-
   it("should not add existing players in database", () => {
     const dataArray = jsonfile.readFileSync(
       path.join(dataPath, '_players.json'));

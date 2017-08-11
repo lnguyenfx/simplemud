@@ -32,7 +32,7 @@ class EnemyTemplate extends Entity {
     this.weapon = parseInt(dataObject["WEAPON"]);
     this.moneyMin = parseInt(dataObject["MONEYMIN"]);
     this.moneyMax = parseInt(dataObject["MONEYMAX"]);
-    this.loot = dataObject["LOOT"];
+    this.loot = dataObject["LOOT"] || [];
   }
 
 }

@@ -13,6 +13,6 @@ net.createServer((socket) => {
 }).listen(port);
 
 const gameLoop = new GameLoop();
-setInterval(gameLoop.loop.bind(gameLoop), 250);
+setInterval(gameLoop.loop.bind(gameLoop), 1000);
 
 console.log(`Listening on port ${port}`);

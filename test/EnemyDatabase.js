@@ -12,7 +12,7 @@ describe("EnemyDatabase", () => {
     const room = roomDb.findByNameFull("Street");
     const template = enemyTpDb.findByNameFull("Thug");
     expect(room.findEnemy("Thug")).to.equal(0);
-    const thug = enemyDb.create(template, room);
+    let thug = enemyDb.create(template, room);
     expect(room.findEnemy("Thug")).to.equal(thug);
     expect(thug.room).to.equal(room);
     const id = thug.id;

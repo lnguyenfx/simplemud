@@ -42,6 +42,7 @@ class Game extends ConnectionHandler {
     const p = this.player;
     p.active = true;
     p.loggedIn = true;
+    p.nextAttackTime = 0;
     // p.room is initially a room id when Player object
     // first initialized -- so converting to actual
     // room object here
@@ -61,7 +62,7 @@ class Game extends ConnectionHandler {
     const p = this.player;
 
     // check if the player wants to repeat a command
-    if (data === '/') data = this.lastcommand;
+    if (data === '/') data = this.lastcommand || 'look';
     else this.lastcommand = data; // if not, record the command.
 
     // get the first word and lowercase it.
@@ -392,6 +393,7 @@ class Game extends ConnectionHandler {
         p.addBonuses(item);
         p.addHitPoints(random(min, max));
         p.dropItem(index);
+        p.printStatbar();
         return true;
     }
 

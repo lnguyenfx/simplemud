@@ -26,12 +26,23 @@ describe("EntityDatabase", () => {
 
   it("should add and retrieve entity correctly", () => {
     const entity = new Entity();
-    entity.id = 1;
+    entity.name = "T1";
     db.add(entity);
     expect(db.findById(1)).to.equal(entity);
     expect(db.findById(2)).to.be.undefined;
     expect(db.hasId(1)).to.be.true;
     expect(db.hasId(2)).to.be.false;
+
+    // test when insert out of order
+    const entity2 = new Entity();
+    entity2.name = "T2";
+    db.add(entity2);
+    db.map.delete(entity.id);
+    db.add(entity);
+    let i = 0;
+    for (let obj of db.map.values()) {
+      expect(obj.id).to.equal(++i);
+    }
   });
 
   it("should find full-match of entity's name", () => {
