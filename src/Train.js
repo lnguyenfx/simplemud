@@ -5,6 +5,8 @@ const ConnectionHandler = require('./ConnectionHandler');
 const { Attribute } = require('./Attributes');
 const Player = require('./Player');
 
+let tempRoom; // keeps track of the room player was in before entering
+
 // Game Handler class
 class Train extends ConnectionHandler {
 
@@ -24,11 +26,14 @@ class Train extends ConnectionHandler {
       p.newbie = false;
     }
     this.printStats(false);
+    tempRoom = p.room;
+    if (isNaN(tempRoom)) tempRoom.removePlayer(p);
   }
 
   handle(data) {
     const p = this.player;
     if (data === "quit") {
+      p.room = tempRoom;
       playerDb.savePlayer(p);
       this.connection.removeHandler();
       return;

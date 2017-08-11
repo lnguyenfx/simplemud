@@ -9,10 +9,10 @@ SimpleMUD from _MUD Game Programming_ book (by Ron Penton) rewritten for NodeJS.
     $ git clone https://github.com/lnguyenfx/simplemud.git
     $ cd simplemud
     $ npm install
-    $ npm start
+    $ npm start <port>
 
 ## To Run Client
-    $ telnet localhost 3000
+    $ telnet localhost <port>
 
 ## To Execute Tests
     $ npm test
