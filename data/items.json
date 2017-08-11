@@ -1,7 +1,7 @@
 [
   {
     "ID": 1,
-    "NAME": "LIES!!!@",
+    "NAME": "LIES!!!@~",
     "TYPE": "HEALING",
     "MIN": 0,
     "MAX": 0,
@@ -19,7 +19,7 @@
   },
   {
     "ID": 2,
-    "NAME": "Short Sword (OBSOLETE",
+    "NAME": "Short Sword (OBSOLETE, PLEASE DROP IN TOWN SQUARE)",
     "TYPE": "WEAPON",
     "MIN": 4,
     "MAX": 9,
@@ -37,7 +37,7 @@
   },
   {
     "ID": 3,
-    "NAME": "Leather Armor (OBSOLETE",
+    "NAME": "Leather Armor (OBSOLETE, PLEASE DROP IN TOWN SQUARE)",
     "TYPE": "ARMOR",
     "MIN": 0,
     "MAX": 0,
@@ -55,7 +55,7 @@
   },
   {
     "ID": 4,
-    "NAME": "Chainmail Armor (OBSOLETE",
+    "NAME": "Chainmail Armor (OBSOLETE, PLEASE DROP IN TOWN SQUARE)",
     "TYPE": "ARMOR",
     "MIN": 0,
     "MAX": 0,
@@ -73,7 +73,7 @@
   },
   {
     "ID": 5,
-    "NAME": "Healing Potion (OBSOLETE",
+    "NAME": "Healing Potion (OBSOLETE, PLEASE DROP IN TOWN SQUARE)",
     "TYPE": "HEALING",
     "MIN": 1,
     "MAX": 5,
@@ -91,7 +91,7 @@
   },
   {
     "ID": 6,
-    "NAME": "Large Healing Potion (OBSOLETE",
+    "NAME": "Large Healing Potion (OBSOLETE, PLEASE DROP IN TOWN SQUARE)",
     "TYPE": "HEALING",
     "MIN": 6,
     "MAX": 10,
@@ -109,7 +109,7 @@
   },
   {
     "ID": 7,
-    "NAME": "Magic Sword of Killing (OBSOLETE",
+    "NAME": "Magic Sword of Killing (OBSOLETE, PLEASE DROP IN TOWN SQUARE)",
     "TYPE": "WEAPON",
     "MIN": 4,
     "MAX": 12,
@@ -127,7 +127,7 @@
   },
   {
     "ID": 8,
-    "NAME": "Magic Potion of Strength (OBSOLETE",
+    "NAME": "Magic Potion of Strength (OBSOLETE, PLEASE DROP IN TOWN SQUARE)",
     "TYPE": "HEALING",
     "MIN": 0,
     "MAX": 0,
@@ -145,7 +145,7 @@
   },
   {
     "ID": 9,
-    "NAME": "Magical Flail of Piercing (OBSOLETE",
+    "NAME": "Magical Flail of Piercing (OBSOLETE, PLEASE DROP IN TOWN SQUARE)",
     "TYPE": "WEAPON",
     "MIN": 5,
     "MAX": 10,
@@ -163,7 +163,7 @@
   },
   {
     "ID": 10,
-    "NAME": "Mithril Armor (OBSOLETE",
+    "NAME": "Mithril Armor (OBSOLETE, PLEASE DROP IN TOWN SQUARE)",
     "TYPE": "ARMOR",
     "MIN": 0,
     "MAX": 0,
@@ -181,7 +181,7 @@
   },
   {
     "ID": 11,
-    "NAME": "Rusty Shank (OBSOLETE",
+    "NAME": "Rusty Shank (OBSOLETE, PLEASE DROP IN TOWN SQUARE)",
     "TYPE": "WEAPON",
     "MIN": 1,
     "MAX": 4,
@@ -199,7 +199,7 @@
   },
   {
     "ID": 12,
-    "NAME": "Pants (OBSOLETE",
+    "NAME": "Pants (OBSOLETE, PLEASE DROP IN TOWN SQUARE)",
     "TYPE": "ARMOR",
     "MIN": 0,
     "MAX": 0,
@@ -217,7 +217,7 @@
   },
   {
     "ID": 13,
-    "NAME": "Magic Potion of Agility (OBSOLETE",
+    "NAME": "Magic Potion of Agility (OBSOLETE, PLEASE DROP IN TOWN SQUARE)",
     "TYPE": "HEALING",
     "MIN": 0,
     "MAX": 0,
@@ -235,7 +235,7 @@
   },
   {
     "ID": 14,
-    "NAME": "Magic Potion of Health (OBSOLETE",
+    "NAME": "Magic Potion of Health (OBSOLETE, PLEASE DROP IN TOWN SQUARE)",
     "TYPE": "HEALING",
     "MIN": 0,
     "MAX": 0,
@@ -253,7 +253,7 @@
   },
   {
     "ID": 15,
-    "NAME": "Magic Potion of Godliness (OBSOLETE",
+    "NAME": "Magic Potion of Godliness (OBSOLETE, PLEASE DROP IN TOWN SQUARE)",
     "TYPE": "HEALING",
     "MIN": 0,
     "MAX": 0,
@@ -271,7 +271,7 @@
   },
   {
     "ID": 16,
-    "NAME": "Heavy Wooden Club (OBSOLETE",
+    "NAME": "Heavy Wooden Club (OBSOLETE, PLEASE DROP IN TOWN SQUARE)",
     "TYPE": "WEAPON",
     "MIN": 10,
     "MAX": 30,
@@ -289,7 +289,7 @@
   },
   {
     "ID": 17,
-    "NAME": "Tentacle (OBSOLETE",
+    "NAME": "Tentacle (OBSOLETE, PLEASE DROP IN TOWN SQUARE)",
     "TYPE": "WEAPON",
     "MIN": 10,
     "MAX": 15,
@@ -307,7 +307,7 @@
   },
   {
     "ID": 18,
-    "NAME": "Platemail Armor (OBSOLETE",
+    "NAME": "Platemail Armor (OBSOLETE, PLEASE DROP IN TOWN SQUARE)",
     "TYPE": "ARMOR",
     "MIN": 0,
     "MAX": 0,
@@ -325,7 +325,7 @@
   },
   {
     "ID": 19,
-    "NAME": "Leather Armor of Agility (OBSOLETE",
+    "NAME": "Leather Armor of Agility (OBSOLETE, PLEASE DROP IN TOWN SQUARE)",
     "TYPE": "ARMOR",
     "MIN": 0,
     "MAX": 0,
@@ -343,7 +343,7 @@
   },
   {
     "ID": 20,
-    "NAME": "Cloth Armor of Healing (OBSOLETE",
+    "NAME": "Cloth Armor of Healing (OBSOLETE, PLEASE DROP IN TOWN SQUARE)",
     "TYPE": "ARMOR",
     "MIN": 0,
     "MAX": 0,
@@ -361,7 +361,7 @@
   },
   {
     "ID": 21,
-    "NAME": "Broadsword (OBSOLETE",
+    "NAME": "Broadsword (OBSOLETE, PLEASE DROP IN TOWN SQUARE)",
     "TYPE": "WEAPON",
     "MIN": 6,
     "MAX": 13,
@@ -379,7 +379,7 @@
   },
   {
     "ID": 22,
-    "NAME": "Cloth Armor (OBSOLETE",
+    "NAME": "Cloth Armor (OBSOLETE, PLEASE DROP IN TOWN SQUARE)",
     "TYPE": "ARMOR",
     "MIN": 0,
     "MAX": 0,
@@ -397,7 +397,7 @@
   },
   {
     "ID": 23,
-    "NAME": "Captain Jack's Special 40oz Rum (OBSOLETE",
+    "NAME": "Captain Jack's Special 40oz Rum (OBSOLETE, PLEASE DROP IN TOWN SQUARE)",
     "TYPE": "Healing",
     "MIN": -10,
     "MAX": -2,
@@ -415,7 +415,7 @@
   },
   {
     "ID": 24,
-    "NAME": "Jeweled Dagger (OBSOLETE",
+    "NAME": "Jeweled Dagger (OBSOLETE, PLEASE DROP IN TOWN SQUARE)",
     "TYPE": "WEAPON",
     "MIN": 5,
     "MAX": 9,
@@ -433,7 +433,7 @@
   },
   {
     "ID": 25,
-    "NAME": "Rock (OBSOLETE",
+    "NAME": "Rock (OBSOLETE, PLEASE DROP IN TOWN SQUARE)",
     "TYPE": "WEAPON",
     "MIN": 1,
     "MAX": 7,
@@ -451,7 +451,7 @@
   },
   {
     "ID": 26,
-    "NAME": "Lobster Claw (OBSOLETE",
+    "NAME": "Lobster Claw (OBSOLETE, PLEASE DROP IN TOWN SQUARE)",
     "TYPE": "WEAPON",
     "MIN": 3,
     "MAX": 10,
@@ -469,7 +469,7 @@
   },
   {
     "ID": 27,
-    "NAME": "Whale Fin (OBSOLETE",
+    "NAME": "Whale Fin (OBSOLETE, PLEASE DROP IN TOWN SQUARE)",
     "TYPE": "WEAPON",
     "MIN": 20,
     "MAX": 35,
@@ -487,7 +487,7 @@
   },
   {
     "ID": 28,
-    "NAME": "Mutant Arm (OBSOLETE",
+    "NAME": "Mutant Arm (OBSOLETE, PLEASE DROP IN TOWN SQUARE)",
     "TYPE": "WEAPON",
     "MIN": 4,
     "MAX": 8,
@@ -505,7 +505,7 @@
   },
   {
     "ID": 29,
-    "NAME": "Monkey Paw (OBSOLETE",
+    "NAME": "Monkey Paw (OBSOLETE, PLEASE DROP IN TOWN SQUARE)",
     "TYPE": "HEALING",
     "MIN": 0,
     "MAX": 1,
@@ -523,7 +523,7 @@
   },
   {
     "ID": 30,
-    "NAME": "Long Sword (OBSOLETE",
+    "NAME": "Long Sword (OBSOLETE, PLEASE DROP IN TOWN SQUARE)",
     "TYPE": "WEAPON",
     "MIN": 15,
     "MAX": 30,
@@ -541,7 +541,7 @@
   },
   {
     "ID": 31,
-    "NAME": "Minor Healing Potion (OBSOLETE",
+    "NAME": "Minor Healing Potion (OBSOLETE, PLEASE DROP IN TOWN SQUARE)",
     "TYPE": "HEALING",
     "MIN": 2,
     "MAX": 5,
@@ -559,7 +559,7 @@
   },
   {
     "ID": 32,
-    "NAME": "Rapier (OBSOLETE",
+    "NAME": "Rapier (OBSOLETE, PLEASE DROP IN TOWN SQUARE)",
     "TYPE": "WEAPON",
     "MIN": 10,
     "MAX": 30,
@@ -577,7 +577,7 @@
   },
   {
     "ID": 33,
-    "NAME": "Cutlass (OBSOLETE",
+    "NAME": "Cutlass (OBSOLETE, PLEASE DROP IN TOWN SQUARE)",
     "TYPE": "WEAPON",
     "MIN": 10,
     "MAX": 40,
@@ -595,7 +595,7 @@
   },
   {
     "ID": 34,
-    "NAME": "Golden Rapier (OBSOLETE",
+    "NAME": "Golden Rapier (OBSOLETE, PLEASE DROP IN TOWN SQUARE)",
     "TYPE": "WEAPON",
     "MIN": 20,
     "MAX": 35,

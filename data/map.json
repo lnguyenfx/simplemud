@@ -15,7 +15,7 @@
   {
     "ID": 2,
     "NAME": "Street",
-    "DESCRIPTION": "You are in a small street. Litter is strewn about",
+    "DESCRIPTION": "You are in a small street. Litter is strewn about, and you see rats crawling in and out of the sewer grating.",
     "TYPE": "PLAINROOM",
     "DATA": 0,
     "NORTH": 11,
@@ -28,7 +28,7 @@
   {
     "ID": 3,
     "NAME": "Training Room",
-    "DESCRIPTION": "This is the training room. An aged guru stands here",
+    "DESCRIPTION": "This is the training room. An aged guru stands here, practicing his arts. He says \u001b[0m\"If you are ready to advance, young fellow, you may \u001b[1m\u001b[33mtrain\u001b[0m here.\"",
     "TYPE": "TRAININGROOM",
     "DATA": 0,
     "NORTH": 25,
@@ -41,7 +41,7 @@
   {
     "ID": 4,
     "NAME": "Bobs Weapon Shop",
-    "DESCRIPTION": "Bobs Weapon Shop. You see lots of crap available to buy all over the room",
+    "DESCRIPTION": "Bobs Weapon Shop. You see lots of crap available to buy all over the room, and Bob grinning at you from behind a counter. He says \u001b[0m\"Please, come in, shop around, and take a glance at my \u001b[1m\u001b[33mlist\u001b[0m.\"",
     "TYPE": "STORE",
     "DATA": 1,
     "NORTH": 1,
@@ -54,7 +54,7 @@
   {
     "ID": 5,
     "NAME": "Alley",
-    "DESCRIPTION": "You're in a dark alley",
+    "DESCRIPTION": "You're in a dark alley, where shadows obscure your view and hide dangerous things...",
     "TYPE": "PLAINROOM",
     "DATA": 0,
     "NORTH": 0,
@@ -67,7 +67,7 @@
   {
     "ID": 6,
     "NAME": "Narrow Alley",
-    "DESCRIPTION": "You're in a dark alley",
+    "DESCRIPTION": "You're in a dark alley, where shadows obscure your view and hide dangerous things...",
     "TYPE": "PLAINROOM",
     "DATA": 0,
     "NORTH": 0,
@@ -80,7 +80,7 @@
   {
     "ID": 7,
     "NAME": "Alley",
-    "DESCRIPTION": "You're in a dark alley",
+    "DESCRIPTION": "You're in a dark alley, where shadows obscure your view and hide dangerous things...",
     "TYPE": "PLAINROOM",
     "DATA": 0,
     "NORTH": 5,
@@ -106,7 +106,7 @@
   {
     "ID": 9,
     "NAME": "Sewage Trench",
-    "DESCRIPTION": "You're in a disgusting sewage trench",
+    "DESCRIPTION": "You're in a disgusting sewage trench, with liquids containing things you don't want to know about flowing around your feet.",
     "TYPE": "PLAINROOM",
     "DATA": 0,
     "NORTH": 8,
@@ -119,7 +119,7 @@
   {
     "ID": 10,
     "NAME": "Sewer",
-    "DESCRIPTION": "You're in a disgusting sewage trench",
+    "DESCRIPTION": "You're in a disgusting sewage trench, with liquids containing things you don't want to know about flowing around your feet.",
     "TYPE": "PLAINROOM",
     "DATA": 0,
     "NORTH": 0,
@@ -132,7 +132,7 @@
   {
     "ID": 11,
     "NAME": "Town Gates",
-    "DESCRIPTION": "You're at the town gates",
+    "DESCRIPTION": "You're at the town gates, which lead into the dark forest.",
     "TYPE": "PLAINROOM",
     "DATA": 0,
     "NORTH": 12,
@@ -145,7 +145,7 @@
   {
     "ID": 12,
     "NAME": "Dark Forest Entrance",
-    "DESCRIPTION": "This is the entrace of the dark forest",
+    "DESCRIPTION": "This is the entrace of the dark forest, where all sorts of strange noises eminate. You see a gate into town to the south.",
     "TYPE": "PLAINROOM",
     "DATA": 0,
     "NORTH": 16,
@@ -158,7 +158,7 @@
   {
     "ID": 13,
     "NAME": "Dark Forest Path",
-    "DESCRIPTION": "This is a small pathway",
+    "DESCRIPTION": "This is a small pathway, overgrown with shrubbery and foliage, winding through the dark forest.",
     "TYPE": "PLAINROOM",
     "DATA": 0,
     "NORTH": 0,
@@ -171,7 +171,7 @@
   {
     "ID": 14,
     "NAME": "Dark Forest Path",
-    "DESCRIPTION": "This is a small pathway",
+    "DESCRIPTION": "This is a small pathway, overgrown with shrubbery and foliage, winding through the dark forest.",
     "TYPE": "PLAINROOM",
     "DATA": 0,
     "NORTH": 0,
@@ -184,7 +184,7 @@
   {
     "ID": 15,
     "NAME": "Alley Junction",
-    "DESCRIPTION": "You're at a junction in the alley",
+    "DESCRIPTION": "You're at a junction in the alley; it's barely visible here, but you can make out some small cages lying on the floor.",
     "TYPE": "PLAINROOM",
     "DATA": 0,
     "NORTH": 36,
@@ -197,7 +197,7 @@
   {
     "ID": 16,
     "NAME": "Dark Forest Foliage",
-    "DESCRIPTION": "You're in the heart of the forest",
+    "DESCRIPTION": "You're in the heart of the forest, with thick foliage all over the place, obscuring many things.",
     "TYPE": "PLAINROOM",
     "DATA": 0,
     "NORTH": 34,
@@ -210,7 +210,7 @@
   {
     "ID": 17,
     "NAME": "Samuels Armorsmith",
-    "DESCRIPTION": "This is Samuels Armorsmith. You see Samuel busy working on some kind of metalwork",
+    "DESCRIPTION": "This is Samuels Armorsmith. You see Samuel busy working on some kind of metalwork, and when he notices you he says, \u001b[0m\"Hello, thanks for stopping by. I've got many things in my \u001b[1m\u001b[33mlist\u001b[0m you may be interested in.\"",
     "TYPE": "STORE",
     "DATA": 2,
     "NORTH": 0,
@@ -223,7 +223,7 @@
   {
     "ID": 18,
     "NAME": "The Insane Alchemist's Workshop",
-    "DESCRIPTION": "This is The Insane Alchemist's Workshop. Lots of beakers and test tubes litter the room",
+    "DESCRIPTION": "This is The Insane Alchemist's Workshop. Lots of beakers and test tubes litter the room, most filled with strange-looking liquids. A few of them look like they have exploded. The Mad Alchemist is busy pouring something into a beaker, but he takes the time to tell you, \u001b[0m\"Hello hello! I'm sure I've got something you need, just view my \u001b[1m\u001b[33mlist\u001b[0m and tell me what you want!\"",
     "TYPE": "STORE",
     "DATA": 3,
     "NORTH": 0,
@@ -236,7 +236,7 @@
   {
     "ID": 19,
     "NAME": "Deep Sewer",
-    "DESCRIPTION": "You're in a deep and very dark portion of the sewers beneath town. Strange sloshing noises reach your ears",
+    "DESCRIPTION": "You're in a deep and very dark portion of the sewers beneath town. Strange sloshing noises reach your ears, but you can't figure out what's causing them.",
     "TYPE": "PLAINROOM",
     "DATA": 0,
     "NORTH": 0,
@@ -249,7 +249,7 @@
   {
     "ID": 20,
     "NAME": "Deep Sewer",
-    "DESCRIPTION": "You're in a deep and very dark portion of the sewers beneath town. Strange sloshing noises reach your ears",
+    "DESCRIPTION": "You're in a deep and very dark portion of the sewers beneath town. Strange sloshing noises reach your ears, but you can't figure out what's causing them.",
     "TYPE": "PLAINROOM",
     "DATA": 0,
     "NORTH": 22,
@@ -262,7 +262,7 @@
   {
     "ID": 21,
     "NAME": "Sewer",
-    "DESCRIPTION": "You're in dark portion of the sewers beneath town. Strange sloshing noises reach your ears",
+    "DESCRIPTION": "You're in dark portion of the sewers beneath town. Strange sloshing noises reach your ears, but you can't figure out what's causing them.",
     "TYPE": "PLAINROOM",
     "DATA": 0,
     "NORTH": 23,
@@ -275,7 +275,7 @@
   {
     "ID": 22,
     "NAME": "Sewer",
-    "DESCRIPTION": "You're in dark portion of the sewers beneath town. Strange sloshing noises reach your ears",
+    "DESCRIPTION": "You're in dark portion of the sewers beneath town. Strange sloshing noises reach your ears, but you can't figure out what's causing them.",
     "TYPE": "PLAINROOM",
     "DATA": 0,
     "NORTH": 0,
@@ -288,7 +288,7 @@
   {
     "ID": 23,
     "NAME": "Sewage Trench",
-    "DESCRIPTION": "You're in a sloping trench which leads downward into the sewers",
+    "DESCRIPTION": "You're in a sloping trench which leads downward into the sewers, and upwards onto an avenue in town.",
     "TYPE": "PLAINROOM",
     "DATA": 0,
     "NORTH": 24,
@@ -340,7 +340,7 @@
   {
     "ID": 27,
     "NAME": "Avenue Intersection",
-    "DESCRIPTION": "You're on an avenue running through the town. To the south you can see a trench running down into the sewers",
+    "DESCRIPTION": "You're on an avenue running through the town. To the south you can see a trench running down into the sewers, and to the east you can see the beach.",
     "TYPE": "PLAINROOM",
     "DATA": 0,
     "NORTH": 0,
@@ -366,7 +366,7 @@
   {
     "ID": 29,
     "NAME": "Beach",
-    "DESCRIPTION": "You're on a sandy beach",
+    "DESCRIPTION": "You're on a sandy beach, and you can see the ocean to the east, ponderously throwing water onto the sand. You can see a boardwalk to the west.",
     "TYPE": "PLAINROOM",
     "DATA": 0,
     "NORTH": 31,
@@ -379,7 +379,7 @@
   {
     "ID": 30,
     "NAME": "Beach",
-    "DESCRIPTION": "You're on a sandy beach",
+    "DESCRIPTION": "You're on a sandy beach, and you can see the ocean to the east, ponderously throwing water onto the sand.",
     "TYPE": "PLAINROOM",
     "DATA": 0,
     "NORTH": 29,
@@ -392,7 +392,7 @@
   {
     "ID": 31,
     "NAME": "Beach",
-    "DESCRIPTION": "You're on a sandy beach",
+    "DESCRIPTION": "You're on a sandy beach, and you can see the ocean to the east, ponderously throwing water onto the sand.",
     "TYPE": "PLAINROOM",
     "DATA": 0,
     "NORTH": 32,
@@ -405,7 +405,7 @@
   {
     "ID": 32,
     "NAME": "Lobster Nest",
-    "DESCRIPTION": "You're on a sandy beach",
+    "DESCRIPTION": "You're on a sandy beach, and you can see the ocean to the east, ponderously throwing water onto the sand. There's a large lobster nest here as well.",
     "TYPE": "PLAINROOM",
     "DATA": 0,
     "NORTH": 0,
@@ -418,7 +418,7 @@
   {
     "ID": 33,
     "NAME": "Ocean",
-    "DESCRIPTION": "You're in the ocean",
+    "DESCRIPTION": "You're in the ocean, and the water is making you cold. You can see the beach back to the west.",
     "TYPE": "PLAINROOM",
     "DATA": 0,
     "NORTH": 0,
@@ -431,7 +431,7 @@
   {
     "ID": 34,
     "NAME": "Dark Forest Clearing",
-    "DESCRIPTION": "You're in a clearing within the heart of the forest",
+    "DESCRIPTION": "You're in a clearing within the heart of the forest, with thick foliage all over the place, obscuring many things.",
     "TYPE": "PLAINROOM",
     "DATA": 0,
     "NORTH": 0,
@@ -444,7 +444,7 @@
   {
     "ID": 35,
     "NAME": "The Freak Shop",
-    "DESCRIPTION": "You're in a shop with a very strange looking man standing behind the counter. He gazes at you with one eye (you can't tell what the other one is doing) and screeches ",
+    "DESCRIPTION": "You're in a shop with a very strange looking man standing behind the counter. He gazes at you with one eye (you can't tell what the other one is doing) and screeches \u001b[0m\"Got anything good to sell me, sonny? The things I'm interested are right on this \u001b[1m\u001b[33mlist\u001b[0m here.\"",
     "TYPE": "STORE",
     "DATA": 4,
     "NORTH": 15,
@@ -548,7 +548,7 @@
   {
     "ID": 43,
     "NAME": "Park Entrance",
-    "DESCRIPTION": "You're in the town park",
+    "DESCRIPTION": "You're in the town park, and you can see foliage all over the place. You can also hear birds chirping.",
     "TYPE": "PLAINROOM",
     "DATA": 0,
     "NORTH": 42,
@@ -561,7 +561,7 @@
   {
     "ID": 44,
     "NAME": "Parkway",
-    "DESCRIPTION": "You're in the town park",
+    "DESCRIPTION": "You're in the town park, and you can see foliage all over the place. You can also hear birds chirping.",
     "TYPE": "PLAINROOM",
     "DATA": 0,
     "NORTH": 0,
@@ -574,7 +574,7 @@
   {
     "ID": 45,
     "NAME": "Parkway",
-    "DESCRIPTION": "You're in the town park",
+    "DESCRIPTION": "You're in the town park, and you can see foliage all over the place. You can also hear birds chirping.",
     "TYPE": "PLAINROOM",
     "DATA": 0,
     "NORTH": 43,
@@ -587,7 +587,7 @@
   {
     "ID": 46,
     "NAME": "Parkway",
-    "DESCRIPTION": "You're in the town park",
+    "DESCRIPTION": "You're in the town park, and you can see foliage all over the place. You can also hear birds chirping.",
     "TYPE": "PLAINROOM",
     "DATA": 0,
     "NORTH": 44,
@@ -600,7 +600,7 @@
   {
     "ID": 47,
     "NAME": "Parkway",
-    "DESCRIPTION": "You're in the town park",
+    "DESCRIPTION": "You're in the town park, and you can see foliage all over the place. You can also hear birds chirping.",
     "TYPE": "PLAINROOM",
     "DATA": 0,
     "NORTH": 45,
@@ -613,7 +613,7 @@
   {
     "ID": 48,
     "NAME": "Parkway Embankment",
-    "DESCRIPTION": "You're in the town park",
+    "DESCRIPTION": "You're in the town park, and you can see foliage all over the place. This is a sloped embankment that leads down into a sewage trench.",
     "TYPE": "PLAINROOM",
     "DATA": 0,
     "NORTH": 46,
@@ -626,7 +626,7 @@
   {
     "ID": 49,
     "NAME": "Sewage Trench Incline",
-    "DESCRIPTION": "You're on an cobblestone incline that leads upward to the city part",
+    "DESCRIPTION": "You're on an cobblestone incline that leads upward to the city part, and downward towards the town sewage trench.",
     "TYPE": "PLAINROOM",
     "DATA": 0,
     "NORTH": 0,
@@ -639,7 +639,7 @@
   {
     "ID": 50,
     "NAME": "Sewage Trench",
-    "DESCRIPTION": "You're in a sewage trench",
+    "DESCRIPTION": "You're in a sewage trench, filled with all sorts of liquid refuse, slowly flowing eastward into the town sewers.",
     "TYPE": "PLAINROOM",
     "DATA": 0,
     "NORTH": 49,
@@ -652,7 +652,7 @@
   {
     "ID": 51,
     "NAME": "Sewage Trench",
-    "DESCRIPTION": "You're in a sewage trench",
+    "DESCRIPTION": "You're in a sewage trench, filled with all sorts of liquid refuse, slowly flowing eastward into the town sewers.",
     "TYPE": "PLAINROOM",
     "DATA": 0,
     "NORTH": 0,
@@ -717,7 +717,7 @@
   {
     "ID": 56,
     "NAME": "Sea Shanty",
-    "DESCRIPTION": "You're in a little sea shanty",
+    "DESCRIPTION": "You're in a little sea shanty, where an old man with a glass eye and a hook for an arm stands, gazing off at something in the ocean. He acknowledges your presense by saying \u001b[0m\"Arrr maytee, the sea's be good this morn. I've many a thing ye may need to fight off them dern rogue shipmen on thee docks, just have a looksee at my \u001b[1m\u001b[33mlist\u001b[0m here.\"",
     "TYPE": "STORE",
     "DATA": 5,
     "NORTH": 52,
@@ -730,7 +730,7 @@
   {
     "ID": 57,
     "NAME": "Hell",
-    "DESCRIPTION": "You're in hell. You should have turned away when you had the chance",
+    "DESCRIPTION": "You're in hell. You should have turned away when you had the chance, but no, you didn't. And now you're going to die. Have fun being dead.",
     "TYPE": "PLAINROOM",
     "DATA": 0,
     "NORTH": 56,

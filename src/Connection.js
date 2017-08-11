@@ -25,8 +25,9 @@ class Connection {
   }
 
   sendMessage(msg) {
+    const wrap = require('wordwrap')(95);
     try {
-      this.socket.write(this.protocol.translate(msg));
+      this.socket.write(wrap(this.protocol.translate(msg)));
     } catch(err) {
       this.close();
     }

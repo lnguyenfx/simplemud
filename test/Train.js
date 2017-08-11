@@ -3,6 +3,7 @@ const fs = require('fs');
 const { expect } = require('chai');
 const sinon = require('sinon');
 const path = require('path');
+const wrap = require('wordwrap')(95);
 
 const Connection = require(path.join(__dirname, '..', 'src', 'Connection'));
 const telnet = require(path.join(__dirname, '..', 'src', 'Telnet'));
@@ -45,9 +46,9 @@ describe("Train", () => {
       "Enter 1, 2, or 3 to add a stat point, or \"quit\" to enter the realm: " +
       cc('reset') + cc('white') + cc('reset');
     train.printStats();
-    expect(stub.getCall(0).args[0]).to.equal(expectedMsg);
+    expect(stub.getCall(0).args[0]).to.equal(wrap(expectedMsg));
     train.printStats(true);
-    expect(stub.getCall(1).args[0]).to.equal(cc('clearscreen') + expectedMsg);
+    expect(stub.getCall(1).args[0]).to.equal(wrap(cc('clearscreen') + expectedMsg));
   });
 
   it("should properly enter", () => {
@@ -61,7 +62,7 @@ describe("Train", () => {
       cc('reset') + cc('newline') + cc('newline');
     expect(p.newbie).to.be.true;
     train.enter();
-    expect(stub.getCall(0).args[0]).to.equal(expectedMsg);
+    expect(stub.getCall(0).args[0]).to.equal(wrap(expectedMsg));
     expect(p.newbie).to.be.false;
     expect(spy.calledOnce).to.be.true;
     train.printStats.restore();
@@ -86,7 +87,7 @@ describe("Train", () => {
 
     train.hungup();
     expect(stubLogout.calledOnce).to.be.true;
-  
+
     playerDb.logout.restore();
   });
 
