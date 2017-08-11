@@ -9,7 +9,7 @@ const { EnemyTemplate, Enemy } =
 describe("EnemyDatabase", () => {
 
   it("should properly create/delete enemy instances", () => {
-    const room = roomDb.findByNameFull("Training Room");
+    const room = roomDb.findByNameFull("Street");
     const template = enemyTpDb.findByNameFull("Thug");
     expect(room.findEnemy("Thug")).to.equal(0);
     const thug = enemyDb.create(template, room);
@@ -23,7 +23,7 @@ describe("EnemyDatabase", () => {
   });
 
   it("should properly save/load enemy data", () => {
-    const room = roomDb.findByNameFull("Training Room");
+    const room = roomDb.findByNameFull("Street");
     const template = enemyTpDb.findByNameFull("Bandit");
     const bandit = enemyDb.create(template, room);
 

@@ -38,7 +38,9 @@ class Room extends Entity {
   }
 
   addPlayer(player) {
-    this.players.push(player);
+    if (this.players.indexOf(player) === -1)
+      this.players.push(player);
+    player.room = this;
   }
 
   removePlayer(player) {
@@ -74,6 +76,7 @@ class Room extends Entity {
 
   addEnemy(enemy) {
     this.enemies.push(enemy);
+    enemy.room = this;
   }
 
   removeEnemy(enemy) {

@@ -72,6 +72,40 @@ class Util {
       min + ` ${strMin}`;
   }
 
+  // returns current time in milliseconds
+  static getTimeMS() {
+    return Date.now();
+  }
+
+  // convert x seconds into milliseconds
+  static seconds(sec) {
+    return sec * 1000;
+  }
+
+  // convert x minutes into milliseconds
+  static minutes(min) {
+    return min * 60000;
+  }
+
+  static createTimer() {
+    return {
+      init: function() {
+        this.startTime = 0;
+        this.initTime = 0;
+        return this;
+      },
+      reset: function(timePassed = 0) {
+        this.startTime = timePassed;
+        this.initTime = Util.getTimeMS();
+      },
+      getMS: function() {
+        // return the amount of time that has elapsed since the timer
+        // was initialized, plus whatever starting time the timer was given.
+        return (Util.getTimeMS() - this.initTime) + this.startTime;
+      }
+    }
+  }
+
 }
 
 module.exports = Util;

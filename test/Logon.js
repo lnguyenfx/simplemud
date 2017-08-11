@@ -8,6 +8,7 @@ const Connection = require(path.join(__dirname, '..', 'src', 'Connection'));
 const telnet = require(path.join(__dirname, '..', 'src', 'Telnet'));
 const Logon = require(path.join(__dirname, '..', 'src', 'Logon'));
 const Game = require(path.join(__dirname, '..', 'src', 'Game'));
+const Player = require(path.join(__dirname, '..', 'src', 'Player'));
 const { playerDb } = require(path.join(__dirname, '..', 'src', 'Databases'));
 
 describe("Logon", () => {
@@ -18,15 +19,17 @@ describe("Logon", () => {
   const dataPath =
     path.join(__dirname, '..', 'data',
               'players', testUser + '.json');
-  before(() => {
-    const player = playerDb.findByNameFull(testUser);
-    if (player) playerDb.removePlayer(player);
+  let player;
+  beforeEach(() => {
+    player = new Player();
+    player.name = testUser;
+    player.password = testPass;
+    playerDb.addPlayer(player);
     player.connection = conn;
   });
 
-  after(() => {
-    const player = playerDb.findByNameFull(testUser);
-    if (player) playerDb.removePlayer(player);
+  afterEach(() => {
+    playerDb.removePlayer(player);
   });
 
   const cc = telnet.cc;
@@ -105,18 +108,19 @@ describe("Logon", () => {
     })
   });
 
-  it("should properly regiter new user", () =>{
+  it("should properly register new user", () =>{
+
     const stubGoToGame =
       sinon.stub(loginHandler, 'goToGame').callsFake();
     loginHandler.handle('new');
     let expectedMsg = cc('red') + cc('bold') +
-      "Sorry, the name '" + cc('white') + "test" +
+      "Sorry, the name '" + cc('white') + testUser +
       cc('reset') + cc('bold') + cc('red') +
       "' has already been taken." + cc('newline') +
       cc('yellow') + "Please enter your desired name: " +
       cc('reset') + cc('bold') + cc('red') + cc('reset') +
       cc('red') + cc('reset');
-    loginHandler.handle('test');
+    loginHandler.handle(testUser);
     expect(stubSendMsg.returnValues[1]).to.equal(expectedMsg);
     expectedMsg = cc('red') + cc('bold') +
       "Sorry, the name '" + cc('white') + "te$t" +
@@ -129,7 +133,7 @@ describe("Logon", () => {
     expect(stubSendMsg.returnValues[2]).to.equal(expectedMsg);
     expectedMsg = cc('green') +
       "Please enter your desired password: " + cc('reset');
-    loginHandler.handle(testUser);
+    loginHandler.handle("NewTestPlayer");
     expect(stubSendMsg.returnValues[3]).to.equal(expectedMsg);
     expectedMsg = cc('bold') + cc('red') +
                   "INVALID PASSWORD!" +
@@ -147,6 +151,7 @@ describe("Logon", () => {
     expect(fs.existsSync(dataPath)).to.be.true;
     expect(stubGoToGame.getCall(0).args[0]).to.be.true;
     loginHandler.goToGame.restore();
+    playerDb.removePlayer(playerDb.findByNameFull("NewTestPlayer"));
   });
 
   it("should properly handle new connection -- 'existing user'", () => {

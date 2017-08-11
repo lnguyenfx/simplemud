@@ -1,7 +1,7 @@
 'use strict';
 
 const Util = require('./Util');
-const { itemDb, playerDb, roomDb, storeDb } =
+const { itemDb, playerDb, roomDb, storeDb, enemyTpDb, enemyDb } =
   require('./Databases');
 const ConnectionHandler = require('./ConnectionHandler');
 const { Attribute, PlayerRank, ItemType, Direction, RoomType } =
@@ -10,14 +10,21 @@ const Player = require('./Player');
 const Train = require('./Train');
 
 const tostring = Util.tostring;
+const random = Util.randomInt;
 
 let isRunning = false;
+
+const timer = Util.createTimer().init();
 
 // Game Handler class
 class Game extends ConnectionHandler {
 
   static isRunning() {
     return isRunning;
+  }
+
+  static getTimer() {
+    return timer;
   }
 
   static setIsRunning(bool) {
@@ -218,6 +225,11 @@ class Game extends ConnectionHandler {
       return;
     }
 
+    if (firstWord === "attack" || firstWord === "a") {
+      this.playerAttack(removeWord(data, 0));
+      return;
+    }
+
     // ------------------------------------------------------------------------
     //  GOD access commands
     // ------------------------------------------------------------------------
@@ -303,6 +315,9 @@ class Game extends ConnectionHandler {
       } else if (db === 'stores') {
         storeDb.load(itemDb);
         p.sendString("<bold><cyan>Store Database Reloaded!</cyan></bold>");
+      } else if (db === 'enemies') {
+        enemyTpDb.load();
+        p.sendString("<bold><cyan>Enemy Database Reloaded!</cyan></bold>");
       } else {
         p.sendString("<bold><red>Invalid Database Name!</red></bold>");
       }
@@ -329,9 +344,8 @@ class Game extends ConnectionHandler {
     p.active = false;
     // log out the player from the database if the connection has been closed
     if (this.connection.isClosed) {
-      if (isNaN(p.room)) p.room.removePlayer(p);
       playerDb.logout(p.id);
-      roomDb.saveData();
+      if (isNaN(p.room)) p.room.removePlayer(p);
     }
   }
 
@@ -376,7 +390,7 @@ class Game extends ConnectionHandler {
         const min = item.min;
         const max = item.max;
         p.addBonuses(item);
-        p.addHitPoints(Util.randomInt(min, max));
+        p.addHitPoints(random(min, max));
         p.dropItem(index);
         return true;
     }
@@ -559,6 +573,182 @@ class Game extends ConnectionHandler {
     p.money += i.price;
     Game.sendRoom("<cyan><bold>" + p.name + " sells a " +
                   i.name + "</bold></cyan>", p.room);
+  }
+
+  playerAttack(enemyName) {
+    const p = this.player;
+    const now = timer.getMS();
+
+    if (now < p.nextAttackTime) {
+      p.sendString("<red><bold>You can't attack yet!</bold></red>");
+      return;
+    }
+
+    const enemy = p.room.findEnemy(enemyName);
+
+    if (enemy === 0) {
+      p.sendString("<red><bold>You don't see that here!</bold></red>");
+      return;
+    }
+
+    const seconds = Util.seconds;
+    const weapon = p.Weapon();
+
+    let damage;
+    if (weapon === 0) {
+      damage = random(1, 3);
+      p.nextAttackTime = now + seconds(1);
+    } else {
+      damage = random(weapon.min, weapon.max);
+      p.nextAttackTime = now + seconds(weapon.speed);
+    }
+
+    const attr = p.GetAttr.bind(p);
+    const A = Attribute;
+    const e = enemy.tp;
+
+    if (random(0,99) >= attr(A.ACCURACY) - e.dodging) {
+      Game.sendRoom("<white>" + p.name + " swings at " + e.name +
+                    " but misses!</white>", p.room);
+      return;
+    }
+
+    damage += attr(A.STRIKEDAMAGE);
+    damage -= e.damageAbsorb;
+
+    if (damage < 1) damage = 1;
+
+    enemy.hitPoints -= damage;
+
+    Game.sendRoom("<red>" + p.name + " hits " + e.name + " for " +
+                  damage + " damage!</red>", p.room);
+
+    if (enemy.hitPoints <= 0) {
+      Game.enemyKilled(enemy, p);
+    }
+  }
+
+  static enemyAttack(enemy) {
+    const e = enemy.tp;
+    const room = enemy.room;
+    const now = timer.getMS();
+    const seconds = Util.seconds;
+
+    const p = room.players[random(0, room.players.length - 1)];
+
+    let damage;
+    if (e.weapon === 0) {
+      damage = random(1, 3);
+      enemy.nextAttackTime = now + seconds(1);
+    } else {
+      const weapon = (isNaN(e.weapon) ? e.weapon : itemDb.findById(e.weapon));
+      damage = random(weapon.min, weapon.max);
+      enemy.nextAttackTime = now + seconds(weapon.speed);
+    }
+
+    const attr = p.GetAttr.bind(p);
+    const A = Attribute;
+
+    if (random(0,99) >= e.accuracy - attr(A.DODGING)) {
+      Game.sendRoom("<white>" + e.name + " swings at " + p.name +
+                    " but misses!</white>", enemy.room);
+      return;
+    }
+
+    damage += e.strikeDamage;
+    damage -= attr(A.DAMAGEABSORB);
+
+    if (damage < 1) damage = 1;
+
+    p.addHitPoints(-damage);
+
+    Game.sendRoom("<red>" + e.name + " hits " + p.name + " for " +
+                  damage + " damage!</red>", enemy.room);
+
+    if (p.hitPoints <= 0) {
+      Game.playerKilled(p);
+    }
+  }
+
+  static playerKilled(player) {
+    const p = player;
+
+    Game.sendRoom("<red><bold>" + p.name +
+                  " has died!</bold></red>", p.room);
+    // drop the money
+    const money = Math.floor(p.money / 10);
+    if (money > 0) {
+      p.room.money += money;
+      p.money -= money;
+      Game.sendRoom("<cyan>$" + money +
+                    " drops to the ground.</cyan>", p.room);
+    }
+
+    // drop an item
+    if (p.items > 0) {
+      const index = random(0, p.items - 1);
+      const item = p.inventory[index];
+      p.room.addItem(item);
+      p.dropItem(index);
+      Game.sendRoom("<cyan>" + item.name + " drops to the ground." +
+                    "</cyan>", p.room);
+    }
+
+    // subtract 10% experience
+    const exp = Math.floor(p.experience / 10);
+    p.experience -= exp;
+
+    // remove the player from the room and transport him to room 1.
+    p.room.removePlayer(p);
+    p.room = roomDb.findById(1);
+    p.room.addPlayer(p);
+
+    // set the hitpoints to 70%
+    p.setHitPoints(Math.floor(p.GetAttr(Attribute.MAXHITPOINTS) * 0.7));
+
+    p.sendString("<white><bold>You have died, " +
+                 "but have been ressurected in " +
+                 p.room.name + "</bold></white>");
+
+    p.sendString("<red><bold>You have lost " +
+                 exp + " experience!</bold></red>");
+
+    Game.sendRoom("<white><bold>" + p.name +
+                  " appears out of nowhere!!</bold></white>", p.room);
+  }
+
+  static enemyKilled(enemy, player) {
+    const e = enemy.tp;
+    const p = player;
+
+    Game.sendRoom("<cyan><bold>" + e.name +
+                  " has died!</bold></cyan>", enemy.room);
+
+    // drop the money
+    const money = random(e.moneyMin, e.moneyMax);
+    if (money > 0) {
+      enemy.room.money += money;
+      Game.sendRoom("<cyan>$" + money + " drops to the ground." +
+                    "</cyan>", enemy.room);
+    }
+
+    // drop all the items
+    e.loot.forEach(loot => {
+      if (random(0,99) < loot.chance) {
+        const item = itemDb.findById(loot.itemId);
+        enemy.room.addItem(item);
+        Game.sendRoom("<cyan>" + item.name + " drops to the ground." +
+                      "</cyan>", enemy.room);
+      }
+    });
+
+    // add experience to the player who killed it
+    p.experience += e.experience;
+    p.sendString("<cyan><bold>You gain " + e.experience +
+                 " experience.</bold></cyan>");
+
+    // remove the enemy from the game
+    enemyDb.delete(enemy);
   }
 
   static sendGlobal(msg) {
@@ -775,12 +965,12 @@ class Game extends ConnectionHandler {
     if (p.Weapon() === 0) itemList += "NONE!";
     else itemList += p.Weapon().name;
 
-    itemList += "\r\n Armor: ";
+    itemList += "\r\n Armor:  ";
     if (p.Armor() === 0) itemList += "NONE!";
     else itemList += p.Armor().name;
 
     // Money
-    itemList += "\r\n Money:    $" + p.money;
+    itemList += "\r\n Money:  $" + p.money;
 
     itemList +=
         "\r\n--------------------------------------------------------------------------------" +
@@ -807,13 +997,13 @@ class Game extends ConnectionHandler {
     let temp = "<bold><yellow>You see: ";
     let count = 0;
     if (room.money > 0) {
-      count++;
       temp += "$" + room.money + ", ";
+      count++;
     }
 
     room.items.forEach(item => {
-      count++;
       temp += item.name + ", ";
+      count++;
     });
 
     if (count > 0) {
@@ -828,13 +1018,29 @@ class Game extends ConnectionHandler {
     count = 0;
 
     room.players.forEach(player => {
-      count++;
       temp += player.name + ", ";
+      count++;
     });
 
     if (count > 0) {
       temp = temp.substr(0, temp.length - 2);
       desc += temp + "</cyan></bold><newline/>";
+    }
+
+    // ---------------------------------
+    // ENEMIES
+    // ---------------------------------
+    temp = "<bold><red>Enemies: ";
+    count = 0;
+
+    room.enemies.forEach(enemy => {
+      temp += enemy.name + ", ";
+      count++;
+    });
+
+    if (count > 0) {
+      temp = temp.substr(0, temp.length - 2);
+      desc += temp + "</red></bold><newline/>";
     }
 
     return desc;

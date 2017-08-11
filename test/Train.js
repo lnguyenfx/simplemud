@@ -83,14 +83,11 @@ describe("Train", () => {
   it("should properly handle hungup()", () => {
     const p = player;
     const stubLogout = sinon.stub(playerDb, 'logout').callsFake();
-    const stubSaveData = sinon.stub(roomDb, 'saveData').callsFake();
 
     train.hungup();
     expect(stubLogout.calledOnce).to.be.true;
-    expect(stubSaveData.calledOnce).to.be.true;
-
+  
     playerDb.logout.restore();
-    roomDb.saveData.restore();
   });
 
   it("should properly handle stats assignment", () => {

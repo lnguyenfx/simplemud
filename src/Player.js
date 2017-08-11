@@ -72,7 +72,7 @@ class Player extends Entity {
     this.attributes[Attribute.MAXHITPOINTS] =
         10 + parseInt(this.level * (this.GetAttr(Attribute.HEALTH) / 1.5));
     this.attributes[Attribute.HPREGEN] =
-        (this.GetAttr(Attribute.HEALTH) / 5) + this.level;
+        parseInt(this.GetAttr(Attribute.HEALTH) / 5) + this.level;
 
     this.attributes[Attribute.ACCURACY] = this.GetAttr(Attribute.AGILITY) * 3;
     this.attributes[Attribute.DODGING] = this.GetAttr(Attribute.AGILITY ) * 3;

@@ -1,24 +1,18 @@
 'use strict';
 
-const port = 3000;
+const port = parseInt(process.argv[2]) || 3000;
 
 const net = require('net');
 
 const cm = require('./ConnectionManager');
 const telnet = require('./Telnet');
-const Game = require('./Game');
-const { playerDb, roomDb, enemyDb } = require('./Databases');
+const GameLoop = require('./GameLoop');
 
 net.createServer((socket) => {
   cm.newConnection(socket, telnet);
 }).listen(port);
 
+const gameLoop = new GameLoop();
+setInterval(gameLoop.loop.bind(gameLoop), 250);
+
 console.log(`Listening on port ${port}`);
-
-Game.setIsRunning(true);
-
-setInterval(() => {
-  playerDb.save();
-  roomDb.saveData();
-  enemyDb.save();
-}, 5 * 60 * 1000); // auto-save every 5 minutes

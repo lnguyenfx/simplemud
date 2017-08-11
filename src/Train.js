@@ -29,9 +29,7 @@ class Train extends ConnectionHandler {
   handle(data) {
     const p = this.player;
     if (data === "quit") {
-      if (isNaN(p.room)) p.room.removePlayer(p);
       playerDb.savePlayer(p);
-      roomDb.saveData();
       this.connection.removeHandler();
       return;
     }
@@ -66,9 +64,7 @@ class Train extends ConnectionHandler {
 
   hungup() {
     const p = this.player;
-    if (isNaN(p.room)) p.room.removePlayer(p);
     playerDb.logout(p.id);
-    roomDb.saveData();
   }
 
 }

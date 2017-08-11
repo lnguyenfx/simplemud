@@ -13,6 +13,17 @@ describe("PlayerDatabase", () => {
 
   const dataPath = path.join(__dirname, '..', 'data', 'players');
 
+  let testPlayer;
+  beforeEach(() => {
+    testPlayer = new Player();
+    testPlayer.name = "TestPlayer";
+    playerDb.addPlayer(testPlayer);
+  });
+
+  afterEach(() => {
+    playerDb.removePlayer(testPlayer);
+  });
+
   it("should properly load all items from file", () => {
     const dataArray = jsonfile.readFileSync(
       path.join(dataPath, '_players.json'));
@@ -27,7 +38,7 @@ describe("PlayerDatabase", () => {
       path.join(dataPath, '_players.json'));
     const expectedSize = dataArray.length;
     expect(playerDb.size()).to.equal(expectedSize);
-    const player = playerDb.findByNameFull("test");
+    const player = playerDb.findByNameFull(testPlayer.name);
     playerDb.addPlayer(player);
     expect(playerDb.size()).to.equal(expectedSize);
   });
@@ -59,8 +70,8 @@ describe("PlayerDatabase", () => {
   });
 
   it("should properly log out players", () => {
-    const player = playerDb.findByNameFull("test");
-    expect(player.name).to.equal("test");
+    const player = playerDb.findByNameFull("TestPlayer");
+    expect(player.name).to.equal("TestPlayer");
     const spy = sinon.spy(player, 'serialize');
     player.connection = 1;
     player.loggedIn = true;
@@ -74,8 +85,8 @@ describe("PlayerDatabase", () => {
   });
 
   it("should properly find active players", () => {
-    const player = playerDb.findByNameFull("test");
-    expect(player.name).to.equal("test");
+    const player = playerDb.findByNameFull("TestPlayer");
+    expect(player.name).to.equal("TestPlayer");
     player.active = 0;
     expect(playerDb.findActive(player.name)).to.be.false
     player.active = 1;
@@ -83,8 +94,8 @@ describe("PlayerDatabase", () => {
   });
 
   it("should properly find logged in players", () => {
-    const player = playerDb.findByNameFull("test");
-    expect(player.name).to.equal("test");
+    const player = playerDb.findByNameFull("TestPlayer");
+    expect(player.name).to.equal("TestPlayer");
     player.loggedIn = 0;
     expect(playerDb.findLoggedIn(player.name)).to.be.false
     player.loggedIn = 1;

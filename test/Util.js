@@ -86,5 +86,30 @@ describe("Util", () => {
     expect(upTime()).to.equal("0 minute");
   });
 
+  it("should properly execute getTimeMS()", () => {
+    const ms = new Date().getTime();
+    expect(Util.getTimeMS()).to.equal(ms);
+  });
+
+  it("should properly execute seconds()", () => {
+    const ms = 5 * 1000;
+    expect(Util.seconds(5)).to.equal(ms);
+  });
+
+  it("should properly execute minutes()", () => {
+    const ms = 15 * 60000;
+    expect(Util.minutes(15)).to.equal(ms);
+  });
+
+  it("should properly create timer", () => {
+    const timer = Util.createTimer().init();
+    const now = Util.getTimeMS();
+    const seconds = Util.seconds;
+    timer.reset();
+    expect(timer.getMS()).to.equal(0)
+    timer.reset(seconds(5));
+    expect(timer.getMS()).to.equal(seconds(5));
+  })
+
 
 });
