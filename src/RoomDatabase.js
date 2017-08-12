@@ -38,7 +38,7 @@ class RoomDatabase extends EntityDatabase {
   saveData()  {
     const dataArray = [];
     for (let room of this.map.values()) {
-      if (room.items.length && room.money)
+      if (room.items.length || room.money)
         dataArray.push(room.serialize());
     }
     jsonfile.writeFileSync(fileMapData, dataArray, {spaces: 2});
