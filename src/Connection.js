@@ -28,7 +28,6 @@ class Connection {
     const wrap = require('wordwrap')(95);
     try {
       let output = wrap(this.protocol.translate(msg));
-      output = output.replace(/[^\r]\n/g, '\r\n');
       this.socket.write(output);
     } catch(err) {
       this.close();

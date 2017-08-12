@@ -62,9 +62,7 @@ describe("Train", () => {
       cc('reset') + cc('newline') + cc('newline');
     expect(p.newbie).to.be.true;
     train.enter();
-    let out = wrap(expectedMsg);
-    out = out.replace(/[^\r]\n/g, '\r\n');
-    expect(stub.getCall(0).args[0]).to.equal(out);
+    expect(stub.getCall(0).args[0]).to.equal(wrap(expectedMsg));
     expect(p.newbie).to.be.false;
     expect(spy.calledOnce).to.be.true;
     train.printStats.restore();
