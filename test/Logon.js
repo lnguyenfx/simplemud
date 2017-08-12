@@ -53,7 +53,8 @@ describe("Logon", () => {
   it("should properly diplay welcome on enter", () => {
     const expectedMsg = cc('bold') + cc('red') + "Weclome to SimpleMUD" +
                         cc('reset') + cc('bold') + cc('reset') + cc('newline') +
-                        "Please enter your name, or \"new\" if you are new: ";
+                        cc('white') + "Please enter your name, or" +
+                        " \"new\" if you are new: "+ cc('reset');
     loginHandler.enter();
 
     expect(stubSendMsg.calledOnce).to.be.true;

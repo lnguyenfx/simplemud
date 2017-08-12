@@ -3,7 +3,6 @@ const fs = require('fs');
 const { expect } = require('chai');
 const sinon = require('sinon');
 const path = require('path');
-const wrap = require('wordwrap')(95);
 
 const Connection = require(path.join(__dirname, '..', 'src', 'Connection'));
 const telnet = require(path.join(__dirname, '..', 'src', 'Telnet'));
@@ -13,6 +12,7 @@ const { Attribute }
   = require(path.join(__dirname, '..', 'src', 'Attributes'));
 const Player = require(path.join(__dirname, '..', 'src', 'Player'));
 const Train = require(path.join(__dirname, '..', 'src', 'Train'));
+const { wrap } = require(path.join(__dirname, '..', 'src', 'Util'));
 
 describe("Train", () => {
   const conn = new Connection(new net.Socket(), telnet);
@@ -54,7 +54,7 @@ describe("Train", () => {
   it("should properly enter", () => {
     const p = player;
     const spy = sinon.spy(train, 'printStats');
-    const expectedMsg = cc('magenta') + cc('bold') +
+    let expectedMsg = cc('magenta') + cc('bold') +
       "Welcome to SimpleMUD, " + p.name + "!" +
       cc('reset') + cc('magenta') + cc('newline') +
       "You must train your character with your desired stats," +

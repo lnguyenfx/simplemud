@@ -6,7 +6,12 @@ class Util {
     str = str.toString();
     if (str.length >= width) return str;
     return str + Array(width - str.length + 1).join(' ');
-    //return str.toString().padEnd(width);
+    //return str.toString().padEnd(width); // node 6.4.0 doens't have padEnd()
+  }
+
+  static wrap(str, width = 85) {
+    return wrapText(str, width) // wrapText is defined below this class
+      .replace(/((?:\u001b\[\d+m)*)?([^\u001b]+)?([^\r])\n/g, '$1$2$3\r\n$1');
   }
 
   static randomInt(min, max) {
@@ -109,3 +114,53 @@ class Util {
 }
 
 module.exports = Util;
+
+const stringWidth = require('string-width');
+
+// modified version of
+// https://www.npmjs.com/package/wordwrap
+const wrapText = (text, width) => {
+
+  var start = 0;
+  var stop = width;
+
+  var chunks = text.toString()
+    .split(/(\S+\s+)/)
+    .reduce(function (acc, x) {
+      acc.push(x)
+      return acc;
+    }, []
+  );
+
+  return chunks.reduce((lines, rawChunk) => {
+    if (rawChunk === '') return lines;
+
+    var chunk = rawChunk.replace(/\t/g, '    ');
+    var i = lines.length - 1;
+    if (stringWidth(lines[i]) + stringWidth(chunk) > stop) {
+      lines[i] = lines[i].replace(/\s+$/, '');
+
+      chunk.split(/\n/).forEach(function (c) {
+        lines.push(
+          new Array(start + 1).join(' ')
+          + c.replace(/^\s+/, '')
+        );
+      });
+    }
+    else if (chunk.match(/\n/)) {
+      var xs = chunk.split(/\n/);
+      lines[i] += xs.shift();
+      xs.forEach(function (c) {
+        lines.push(
+          new Array(start + 1).join(' ')
+          + c.replace(/^\s+/, '')
+        );
+      });
+    }
+    else {
+      lines[i] += chunk;
+    }
+
+    return lines;
+  }, [ new Array(start + 1).join(' ') ]).join('\n');
+};

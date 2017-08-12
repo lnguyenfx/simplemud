@@ -27,7 +27,7 @@ class Logon extends ConnectionHandler {
 
   enter() {
     const welcomeMsg = "<bold><red>Weclome to SimpleMUD</red></bold>\n" +
-                       "Please enter your name, or \"new\" if you are new: ";
+                       "<white>Please enter your name, or \"new\" if you are new: </white>";
     this.connection.sendMessage(welcomeMsg);
   }
 

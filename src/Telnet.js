@@ -2,13 +2,14 @@
 
 const HtmlParser = require("htmlparser2");
 const Tree = require("tree");
+const { wrap } = require('./Util');
 
 const Telnet = {
   translate: (data) => {
     const sourceText = sanitize(data);
     initParser();
     parser.parseComplete(sourceText);
-    return unsanitize(parsedText);
+    return wrap(unsanitize(parsedText));
   },
   cc: (code) => cc[code]
 };

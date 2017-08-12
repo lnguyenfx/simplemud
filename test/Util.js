@@ -20,6 +20,15 @@ describe("Util", () => {
     expect(tostring("test", 10)).to.equal(expectedStr);
   });
 
+  it("should properly execute wrap()", () => {
+    const text = "\u001b[37m\u001b[1mThis is a test\n";
+    const expectedText =
+      "\u001b[37m\u001b[1mThis\nis a" +
+      "\ntest\r\n\u001b[37m\u001b[1m";
+    expect(Util.wrap(text, 5)).to.
+      equal(expectedText);
+  });
+
   it("should properly execute randomInt()", () => {
     const randomInt = Util.randomInt;
     let min = 15, max = 95;
@@ -88,7 +97,7 @@ describe("Util", () => {
 
   it("should properly execute getTimeMS()", () => {
     const ms = new Date().getTime();
-    expect(Util.getTimeMS()).to.equal(ms);
+    expect(Util.getTimeMS()).to.be.within(ms - 3, ms + 3);
   });
 
   it("should properly execute seconds()", () => {
@@ -106,9 +115,10 @@ describe("Util", () => {
     const now = Util.getTimeMS();
     const seconds = Util.seconds;
     timer.reset();
-    expect(timer.getMS()).to.equal(0)
+    expect(timer.getMS()).to.be.within(0, 1);
     timer.reset(seconds(5));
-    expect(timer.getMS()).to.equal(seconds(5));
+    expect(timer.getMS()).to.be.
+      within(seconds(5), seconds(5) + 1);
   })
 
 

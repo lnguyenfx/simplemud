@@ -17,6 +17,7 @@ const Store = require(path.join(__dirname, '..', 'src', 'Store'));
 const Game = require(path.join(__dirname, '..', 'src', 'Game'));
 
 const tostring = Util.tostring;
+const wrap = Util.wrap;
 
 describe("Game", () => {
   const conn = new Connection(new net.Socket(), telnet);
@@ -703,7 +704,7 @@ describe("Game", () => {
     game.goToTrain();
     expect(stubAddHandler.calledOnce).to.be.true;
     expect(stubSocketSend.getCall(0).args[0]).to.
-      equal(expectedText);
+      equal(wrap(expectedText));
 
     conn.addHandler.restore();
   });
@@ -832,7 +833,7 @@ describe("Game", () => {
        " | " + cc('white') + "REGULAR" + cc('reset') + cc('bold') + cc('white') +
        cc('newline') + whoFooter;
 
-    expect(telnet.translate(Game.whoList('all'))).to.equal(expectedText);
+    expect(telnet.translate(Game.whoList('all'))).to.equal(wrap(expectedText));
 
     admin.loggedIn = false;
     expectedText = whoHeader +
@@ -841,7 +842,7 @@ describe("Game", () => {
        " | " + cc('yellow') + "GOD" + cc('reset') + cc('bold') + cc('white') +
        cc('newline') + whoFooter;
 
-    expect(telnet.translate(Game.whoList())).to.equal(expectedText);
+    expect(telnet.translate(Game.whoList())).to.equal(wrap(expectedText));
 
     playerDb.map = originalPlayerMap;
   });
@@ -889,11 +890,11 @@ describe("Game", () => {
         "--------------------------------------------------------------------------------";
 
       expect(telnet.translate(Game.printHelp(PlayerRank.REGULAR))).to.
-        equal(help + end);
+        equal(wrap(help + end));
       expect(telnet.translate(Game.printHelp(PlayerRank.GOD))).to.
-        equal(help + god + end);
+        equal(wrap(help + god + end));
       expect(telnet.translate(Game.printHelp(PlayerRank.ADMIN))).to.
-        equal(help + god + admin + end);
+        equal(wrap(help + god + admin + end));
   });
 
   it("should properly print player's experience", () => {
@@ -907,7 +908,7 @@ describe("Game", () => {
       Math.round(100 * p.experience / p.needForLevel(p.level + 1)) +
       "%)" + cc('reset') + cc('white') + cc('reset');
     expect(telnet.translate(game.printExperience())).to.
-      equal(expectedText)
+      equal(wrap(expectedText))
   });
 
   it("should properly print player's stats", () => {
@@ -944,7 +945,7 @@ describe("Game", () => {
     "--------------------------------------------------------------------------------" +
     cc('reset') + cc('white') + cc('reset');
     expect(telnet.translate(game.printStats())).to.
-      equal(expectedText)
+      equal(wrap(expectedText))
   });
 
   it("should properly print player's inventory", () => {
@@ -968,7 +969,7 @@ describe("Game", () => {
       cc('reset') + cc('white') + cc('reset');
 
     expect(telnet.translate(game.printInventory())).to.
-      equal(expectedText);
+      equal(wrap(expectedText));
 
     p.useWeapon(0);
     p.useArmor(1);
@@ -984,7 +985,7 @@ describe("Game", () => {
     cc('reset') + cc('white') + cc('reset');
 
     expect(telnet.translate(game.printInventory())).to.
-    equal(expectedText);
+    equal(wrap(expectedText));
 
   });
 
@@ -1084,7 +1085,7 @@ describe("Game", () => {
       cc('newline');
 
     expect(telnet.translate(Game.printRoom(room))).to.
-      equal(expectedText);
+      equal(wrap(expectedText));
 
     room.money = 123;
 
@@ -1093,7 +1094,7 @@ describe("Game", () => {
       cc('reset') + cc('newline');
 
     expect(telnet.translate(Game.printRoom(room))).to.
-      equal(expectedText + extraText);
+      equal(wrap(expectedText + extraText));
 
     const weapon = itemDb.findByNameFull("Shortsword");
     const armor = itemDb.findByNameFull("Leather Armor");
@@ -1105,7 +1106,7 @@ describe("Game", () => {
       cc('reset') + cc('newline');
 
     expect(telnet.translate(Game.printRoom(room))).to.
-      equal(expectedText + extraText);
+      equal(wrap(expectedText + extraText));
 
     player.name = "Test Player";
     room.addPlayer(player);
@@ -1116,7 +1117,7 @@ describe("Game", () => {
       cc('reset') + cc('newline');
 
     expect(telnet.translate(Game.printRoom(room))).to.
-      equal(expectedText + extraText);
+      equal(wrap(expectedText + extraText));
 
     const banditTp = enemyTpDb.findByNameFull("Bandit");
     const bandit = enemyDb.create(banditTp, room);
@@ -1129,7 +1130,7 @@ describe("Game", () => {
       cc('reset') + cc('newline');
 
     expect(telnet.translate(Game.printRoom(room))).to.
-      equal(expectedText + extraText);
+      equal(wrap(expectedText + extraText));
 
     room.removePlayer(player);
     enemyDb.delete(bandit);
@@ -1367,7 +1368,7 @@ describe("Game", () => {
         cc('reset') + cc('white') + cc('reset');
     expect(Game.storeList('INVALID ID')).to.be.false;
     expect(telnet.translate(Game.storeList(store.id))).to.
-      equal(expectedText);
+      equal(wrap(expectedText));
     storeDb.map.delete(store.id);
   });
 

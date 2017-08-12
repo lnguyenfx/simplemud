@@ -1,7 +1,5 @@
 'use strict';
 
-let buffer = '';
-
 class Connection {
 
   constructor(socket, protocol) {
@@ -10,6 +8,7 @@ class Connection {
     this.handlers = []; // handler methods: handle, enter, leave
     this._bindEvents();
     this.isClosed = false;
+    this.buffer = '';
   }
 
   addHandler(handler) {
@@ -25,10 +24,8 @@ class Connection {
   }
 
   sendMessage(msg) {
-    const wrap = require('wordwrap')(95);
     try {
-      let output = wrap(this.protocol.translate(msg));
-      this.socket.write(output);
+      this.socket.write(this.protocol.translate(msg));
     } catch(err) {
       this.close();
     }
@@ -60,18 +57,18 @@ class Connection {
 
     // Fix for Microsoft Telnet client
     const dataStr = data.toString();
-    if (!buffer.length && dataStr.match(/[\b]/)) {
+    if (!this.buffer.length && dataStr.match(/[\b]/)) {
       this.socket.write(' ');
     }
-    buffer += (dataStr.match(/[\b]/) ? '' : dataStr);
-    if (buffer.length && dataStr !== ' \b' && dataStr.match(/[\b]/)) {
-      buffer = buffer.substr(0, buffer.length - 1);
+    this.buffer += (dataStr.match(/[\b]/) ? '' : dataStr);
+    if (this.buffer.length && dataStr !== ' \b' && dataStr.match(/[\b]/)) {
+      this.buffer = this.buffer.substr(0, this.buffer.length - 1);
       this.socket.write(' \b');
     }
 
-    if (buffer.match(/\n/)) {
-      this._handler().handle(buffer.replace(/[\r\n]*$/,''));
-      buffer = '';
+    if (this.buffer.match(/\n/)) {
+      this._handler().handle(this.buffer.replace(/[\r\n]*$/,''));
+      this.buffer = '';
     }
   }
 
