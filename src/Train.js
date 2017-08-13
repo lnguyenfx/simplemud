@@ -5,6 +5,8 @@ const ConnectionHandler = require('./ConnectionHandler');
 const { Attribute } = require('./Attributes');
 const Player = require('./Player');
 
+const { cc } = require('./Telnet');
+
 let tempRoom; // keeps track of the room player was in before entering
 
 // Game Handler class
@@ -51,7 +53,7 @@ class Train extends ConnectionHandler {
 
   printStats(clear) {
     const p = this.player;
-    const statsMsg = (clear ? "<clearscreen/>" : '') + "<white><bold>" +
+    const statsMsg = (clear ? cc('clearscreen') : '') + "<white><bold>" +
       "--------------------------------- Your Stats ----------------------------------\r\n" +
       "</bold>" +
       "Player:           " + p.name + "\r\n" +

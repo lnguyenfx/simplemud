@@ -59,7 +59,8 @@ describe("Connection", () => {
     conn.sendMessage("<green>System all green!</green>");
 
     expect(stub.calledOnce).to.be.true;
-    expect(stub.getCall(0).args[0]).to.equal("\x1B[32mSystem all green!\x1B[0m");
+    expect(stub.getCall(0).args[0]).to.
+      equal("\u001b[0m\x1B[32mSystem all green!\x1B[0m\u001b[0m");
 
     conn.socket.write.restore();
   });

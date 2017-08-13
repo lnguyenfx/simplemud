@@ -191,7 +191,7 @@ describe("Player", () => {
 
   it("should properly send string to player's connection", () => {
     const conn = new Connection(new require('net').Socket(), telnet);
-    const stub = sinon.stub(conn.socket, 'write').callsFake();
+    const stub = sinon.stub(conn, 'sendMessage').callsFake();
 
     const player = new Player();
     player.connection = conn;
@@ -207,46 +207,41 @@ describe("Player", () => {
     player.sendString(message);
     expect(spy.calledOnce).to.be.true;
 
-    conn.socket.write.restore();
+    conn.sendMessage.restore();
     player.printStatbar.restore();
   });
 
   it("should properly print the status bar", () => {
     const conn = new Connection(new require('net').Socket(), telnet);
-    const stub = sinon.stub(conn.socket, 'write').callsFake();
-    const cc = telnet.cc;
+    const stub = sinon.stub(conn, 'sendMessage').callsFake();
     const player = new Player();
     player.connection = conn;
-
-    const format =
-      cc('white') + cc('bold') +
-      "[%s%s" + cc('reset') + cc('bold') +
-      cc('white') + "/%s]" + cc('reset') +
-      cc('white') + cc('reset') + cc('newline');
-    const sprintf = require('util').format.bind(player, format);
 
     // Red Health
     player.setHitPoints(3);
     player.printStatbar();
-    let expected = sprintf(cc('red'), player.hitPoints,
-                           player.GetAttr(Attribute.MAXHITPOINTS))
+    let expected = "<white><bold>[<red>3</red>/" +
+      player.GetAttr(Attribute.MAXHITPOINTS) +
+      "]</bold></white>\r\n";
     expect(stub.getCall(0).args[0]).to.equal(expected);
 
     // Yellow Health
     player.setHitPoints(5);
     player.printStatbar();
-    expected = sprintf(cc('yellow'), player.hitPoints,
-                           player.GetAttr(Attribute.MAXHITPOINTS))
+    expected = "<white><bold>[<yellow>5</yellow>/" +
+      player.GetAttr(Attribute.MAXHITPOINTS) +
+      "]</bold></white>\r\n";
     expect(stub.getCall(1).args[0]).to.equal(expected);
 
     // Green Health
     player.setHitPoints(8);
     player.printStatbar();
-    expected = sprintf(cc('green'), player.hitPoints,
-                           player.GetAttr(Attribute.MAXHITPOINTS))
+    expected = "<white><bold>[<green>8</green>/" +
+      player.GetAttr(Attribute.MAXHITPOINTS) +
+      "]</bold></white>\r\n";
     expect(stub.getCall(2).args[0]).to.equal(expected);
 
-    conn.socket.write.restore();
+    conn.sendMessage.restore();
 
   });
 

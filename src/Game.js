@@ -8,6 +8,7 @@ const { Attribute, PlayerRank, ItemType, Direction, RoomType } =
   require('./Attributes');
 const Player = require('./Player');
 const Train = require('./Train');
+const { cc } = require('./Telnet');
 
 const tostring = Util.tostring;
 const random = Util.randomInt;
@@ -114,7 +115,7 @@ class Game extends ConnectionHandler {
       const msg = "<bold><cyan>" +
         "The current system time is: " +
         Util.timeStamp() + " on " +
-        Util.dateStamp() + "<newline/>" +
+        Util.dateStamp() + "\r\n" +
         "The system has been up for: " +
         Util.upTime() + ".</cyan></bold>";
       p.sendString(msg);
@@ -334,8 +335,8 @@ class Game extends ConnectionHandler {
     // ------------------------------------------------------------------------
     //  Command not recognized, send to room
     // ------------------------------------------------------------------------
-    Game.sendRoom("<bold>" + p.name + " says: <dim>" +
-                  data + "</dim></bold>", p.room);
+    Game.sendRoom("<bold>" + p.name + " says: " + cc('dim') +
+                  data + "</bold>", p.room);
 
   }
 
@@ -982,8 +983,8 @@ class Game extends ConnectionHandler {
   }
 
   static printRoom(room) {
-    let desc = `<newline/><bold><white>${room.name}</white></bold><newline/>` +
-      `<bold><magenta>${room.description}</magenta></bold><newline/>` +
+    let desc = `\r\n<bold><white>${room.name}</white></bold>\r\n` +
+      `<bold><magenta>${room.description}</magenta></bold>\r\n` +
       "<bold><green>exits: ";
 
     Direction.enums.forEach(dir => {
@@ -991,7 +992,7 @@ class Game extends ConnectionHandler {
         desc += dir.key + "  ";
       }
     });
-    desc += "</green></bold><newline/>";
+    desc += "</green></bold>\r\n";
 
     // ---------------------------------
     // ITEMS
@@ -1010,7 +1011,7 @@ class Game extends ConnectionHandler {
 
     if (count > 0) {
       temp = temp.substr(0, temp.length - 2);
-      desc += temp + "</yellow></bold><newline/>";
+      desc += temp + "</yellow></bold>\r\n";
     }
 
     // ---------------------------------
@@ -1026,7 +1027,7 @@ class Game extends ConnectionHandler {
 
     if (count > 0) {
       temp = temp.substr(0, temp.length - 2);
-      desc += temp + "</cyan></bold><newline/>";
+      desc += temp + "</cyan></bold>\r\n";
     }
 
     // ---------------------------------
@@ -1042,7 +1043,7 @@ class Game extends ConnectionHandler {
 
     if (count > 0) {
       temp = temp.substr(0, temp.length - 2);
-      desc += temp + "</red></bold><newline/>";
+      desc += temp + "</red></bold>\r\n";
     }
 
     return desc;

@@ -26,7 +26,7 @@ class Logon extends ConnectionHandler {
   }
 
   enter() {
-    const welcomeMsg = "<bold><red>Weclome to SimpleMUD</red></bold>\n" +
+    const welcomeMsg = "<bold><red>Weclome to SimpleMUD</red></bold>\r\n" +
                        "<white>Please enter your name, or \"new\" if you are new: </white>";
     this.connection.sendMessage(welcomeMsg);
   }
@@ -48,15 +48,15 @@ class Logon extends ConnectionHandler {
         if (!player) {
           this.numErrors++;
           msg = "<red><bold>Sorry, the user '<white>" +
-                data + "</white>' does not exist" +
-                "<newline/>Please enter your name, or " +
+                data + "</white>' does not exist\r\n" +
+                "Please enter your name, or " +
                 "\"new\" if you are new: </bold></red>";
         } else {
           this.state = ENTERPASS;
           this.name = data;
           this.password = player.password;
           msg = "<green><bold>Welcome, " +
-                "<white>" + data + "</white><newline/>" +
+                "<white>" + data + "</white>\r\n" +
                 "Please enter your password: </bold></green>";
         }
         this.connection.sendMessage(msg);
@@ -70,14 +70,14 @@ class Logon extends ConnectionHandler {
       if (playerDb.hasNameFull(data)) {
         this.numErrors++;
         msg = "<red><bold>Sorry, the name '<white>" + data +
-              "</white>' has already been taken.<newline/>" +
+              "</white>' has already been taken.\r\n" +
               "<yellow>Please enter your desired name: " +
               "</yellow></bold></red>";
       } else {
         if (!this.acceptableName(data)) {
           this.numErrors++;
           msg = "<red><bold>Sorry, the name '<white>" + data +
-                "</white>' is unacceptible.<newline/>" +
+                "</white>' is unacceptible.\r\n" +
                 "<yellow>Please enter your desired name: " +
                 "</yellow></bold></red>";
         } else {
@@ -94,14 +94,14 @@ class Logon extends ConnectionHandler {
       let msg;
       if (!data || data.indexOf(' ') !== -1) {
         this.numErrors++;
-        msg = "<bold><red>INVALID PASSWORD!</red><newline/>" +
+        msg = "<bold><red>INVALID PASSWORD!</red>\r\n" +
               "<green>Please enter your desired password: " +
               "</green></bold>";
         this.connection.sendMessage(msg);
         return;
       }
       msg = "<green>Thank you! " +
-            "You are now entering the realm...</green><newline/>";
+            "You are now entering the realm...</green>\r\n";
       this.connection.sendMessage(msg);
 
       const player = new Player();
@@ -127,11 +127,11 @@ class Logon extends ConnectionHandler {
       let msg;
       if (this.password === data) {
         msg = "<green>Thank you! " +
-          "You are now entering the realm...</green><newline/>";
+          "You are now entering the realm...</green>\r\n";
         this.connection.sendMessage(msg);
         this.goToGame(false);
       } else {
-        msg = "<bold><red>INVALID PASSWORD!</red><newline/>" +
+        msg = "<bold><red>INVALID PASSWORD!</red>\r\n" +
               "<green>Please enter your password: " +
               "</green></bold>";
         this.connection.sendMessage(msg);

@@ -240,7 +240,7 @@ class Player extends Entity {
     }
 
     // send the string, newline included.
-    this.connection.sendMessage(str + '\n');
+    this.connection.sendMessage(str + '\r\n');
 
     if (this.active) this.printStatbar();
   }
@@ -264,7 +264,7 @@ class Player extends Entity {
         color, this.hitPoints, color,
         this.GetAttr(Attribute.MAXHITPOINTS));
 
-    this.connection.sendMessage(statbar + '\n');
+    this.connection.sendMessage(statbar + '\r\n');
   }
 
   load(dataObject, itemDb) {

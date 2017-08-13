@@ -8,11 +8,11 @@ const cc = telnet.cc;
 
 describe("Telnet", () => {
   it('should properly translate for single line', () => {
-    const text = "This is <bold><cyan>cyan</cyan></bold>.<newline/>";
+    const text = "This is <bold><cyan>cyan</cyan></bold>.\r\n";
     const parsedText = telnet.translate(text);
-    const expectedText = "This is " + cc('bold') + cc('cyan') + "cyan" +
-                         cc('reset') + cc('bold') + cc('reset') +
-                         '.' + cc('newline');
+    const expectedText = "This is " +
+      "\u001b[0m\u001b[1m\u001b[0m\u001b[1m\u001b[36m" +
+      "cyan" + "\u001b[0m\u001b[1m\u001b[0m.\r\n\u001b[0m";
     expect(parsedText).to.equal(expectedText);
   });
 
@@ -23,15 +23,13 @@ describe("Telnet", () => {
                  "This is <invalid code> and </should> not <be/> translated.\n";
 
     const parsedText = telnet.translate(text);
-    const expectedText = "This is " + cc('yellow') + "yellow" + cc('reset') +
-                         "." + cc('newline') +
-                         "This is " + cc('bold') + cc('blue') +
-                         "blue and bold" + cc('reset') + cc('bold') +
-                         cc('reset') + '.' + cc('newline') +
-                         "This is " + cc('green') + "green" + cc('reset')
-                         + '.' + cc('newline') +
-                         "This is <invalid code> and </should> " +
-                         "not <be/> translated." + cc('newline');
+    const expectedText =
+      "This is \u001b[0m\u001b[33myellow\u001b[0m.\r\n" +
+      "This is \u001b[0m\u001b[1m\u001b[0m\u001b[1m\u001b[34m" +
+      "blue and bold\u001b[0m\u001b[1m\u001b[0m.\r\n" +
+      "This is \u001b[0m\u001b[32mgreen\u001b[0m.\r\n" +
+      "This is <invalid code> and </should> not <be/> " +
+      "translated.\r\n\u001b[0m";
 
     expect(parsedText).to.equal(expectedText);
   });

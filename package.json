@@ -1,7 +1,7 @@
 {
   "name": "simplemud",
-  "version": "0.9.5",
-  "description": "SimpleMUD from MUD Game Programming book ported to NodeJS.",
+  "version": "0.9.7",
+  "description": "SimpleMUD from MUD Game Programming book ported to NodeJS",
   "main": "./src/server.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha --reporter spec",
@@ -23,11 +23,10 @@
   "homepage": "https://github.com/lnguyenfx/simplemud#readme",
   "dependencies": {
     "enum": "^2.4.0",
-    "htmlparser2": "^3.9.2",
     "insort": "^0.4.0",
     "jsonfile": "^3.0.0",
     "string-width": "^2.1.1",
-    "tree": "^0.1.3"
+    "sty": "^0.6.1"
   },
   "devDependencies": {
     "chai": "^4.0.1",

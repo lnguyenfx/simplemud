@@ -11,7 +11,7 @@ class Util {
 
   static wrap(str, width = 85) {
     return wrapText(str, width) // wrapText is defined below this class
-      .replace(/((?:\u001b\[\d+m)*)?([^\u001b]+)?([^\r])\n/g, '$1$2$3\r\n$1');
+      .replace(/([^\r])\n/g, '$1\r\n');
   }
 
   static randomInt(min, max) {
