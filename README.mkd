@@ -11,6 +11,8 @@ author of _MUD Game Programming_ book.
 
   WebTelnet: http://smud.ourmmo.com
 
+  Telnet: smud.ourmmo.com 3000
+
 ## Highlights
 
 * Physical data (Items, Players, Rooms, Enemy Templates) are stored in JSON files
@@ -46,12 +48,13 @@ Individual test:
 
 ## Special Thanks
 
-Ron Penton for the original SimpleMUD C++ codebase
+Ron Penton for the original SimpleMUD C++ codebase.
 
-Shawn Biddle for [RanvierMUD](https://ranviermud.com), used as inspirations
+Shawn Biddle for [RanvierMUD](http://ranviermud.com), which is a source of
+inspirations.
 
-Raymond Xie for the [WebTelnet](https://github.com/mudchina/webtelnet), used
-in the Demo
+Raymond Xie for the [WebTelnet](https://github.com/mudchina/webtelnet) that is
+used as the Demo.
 
 ## License
 
