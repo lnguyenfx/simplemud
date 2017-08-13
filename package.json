@@ -13,7 +13,10 @@
   },
   "keywords": [
     "simplemudjs",
-    "simplemud"
+    "simplemud",
+    "nodejs",
+    "mud",
+    "server"
   ],
   "author": "Long Nguyen",
   "license": "MIT",

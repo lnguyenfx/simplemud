@@ -9,6 +9,7 @@ const telnet = require('./Telnet');
 const GameLoop = require('./GameLoop');
 
 net.createServer((socket) => {
+  socket.on('error', err => console.log(err.stack));
   cm.newConnection(socket, telnet);
 }).listen(port);
 
