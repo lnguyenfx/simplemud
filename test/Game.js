@@ -174,7 +174,7 @@ describe("Game", () => {
         "The current system time is: " + Util.timeStamp() +
         " on " + Util.dateStamp() + "\r\n" +
         "The system has been up for: " + Util.upTime() +
-        "." + "</cyan></bold>" + "\r\n";
+        "</cyan></bold>" + "\r\n";
       game.handle('time');
       expect(stubConnSendMsg.getCall(0).args[0]).to.be.
         equal(expectedMsg);

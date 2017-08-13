@@ -8,7 +8,7 @@ const cc = telnet.cc;
 
 describe("Telnet", () => {
   it('should properly translate for single line', () => {
-    const text = "This is <bold><cyan>cyan</cyan></bold>.\r\n";
+    const text = "This is <bold><cyan>cyan</cyan></bold>.\n";
     const parsedText = telnet.translate(text);
     const expectedText = "This is " +
       "\u001b[0m\u001b[1m\u001b[0m\u001b[1m\u001b[36m" +
@@ -18,7 +18,7 @@ describe("Telnet", () => {
 
   it('should properly translate for multiple lines', () => {
     const text = "This is <yellow>yellow</yellow>.\n" +
-                 "This is <bold><blue>blue and bold</blue></bold>.\r\n"  +
+                 "This is <bold><blue>blue and bold</blue></bold>.\n"  +
                  "This is <green>green</green>.\n" +
                  "This is <invalid code> and </should> not <be/> translated.\n";
 

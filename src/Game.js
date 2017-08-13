@@ -117,7 +117,7 @@ class Game extends ConnectionHandler {
         Util.timeStamp() + " on " +
         Util.dateStamp() + "\r\n" +
         "The system has been up for: " +
-        Util.upTime() + ".</cyan></bold>";
+        Util.upTime() + "</cyan></bold>";
       p.sendString(msg);
       return;
     }

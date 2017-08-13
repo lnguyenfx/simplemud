@@ -10,8 +10,7 @@ class Util {
   }
 
   static wrap(str, width = 85) {
-    return wrapText(str, width) // wrapText is defined below this class
-      .replace(/([^\r])\n/g, '$1\r\n');
+    return wrapText(str, width); // wrapText is defined below this class
   }
 
   static randomInt(min, max) {
@@ -162,5 +161,5 @@ const wrapText = (text, width) => {
     }
 
     return lines;
-  }, [ new Array(start + 1).join(' ') ]).join('\n');
+  }, [ new Array(start + 1).join(' ') ]).join('\r\n');
 };
