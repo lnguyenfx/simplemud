@@ -1,6 +1,6 @@
 {
   "name": "simplemud",
-  "version": "0.9.9",
+  "version": "1.0.0",
   "description": "SimpleMUD from MUD Game Programming book ported to NodeJS",
   "main": "./src/server.js",
   "scripts": {

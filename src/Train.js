@@ -34,7 +34,7 @@ class Train extends ConnectionHandler {
 
   handle(data) {
     const p = this.player;
-    if (data === "quit") {
+    if (data.toLowerCase() === "quit") {
       p.room = tempRoom;
       playerDb.savePlayer(p);
       this.connection.removeHandler();
