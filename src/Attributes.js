@@ -1,4 +1,4 @@
-'use trict';
+'use strict';
 
 const Enum = require('enum');
 
