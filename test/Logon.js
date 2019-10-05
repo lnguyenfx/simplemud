@@ -51,7 +51,7 @@ describe("Logon", () => {
   })
 
   it("should properly diplay welcome on enter", () => {
-    const expectedMsg = "<bold><red>Weclome to SimpleMUD</red></bold>\r\n" +
+    const expectedMsg = "<bold><red>Welcome to SimpleMUD</red></bold>\r\n" +
                         "<white>Please enter your name, or" +
                         " \"new\" if you are new: </white>";
     loginHandler.enter();
