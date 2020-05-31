@@ -23,7 +23,8 @@ describe("Util", () => {
   it("should properly execute wrap()", () => {
     const text = "\u001b[37m\u001b[1mThis is a test\n";
     const expectedText =
-      "\u001b[37m\u001b[1mThis\r\nis a\r\ntest\r\n";
+      "\u001b[37m\u001b[1mThis\nis a" +
+      "\ntest\r\n\u001b[37m\u001b[1m";
     expect(Util.wrap(text, 5)).to.
       equal(expectedText);
   });

@@ -51,13 +51,14 @@ describe("Logon", () => {
   })
 
   it("should properly diplay welcome on enter", () => {
-    const expectedMsg = "<bold><red>Welcome to SimpleMUD</red></bold>\r\n" +
-                        "<white>Please enter your name, or" +
-                        " \"new\" if you are new: </white>";
+    const expectedMsg = cc('bold') + cc('red') + "Welcome to SimpleMUD" +
+                        cc('reset') + cc('bold') + cc('reset') + cc('newline') +
+                        cc('white') + "Please enter your name, or" +
+                        " \"new\" if you are new: "+ cc('reset');
     loginHandler.enter();
 
     expect(stubSendMsg.calledOnce).to.be.true;
-    expect(stubSendMsg.getCall(0).args[0]).to.equal(expectedMsg);
+    expect(stubSendMsg.returnValues[0]).to.equal(expectedMsg);
   });
 
   it("should properly disconnect if max invalid response reached", () => {
@@ -75,22 +76,23 @@ describe("Logon", () => {
 
   it("should properly handle new connection -- 'new'", () => {
     loginHandler.handle('new');
-    const expectedMsg =
-      "<yellow>Please enter your desired name: </yellow>";
+    const expectedMsg = cc('yellow') +
+      "Please enter your desired name: " + cc('reset');
     expect(stubSendMsg.calledOnce).to.be.true;
-    expect(stubSendMsg.getCall(0).args[0]).to.equal(expectedMsg);
+    expect(stubSendMsg.returnValues[0]).to.equal(expectedMsg);
     expect(loginHandler.state).to.equal("NEWUSER");
   });
 
   it("should properly handle new connection -- 'non-existing user'", () => {
     loginHandler.handle('INVALID');
-    let expectedMsg =
-      "<red><bold>Sorry, the user '<white>INVALID</white>" +
-      "' does not exist\r\n" +
+    let expectedMsg = cc('red') + cc('bold') +
+      "Sorry, the user '" + cc('white') +
+      "INVALID" + cc('reset') + cc('bold') + cc('red') +
+      "' does not exist" + cc('newline') +
       "Please enter your name, or \"new\" if you are new: " +
-      "</bold></red>";
+      cc('reset') + cc('red') + cc('reset');
     expect(stubSendMsg.calledOnce).to.be.true;
-    expect(stubSendMsg.getCall(0).args[0]).to.equal(expectedMsg);
+    expect(stubSendMsg.returnValues[0]).to.equal(expectedMsg);
     expect(loginHandler.state).to.equal("NEWCONNECTION");
   });
 
@@ -112,34 +114,41 @@ describe("Logon", () => {
     const stubGoToGame =
       sinon.stub(loginHandler, 'goToGame').callsFake();
     loginHandler.handle('new');
-    let expectedMsg =
-      "<red><bold>Sorry, the name '<white>" + testUser +
-      "</white>' has already been taken.\r\n" +
-      "<yellow>Please enter your desired name: </yellow>" +
-      "</bold></red>";
+    let expectedMsg = cc('red') + cc('bold') +
+      "Sorry, the name '" + cc('white') + testUser +
+      cc('reset') + cc('bold') + cc('red') +
+      "' has already been taken." + cc('newline') +
+      cc('yellow') + "Please enter your desired name: " +
+      cc('reset') + cc('bold') + cc('red') + cc('reset') +
+      cc('red') + cc('reset');
     loginHandler.handle(testUser);
-    expect(stubSendMsg.getCall(1).args[0]).to.equal(expectedMsg);
-    expectedMsg =
-      "<red><bold>Sorry, the name '<white>te$t</white>" +
-      "' is unacceptible.\r\n" +
-      "<yellow>Please enter your desired name: </yellow>" +
-      "</bold></red>";
+    expect(stubSendMsg.returnValues[1]).to.equal(expectedMsg);
+    expectedMsg = cc('red') + cc('bold') +
+      "Sorry, the name '" + cc('white') + "te$t" +
+      cc('reset') + cc('bold') + cc('red') +
+      "' is unacceptible." + cc('newline') +
+      cc('yellow') + "Please enter your desired name: " +
+      cc('reset') + cc('bold') + cc('red') + cc('reset') +
+      cc('red') + cc('reset');
     loginHandler.handle('te$t');
-    expect(stubSendMsg.getCall(2).args[0]).to.equal(expectedMsg);
-    expectedMsg =
-      "<green>Please enter your desired password: </green>";
+    expect(stubSendMsg.returnValues[2]).to.equal(expectedMsg);
+    expectedMsg = cc('green') +
+      "Please enter your desired password: " + cc('reset');
     loginHandler.handle("NewTestPlayer");
-    expect(stubSendMsg.getCall(3).args[0]).to.equal(expectedMsg);
-    expectedMsg = "<bold><red>INVALID PASSWORD!</red>\r\n" +
-                  "<green>Please enter your desired password: " +
-                  "</green></bold>";
+    expect(stubSendMsg.returnValues[3]).to.equal(expectedMsg);
+    expectedMsg = cc('bold') + cc('red') +
+                  "INVALID PASSWORD!" +
+                  cc('reset') + cc('bold') +
+                  cc('newline') + cc('green') +
+                  "Please enter your desired password: " +
+                  cc('reset') + cc('bold') + cc('reset');
     loginHandler.handle("bad password");
-    expect(stubSendMsg.getCall(4).args[0]).to.equal(expectedMsg);
-    expectedMsg = "<green>Thank you! " +
+    expect(stubSendMsg.returnValues[4]).to.equal(expectedMsg);
+    expectedMsg = cc('green') + "Thank you! " +
       "You are now entering the realm..." +
-      "</green>\r\n";
+      cc('reset') + cc('newline');
     loginHandler.handle(testPass);
-    expect(stubSendMsg.getCall(5).args[0]).to.equal(expectedMsg);
+    expect(stubSendMsg.returnValues[5]).to.equal(expectedMsg);
     expect(fs.existsSync(dataPath)).to.be.true;
     expect(stubGoToGame.getCall(0).args[0]).to.be.true;
     loginHandler.goToGame.restore();
@@ -150,23 +159,26 @@ describe("Logon", () => {
     const stubGoToGame =
       sinon.stub(loginHandler, 'goToGame').callsFake();
     loginHandler.handle(testUser);
-    let expectedMsg =
-      "<green><bold>Welcome, <white>" + testUser +
-      "</white>\r\n" +
-      "Please enter your password: </bold></green>";
+    let expectedMsg = cc('green') + cc('bold') +
+      "Welcome, " + cc('white') + testUser + cc('reset') +
+      cc('bold') + cc('green') + cc('newline') +
+      "Please enter your password: " +
+      cc('reset') + cc('green') + cc('reset');
     expect(stubSendMsg.calledOnce).to.be.true;
-    expect(stubSendMsg.getCall(0).args[0]).to.equal(expectedMsg);
-    expectedMsg =
-      "<bold><red>INVALID PASSWORD!</red>\r\n" +
-      "<green>Please enter your password: " +
-      "</green></bold>";
+    expect(stubSendMsg.returnValues[0]).to.equal(expectedMsg);
+    expectedMsg = cc('bold') + cc('red') +
+                  "INVALID PASSWORD!" +
+                  cc('reset') + cc('bold') +
+                  cc('newline') + cc('green') +
+                  "Please enter your password: " +
+                  cc('reset') + cc('bold') + cc('reset');
     loginHandler.handle("bad password");
-    expect(stubSendMsg.getCall(1).args[0]).to.equal(expectedMsg);
-    expectedMsg = "<green>Thank you! " +
+    expect(stubSendMsg.returnValues[1]).to.equal(expectedMsg);
+    expectedMsg = cc('green') + "Thank you! " +
       "You are now entering the realm..." +
-      "</green>\r\n";
+      cc('reset') + cc('newline');
     loginHandler.handle(testPass);
-    expect(stubSendMsg.getCall(2).args[0]).to.equal(expectedMsg);
+    expect(stubSendMsg.returnValues[2]).to.equal(expectedMsg);
     expect(stubGoToGame.getCall(0).args[0]).to.be.false;
     loginHandler.goToGame.restore();
   });

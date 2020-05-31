@@ -22,18 +22,18 @@ const wrap = Util.wrap;
 describe("Game", () => {
   const conn = new Connection(new net.Socket(), telnet);
   const cc = telnet.cc;
-  let game, player, stubConnSendMsg;
+  let game, player, stubSocketSend;
   beforeEach(() => {
     player = new Player();
     game = new Game(conn, player);
     player.connection = conn;
-    stubConnSendMsg = sinon.stub(conn, 'sendMessage').callsFake();
+    stubSocketSend = sinon.stub(conn.socket, 'write').callsFake();
     playerDb.add(player);
   });
 
   afterEach(() => {
     playerDb.map.delete(player.id);
-    conn.sendMessage.restore();
+    conn.socket.write.restore();
   });
 
   it("should properly return whether game is running", () => {
@@ -67,13 +67,14 @@ describe("Game", () => {
     // ------------------------------------------------------------------------
 
     it("should properly handle 'chat' commands", () => {
-      const stub = stubConnSendMsg;
+      const stub = stubSocketSend;
       sinon.stub(player, 'printStatbar').callsFake();
       const p = player;
       p.active = p.loggedIn = true;
-      let expectedMsg = "<white><bold>" +
+      let expectedMsg = cc('white') + cc('bold') +
       `${p.name} chats: Hello there!` +
-      "</bold></white>" + "\r\n";
+      cc('reset') + cc('white') + cc('reset') +
+      cc('newline');
       game.handle('chat Hello there!');
       expect(stub.getCall(0).args[0]).to.equal(expectedMsg);
       game.handle(': Hello there!');
@@ -170,13 +171,14 @@ describe("Game", () => {
     });
 
     it("should properly handle 'time' command", () => {
-      const expectedMsg = "<bold><cyan>" +
+      const expectedMsg = cc('bold') + cc('cyan') +
         "The current system time is: " + Util.timeStamp() +
-        " on " + Util.dateStamp() + "\r\n" +
+        " on " + Util.dateStamp() + cc('newline') +
         "The system has been up for: " + Util.upTime() +
-        "</cyan></bold>" + "\r\n";
+        "." + cc('reset') + cc('bold') + cc('reset') +
+        cc('newline');
       game.handle('time');
-      expect(stubConnSendMsg.getCall(0).args[0]).to.be.
+      expect(stubSocketSend.getCall(0).args[0]).to.be.
         equal(expectedMsg);
     });
 
@@ -637,7 +639,7 @@ describe("Game", () => {
       p.name = "Test";
       game.handle("this is a test");
       const expectedMsg =
-        "<bold>Test says: " + cc('dim') + "this is a test</bold>";
+        "<bold>Test says: <dim>this is a test</dim></bold>";
       expect(stubSendRoom.getCall(0).args[0]).to.equal(expectedMsg);
     });
 
@@ -695,14 +697,14 @@ describe("Game", () => {
     player.loggedIn = true;
     player.active = true;
 
-    const expectedText = "<red><bold>" +
-      player.name + " leaves to edit stats" +
-      "</bold></red>\r\n";
+    const expectedText = cc('red') + cc('bold') +
+      player.name + " leaves to edit stats" + cc('reset')+
+      cc('red') + cc('reset') + cc('newline');
 
     game.goToTrain();
     expect(stubAddHandler.calledOnce).to.be.true;
-    expect(stubConnSendMsg.getCall(0).args[0]).to.
-      equal(expectedText);
+    expect(stubSocketSend.getCall(0).args[0]).to.
+      equal(wrap(expectedText));
 
     conn.addHandler.restore();
   });
@@ -756,12 +758,13 @@ describe("Game", () => {
   });
 
   it("should properly send whispers", () => {
-    const stub = stubConnSendMsg;
+    const stub = stubSocketSend;
     const p = player;
     const recipient = new Player();
     const testMsg = "Test whisper...";
-    let expectedMsg = "<red><bold>" +
-      "Error, cannot find user</bold></red>\r\n";
+    let expectedMsg = cc('red') + cc('bold') +
+      "Error, cannot find user" + cc('reset') +
+      cc('red') + cc('reset') + cc('newline');
     p.name = "Bob";
     recipient.name = "Sue";
     recipient.connection = conn;
@@ -775,8 +778,8 @@ describe("Game", () => {
 
     recipient.active = true;
     game.whisper(testMsg, recipient.name);
-      expectedMsg = "<yellow>" + p.name + " whispers to you: " +
-        "</yellow>" + testMsg + "\r\n";
+      expectedMsg = cc('yellow') + p.name + " whispers to you: " +
+        cc('reset') + testMsg + cc('newline');
     expect(stub.getCall(2).args[0]).to.equal(expectedMsg);
 
     playerDb.map.delete(recipient.id);
@@ -808,42 +811,44 @@ describe("Game", () => {
     user.level = 10;
     playerDb.add(user);
     expect(playerDb.size()).to.equal(3);
-    const whoHeader = "<white><bold>" +
-      "--------------------------------------------------------------------------------\r\n" +
+    const whoHeader = cc('white') + cc('bold') +
+      "--------------------------------------------------------------------------------" + cc('newline') +
       " Name             | Level     | Activity | Rank\r\n" +
-      "--------------------------------------------------------------------------------\r\n";
+      "--------------------------------------------------------------------------------" + cc('newline');
     const whoFooter =
       "--------------------------------------------------------------------------------" +
-      "</bold></white>";
+      cc('reset') + cc('white') + cc('reset');
 
     let expectedText = whoHeader +
       " TestAdmin        | 100       | " +
-      "<yellow>Inactive</yellow>" +
-       " | <green>ADMIN</green>\r\n" +
+      cc('yellow') + "Inactive" + cc('reset') + cc('bold') + cc('white') +
+       " | " + cc('green') + "ADMIN" + cc('reset') + cc('bold') + cc('white') +
+       cc('newline') +
       " TestGod          | 505       | " +
-      "<green>Online  </green>" +
-       " | <yellow>GOD</yellow>\r\n" +
+      cc('green') + "Online  " + cc('reset') + cc('bold') + cc('white') +
+       " | " + cc('yellow') + "GOD" + cc('reset') + cc('bold') + cc('white') +
+       cc('newline') +
       " TestUser         | 10        | " +
-      "<red>Offline </red>" +
-       " | <white>REGULAR</white>\r\n" +
-       whoFooter;
+      cc('red') + "Offline " + cc('reset') + cc('bold') + cc('white') +
+       " | " + cc('white') + "REGULAR" + cc('reset') + cc('bold') + cc('white') +
+       cc('newline') + whoFooter;
 
-    expect(Game.whoList('all')).to.equal(expectedText);
+    expect(telnet.translate(Game.whoList('all'))).to.equal(wrap(expectedText));
 
     admin.loggedIn = false;
     expectedText = whoHeader +
       " TestGod          | 505       | " +
-      "<green>Online  </green>" +
-      " | <yellow>GOD</yellow>\r\n" +
-      whoFooter;
+      cc('green') + "Online  " + cc('reset') + cc('bold') + cc('white') +
+       " | " + cc('yellow') + "GOD" + cc('reset') + cc('bold') + cc('white') +
+       cc('newline') + whoFooter;
 
-    expect(Game.whoList()).to.equal(expectedText);
+    expect(telnet.translate(Game.whoList())).to.equal(wrap(expectedText));
 
     playerDb.map = originalPlayerMap;
   });
 
   it ("should properly display help", () => {
-    const help = "<white><bold>" +
+    const help = cc('white') + cc('bold') +
         "--------------------------------- Command List ---------------------------------\r\n" +
         " /                          - Repeats your last command exactly.\r\n" +
         " chat <mesg>                - Sends message to everyone in the game\r\n" +
@@ -866,44 +871,44 @@ describe("Game", () => {
         " list                       - Lists items in a store (ST)\r\n" +
         " buy/sell <item>            - Buy or Sell an item in a store (ST)\r\n" +
         " attack <enemy>             - Attack an enemy\r\n" +
-        "</bold></white>";
+        cc('reset') + cc('white') + cc('reset');
 
-      const god = "<yellow><bold>" +
+      const god = cc('yellow') + cc('bold') +
         "--------------------------------- God Commands ---------------------------------\r\n" +
         " kick <who>                 - kicks a user from the realm\r\n" +
-        "</bold></yellow>";
+        cc('reset') + cc('yellow') + cc('reset');
 
-      const admin = "<green><bold>" +
+      const admin = cc('green') + cc('bold') +
         "-------------------------------- Admin Commands --------------------------------\r\n" +
         " announce <msg>             - Makes a global system announcement\r\n" +
         " changerank <who> <rank>    - Changes the rank of a player\r\n" +
         " reload <db>                - Reloads the requested database\r\n" +
         " shutdown                   - Shuts the server down\r\n" +
-        "</bold></green>";
+        cc('reset') + cc('green') + cc('reset');
 
       const end =
         "--------------------------------------------------------------------------------";
 
-      expect(Game.printHelp(PlayerRank.REGULAR)).to.
-        equal(help + end);
-      expect(Game.printHelp(PlayerRank.GOD)).to.
-        equal(help + god + end);
-      expect(Game.printHelp(PlayerRank.ADMIN)).to.
-        equal(help + god + admin + end);
+      expect(telnet.translate(Game.printHelp(PlayerRank.REGULAR))).to.
+        equal(wrap(help + end));
+      expect(telnet.translate(Game.printHelp(PlayerRank.GOD))).to.
+        equal(wrap(help + god + end));
+      expect(telnet.translate(Game.printHelp(PlayerRank.ADMIN))).to.
+        equal(wrap(help + god + admin + end));
   });
 
   it("should properly print player's experience", () => {
     const p = game.player;
     p.level = 2;
     p.experience = 25;
-    const expectedText = "<white><bold>" +
-      " Level:         " + p.level + "\r\n" +
+    const expectedText = cc('white') + cc('bold') +
+      " Level:         " + p.level + cc('newline') +
       " Experience:    " + p.experience + "/" +
       p.needForLevel(p.level + 1) + " (" +
       Math.round(100 * p.experience / p.needForLevel(p.level + 1)) +
-      "%)" + "</bold></white>";
-    expect(game.printExperience()).to.
-      equal(expectedText);
+      "%)" + cc('reset') + cc('white') + cc('reset');
+    expect(telnet.translate(game.printExperience())).to.
+      equal(wrap(expectedText))
   });
 
   it("should properly print player's stats", () => {
@@ -915,32 +920,32 @@ describe("Game", () => {
     Attribute.enums.forEach((item) => {
       p.baseAttributes[item] = Math.round(Math.random() * 10);
     });
-    const experienceText = "<white><bold>" +
-      " Level:         " + p.level + "\r\n" +
+    const experienceText = cc('white') + cc('bold') +
+      " Level:         " + p.level + cc('newline') +
       " Experience:    " + p.experience + "/" +
       p.needForLevel(p.level + 1) + " (" +
       Math.round(100 * p.experience / p.needForLevel(p.level + 1)) +
-      "%)" + "</bold></white>";
+      "%)" + cc('reset') + cc('white') + cc('bold') + cc('reset');
 
-    const expectedText = "<white><bold>" +
+    const expectedText = cc('white') + cc('bold') +
     "---------------------------------- Your Stats ----------------------------------\r\n" +
-    " Name:          " + p.name + "\r\n" +
-    " Rank:          " + p.rank.toString() + "\r\n" +
+    " Name:          " + p.name + cc('newline') +
+    " Rank:          " + p.rank.toString() +  cc('newline') +
     " HP/Max:        " + p.hitPoints + "/" + attr(Attribute.MAXHITPOINTS) +
     "  (" + Math.round(100 * p.hitPoints / attr(Attribute.MAXHITPOINTS)) + "%)" +
-    "\r\n" + experienceText + "\r\n" +
+    cc('newline') + experienceText + cc('bold') + cc('white') + cc('newline') +
     " Strength:      " + tostring(attr(Attribute.STRENGTH), 16) +
-    " Accuracy:      " + tostring(attr(Attribute.ACCURACY)) + "\r\n" +
+    " Accuracy:      " + tostring(attr(Attribute.ACCURACY)) + cc('newline') +
     " Health:        " + tostring(attr(Attribute.HEALTH), 16) +
-    " Dodging:       " + tostring(attr(Attribute.DODGING)) + "\r\n" +
+    " Dodging:       " + tostring(attr(Attribute.DODGING)) + cc('newline') +
     " Agility:       " + tostring(attr(Attribute.AGILITY), 16) +
-    " Strike Damage: " + tostring(attr(Attribute.STRIKEDAMAGE)) + "\r\n" +
+    " Strike Damage: " + tostring(attr(Attribute.STRIKEDAMAGE)) + cc('newline') +
     " StatPoints:    " + tostring(p.statPoints, 16) +
-    " Damage Absorb: " + tostring(attr(Attribute.DAMAGEABSORB)) + "\r\n" +
+    " Damage Absorb: " + tostring(attr(Attribute.DAMAGEABSORB)) + cc('newline') +
     "--------------------------------------------------------------------------------" +
-    "</bold></white>";
-    expect(game.printStats()).to.
-      equal(expectedText)
+    cc('reset') + cc('white') + cc('reset');
+    expect(telnet.translate(game.printStats())).to.
+      equal(wrap(expectedText))
   });
 
   it("should properly print player's inventory", () => {
@@ -954,31 +959,33 @@ describe("Game", () => {
     p.money = 123;
     expect(p.items).to.equal(3);
 
-    let expectedText = "<white><bold>" +
+    let expectedText = cc('white') + cc('bold') +
       "-------------------------------- Your Inventory --------------------------------" +
-      "\r\n" + " Items:  " + weapon.name + ", " +
-      armor.name + ", " + potion.name + "\r\n" +
-      " Weapon: NONE!" + "\r\n" + " Armor:  NONE!" +
-      "\r\n" + " Money:  $" + p.money + "\r\n" +
+      cc('newline') + " Items:  " + weapon.name + ", " +
+      armor.name + ", " + potion.name + cc('newline') +
+      " Weapon: NONE!" + cc('newline') + " Armor:  NONE!" +
+      cc('newline') + " Money:  $" + p.money + cc('newline') +
       "--------------------------------------------------------------------------------" +
-      "</bold></white>";
+      cc('reset') + cc('white') + cc('reset');
 
-    expect(game.printInventory()).to.equal(expectedText);
+    expect(telnet.translate(game.printInventory())).to.
+      equal(wrap(expectedText));
 
     p.useWeapon(0);
     p.useArmor(1);
 
-    expectedText = "<white><bold>" +
+    expectedText = cc('white') + cc('bold') +
     "-------------------------------- Your Inventory --------------------------------" +
-    "\r\n" + " Items:  " + weapon.name + ", " +
-    armor.name + ", " + potion.name + "\r\n" +
-    " Weapon: " + weapon.name + "\r\n" +
-    " Armor:  " + armor.name + "\r\n" +
-    " Money:  $" + p.money + "\r\n" +
+    cc('newline') + " Items:  " + weapon.name + ", " +
+    armor.name + ", " + potion.name + cc('newline') +
+    " Weapon: " + weapon.name + cc('newline') +
+    " Armor:  " + armor.name + cc('newline') +
+    " Money:  $" + p.money + cc('newline') +
     "--------------------------------------------------------------------------------" +
-    "</bold></white>";
+    cc('reset') + cc('white') + cc('reset');
 
-    expect(game.printInventory()).to.equal(expectedText);
+    expect(telnet.translate(game.printInventory())).to.
+    equal(wrap(expectedText));
 
   });
 
@@ -991,13 +998,13 @@ describe("Game", () => {
     const armor = itemDb.findByNameFull("Leather Armor");
     const potion = itemDb.findByNameFull("Small Healing Potion");
 
-    const expectedMsg = "<red><bold>" +
-      "Could not find that item!" +
-      "</bold></red>\r\n";
+    const expectedMsg = cc('red') + cc('bold') +
+      "Could not find that item!" + cc('reset') +
+      cc('red') + cc('reset') + cc('newline');
 
     game.useItem('Invalid Item');
     expect(spy.returnValues[0]).to.be.false;
-    expect(stubConnSendMsg.getCall(0).args[0]).to.equal(expectedMsg);
+    expect(stubSocketSend.getCall(0).args[0]).to.equal(expectedMsg);
 
     p.pickUpItem(weapon);
     p.pickUpItem(armor);
@@ -1032,21 +1039,21 @@ describe("Game", () => {
     const p = player;
     const weapon = itemDb.findByNameFull("Rusty Knife");
     const armor = itemDb.findByNameFull("Leather Armor");
-    const expectedMsg = "<red><bold>" +
-      "Could not Remove item!" +
-      "</bold></red>\r\n";
+    const expectedMsg = cc('red') + cc('bold') +
+      "Could not Remove item!" + cc('reset') +
+      cc('red') + cc('reset') + cc('newline');
 
     game.removeItem('invalid');
     expect(spy.returnValues[0]).to.be.false;
-    expect(stubConnSendMsg.getCall(0).args[0]).to.equal(expectedMsg);
+    expect(stubSocketSend.getCall(0).args[0]).to.equal(expectedMsg);
 
     game.removeItem('weapon');
     expect(spy.returnValues[1]).to.be.false;
-    expect(stubConnSendMsg.getCall(1).args[0]).to.equal(expectedMsg);
+    expect(stubSocketSend.getCall(1).args[0]).to.equal(expectedMsg);
 
     game.removeItem('armor');
     expect(spy.returnValues[2]).to.be.false;
-    expect(stubConnSendMsg.getCall(2).args[0]).to.equal(expectedMsg);
+    expect(stubSocketSend.getCall(2).args[0]).to.equal(expectedMsg);
 
     p.pickUpItem(weapon);
     game.useItem(weapon.name);
@@ -1069,57 +1076,61 @@ describe("Game", () => {
   it("should properly print room's info", () => {
     const room = roomDb.findByNameFull("Training Room")
 
-    const expectedText = "\r\n" + "<bold><white>" +
-      room.name + "</white></bold>" +
-      "\r\n" + "<bold><magenta>" +
-      room.description + "</magenta></bold>" +
-      "\r\n" + "<bold><green>" +
-      "exits: NORTH  " + "</green></bold>" +
-      "\r\n";
+    const expectedText = cc('newline') + cc('bold') + cc('white') +
+      room.name + cc('reset') + cc('bold') + cc('reset') +
+      cc('newline') + cc('bold') + cc('magenta') +
+      room.description + cc('reset') + cc('bold') + cc('reset') +
+      cc('newline') + cc('bold') + cc('green') +
+      "exits: NORTH  " + cc('reset') + cc('bold') + cc('reset') +
+      cc('newline');
 
-    expect(Game.printRoom(room)).to.equal(expectedText);
+    expect(telnet.translate(Game.printRoom(room))).to.
+      equal(wrap(expectedText));
 
     room.money = 123;
 
-    let extraText = "<bold><yellow>" +
-      "You see: $123" +
-      "</yellow></bold>" + "\r\n";
+    let extraText = cc('bold') + cc('yellow') +
+      "You see: $123" + cc('reset') + cc('bold') +
+      cc('reset') + cc('newline');
 
-    expect(Game.printRoom(room)).to.
-      equal(expectedText + extraText);
+    expect(telnet.translate(Game.printRoom(room))).to.
+      equal(wrap(expectedText + extraText));
 
     const weapon = itemDb.findByNameFull("Shortsword");
     const armor = itemDb.findByNameFull("Leather Armor");
     room.items = [weapon, armor];
 
-    extraText = "<bold><yellow>" +
+    extraText = cc('bold') + cc('yellow') +
       "You see: $123, Shortsword, Leather Armor" +
-      "</yellow></bold>" + "\r\n";
+      cc('reset') + cc('bold') +
+      cc('reset') + cc('newline');
 
-    expect(Game.printRoom(room)).to.
-      equal(expectedText + extraText);
+    expect(telnet.translate(Game.printRoom(room))).to.
+      equal(wrap(expectedText + extraText));
 
     player.name = "Test Player";
     room.addPlayer(player);
 
-    extraText += "<bold><cyan>" +
+    extraText += cc('bold') + cc('cyan') +
       "People: Test Player" +
-      "</cyan></bold>" + "\r\n";
+      cc('reset') + cc('bold') +
+      cc('reset') + cc('newline');
 
-    expect(Game.printRoom(room)).to.
-      equal(expectedText + extraText);
+    expect(telnet.translate(Game.printRoom(room))).to.
+      equal(wrap(expectedText + extraText));
 
     const banditTp = enemyTpDb.findByNameFull("Bandit");
     const bandit = enemyDb.create(banditTp, room);
     const thiefTp = enemyTpDb.findByNameFull("Thief");
     const thief = enemyDb.create(thiefTp, room);
 
-    extraText += "<bold><red>" +
+    extraText += cc('bold') + cc('red') +
       "Enemies: Bandit, Thief" +
-      "</red></bold>" + "\r\n";
+      cc('reset') + cc('bold') +
+      cc('reset') + cc('newline');
 
-    expect(Game.printRoom(room)).to.
-      equal(expectedText + extraText);
+    expect(telnet.translate(Game.printRoom(room))).to.
+      equal(wrap(expectedText + extraText));
 
     room.removePlayer(player);
     enemyDb.delete(bandit);
@@ -1344,7 +1355,7 @@ describe("Game", () => {
     armor.price = 200;
     potion.price = 50;
     storeDb.add(store);
-    const expectedText = "<white><bold>" +
+    const expectedText = cc('white') + cc('bold') +
         "--------------------------------------------------------------------------------\r\n" +
         " Welcome to " + store.name + "!\r\n" +
         "--------------------------------------------------------------------------------\r\n" +
@@ -1354,9 +1365,10 @@ describe("Game", () => {
         " Leather Armor                  | 200\r\n" +
         " Minor Healing Potion           | 50\r\n" +
         "--------------------------------------------------------------------------------\r\n" +
-        "</bold></white>";
+        cc('reset') + cc('white') + cc('reset');
     expect(Game.storeList('INVALID ID')).to.be.false;
-    expect(Game.storeList(store.id)).to.equal(expectedText);
+    expect(telnet.translate(Game.storeList(store.id))).to.
+      equal(wrap(expectedText));
     storeDb.map.delete(store.id);
   });
 

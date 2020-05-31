@@ -8,7 +8,6 @@ const { Attribute, PlayerRank, ItemType, Direction, RoomType } =
   require('./Attributes');
 const Player = require('./Player');
 const Train = require('./Train');
-const { cc } = require('./Telnet');
 
 const tostring = Util.tostring;
 const random = Util.randomInt;
@@ -115,9 +114,9 @@ class Game extends ConnectionHandler {
       const msg = "<bold><cyan>" +
         "The current system time is: " +
         Util.timeStamp() + " on " +
-        Util.dateStamp() + "\r\n" +
+        Util.dateStamp() + "<newline/>" +
         "The system has been up for: " +
-        Util.upTime() + "</cyan></bold>";
+        Util.upTime() + ".</cyan></bold>";
       p.sendString(msg);
       return;
     }
@@ -335,8 +334,8 @@ class Game extends ConnectionHandler {
     // ------------------------------------------------------------------------
     //  Command not recognized, send to room
     // ------------------------------------------------------------------------
-    Game.sendRoom("<bold>" + p.name + " says: " + cc('dim') +
-                  data + "</bold>", p.room);
+    Game.sendRoom("<bold>" + p.name + " says: <dim>" +
+                  data + "</dim></bold>", p.room);
 
   }
 
@@ -965,11 +964,11 @@ class Game extends ConnectionHandler {
 
     // Weapon/Armor
     itemList += " Weapon: ";
-    if (p.Weapon() === 0) itemList += "NONE!";
+    if (!p.Weapon()) itemList += "NONE!";
     else itemList += p.Weapon().name;
 
     itemList += "\r\n Armor:  ";
-    if (p.Armor() === 0) itemList += "NONE!";
+    if (!p.Armor()) itemList += "NONE!";
     else itemList += p.Armor().name;
 
     // Money
@@ -983,8 +982,8 @@ class Game extends ConnectionHandler {
   }
 
   static printRoom(room) {
-    let desc = `\r\n<bold><white>${room.name}</white></bold>\r\n` +
-      `<bold><magenta>${room.description}</magenta></bold>\r\n` +
+    let desc = `<newline/><bold><white>${room.name}</white></bold><newline/>` +
+      `<bold><magenta>${room.description}</magenta></bold><newline/>` +
       "<bold><green>exits: ";
 
     Direction.enums.forEach(dir => {
@@ -992,7 +991,7 @@ class Game extends ConnectionHandler {
         desc += dir.key + "  ";
       }
     });
-    desc += "</green></bold>\r\n";
+    desc += "</green></bold><newline/>";
 
     // ---------------------------------
     // ITEMS
@@ -1011,7 +1010,7 @@ class Game extends ConnectionHandler {
 
     if (count > 0) {
       temp = temp.substr(0, temp.length - 2);
-      desc += temp + "</yellow></bold>\r\n";
+      desc += temp + "</yellow></bold><newline/>";
     }
 
     // ---------------------------------
@@ -1027,7 +1026,7 @@ class Game extends ConnectionHandler {
 
     if (count > 0) {
       temp = temp.substr(0, temp.length - 2);
-      desc += temp + "</cyan></bold>\r\n";
+      desc += temp + "</cyan></bold><newline/>";
     }
 
     // ---------------------------------
@@ -1043,7 +1042,7 @@ class Game extends ConnectionHandler {
 
     if (count > 0) {
       temp = temp.substr(0, temp.length - 2);
-      desc += temp + "</red></bold>\r\n";
+      desc += temp + "</red></bold><newline/>";
     }
 
     return desc;

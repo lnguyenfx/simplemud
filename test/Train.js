@@ -23,46 +23,46 @@ describe("Train", () => {
     player = new Player();
     train = new Train(conn, player);
     stub =
-      sinon.stub(conn, "sendMessage").callsFake();
+      sinon.stub(conn.socket, "write").callsFake();
   });
 
   afterEach(() => {
-    conn.sendMessage.restore();
+    conn.socket.write.restore();
   });
 
   it("should properly print stats", () => {
     const p = player;
-    const expectedMsg = "<white><bold>" +
-      "--------------------------------- Your Stats ----------------------------------\r\n" +
-      "</bold>" +
-      "Player:           " + p.name + "\r\n" +
-      "Level:            " + p.level + "\r\n" +
-      "Stat Points Left: " + p.statPoints + "\r\n" +
-      "1) Strength:      " + p.GetAttr(Attribute.STRENGTH) + "\r\n" +
-      "2) Health:        " + p.GetAttr(Attribute.HEALTH) + "\r\n" +
-      "3) Agility:       " + p.GetAttr(Attribute.AGILITY) + "\r\n" +
-      "<bold>" +
-      "-------------------------------------------------------------------------------\r\n" +
+    const expectedMsg = cc('white') + cc('bold') +
+      "--------------------------------- Your Stats ----------------------------------" + cc('newline') +
+      cc('reset') + cc('white') +
+      "Player:           " + p.name + cc('newline') +
+      "Level:            " + p.level + cc('newline') +
+      "Stat Points Left: " + p.statPoints + cc('newline') +
+      "1) Strength:      " + p.GetAttr(Attribute.STRENGTH) + cc('newline') +
+      "2) Health:        " + p.GetAttr(Attribute.HEALTH) + cc('newline') +
+      "3) Agility:       " + p.GetAttr(Attribute.AGILITY) + cc('newline') +
+      cc('bold') +
+      "-------------------------------------------------------------------------------" + cc('newline') +
       "Enter 1, 2, or 3 to add a stat point, or \"quit\" to enter the realm: " +
-      "</bold></white>";
+      cc('reset') + cc('white') + cc('reset');
     train.printStats();
-    expect(stub.getCall(0).args[0]).to.equal(expectedMsg);
+    expect(stub.getCall(0).args[0]).to.equal(wrap(expectedMsg));
     train.printStats(true);
-    expect(stub.getCall(1).args[0]).to.
-      equal(cc('clearscreen') + expectedMsg);
+    expect(stub.getCall(1).args[0]).to.equal(wrap(cc('clearscreen') + expectedMsg));
   });
 
   it("should properly enter", () => {
     const p = player;
     const spy = sinon.spy(train, 'printStats');
-    let expectedMsg =
-      "<magenta><bold>Welcome to SimpleMUD, " + p.name + "!" +
-      "</bold>\r\n" +
-      "You must train your character with your desired stats,\r\n" +
-      "before you enter the realm.</magenta>\r\n\r\n";
+    let expectedMsg = cc('magenta') + cc('bold') +
+      "Welcome to SimpleMUD, " + p.name + "!" +
+      cc('reset') + cc('magenta') + cc('newline') +
+      "You must train your character with your desired stats," +
+      cc('newline') + "before you enter the realm." +
+      cc('reset') + cc('newline') + cc('newline');
     expect(p.newbie).to.be.true;
     train.enter();
-    expect(stub.getCall(0).args[0]).to.equal(expectedMsg);
+    expect(stub.getCall(0).args[0]).to.equal(wrap(expectedMsg));
     expect(p.newbie).to.be.false;
     expect(spy.calledOnce).to.be.true;
     train.printStats.restore();
